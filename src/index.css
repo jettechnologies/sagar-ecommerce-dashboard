@@ -1,0 +1,254 @@
+/* Font import */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Ubuntu:wght@300;400;500;700&display=swap');
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  font-style: normal;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+/* css reset */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+ v2.0 | 20110126
+ License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  /* border: 0; */
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+@layer{
+  :root{
+    --header-height: 4.35rem;
+    --hero-height: calc(100dvh - var(--header-height));
+  }
+}
+
+@layer components {
+  .max-container {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  /* .input-outline {
+    @apply outline-1 outline-blue;
+  } */
+}
+
+.redirect-link::after{
+  content: "";
+  position: absolute;
+  top:1.5rem;
+  left:0;
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #121212;
+  transition: width .3s;
+}
+
+.redirect-link:hover::after{
+  width: 100%;
+}
+
+.wishlist-icon{
+  opacity:0;
+}
+
+.product-img:hover .wishlist-icon{
+  opacity: 1;
+  transition: opacity ease-in .3s;
+}
+.spin-button-none::-webkit-outer-spin-button,
+.spin-button-none::-webkit-inner-spin-button{
+  appearance:none;
+}
+
+.horizontal-slider{
+  height:5px;
+  background-color:#d0d0d0;
+  border-radius:5px;
+}
+
+.price-thumb{
+  width:2rem;
+  aspect-ratio:1/1;
+  border-radius:50%;
+  position:absolute;
+  top:-1rem;
+  left:0;
+  background-color:white;
+  @apply shadow-lg border-2 border-gray outline-blue;
+}
+.price-track{
+  position:relative;
+}
+
+input, a, select, textarea{
+  @apply outline-blue;
+}
+
+/* style to remove the arrow from input[type = "number"] */
+input[type = "number"]::-webkit-inner-spin-button,
+input[type = "number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type = "number"] {
+  -moz-appearance: textfield;
+}
+
+.user-icon:hover .user-sub-nav {
+  display:block;
+}
+
+#product-form > div:not(:last-child), #create-admin-form > div:not(:last-child) {
+  margin-bottom:1.25rem;
+}
+
+/* customizing the product description scrollbar */
+/* #product-desc::-webkit-scrollbar{
+  width:12px;
+}
+#product-desc::-webkit-scrollbar-track{
+  background-color:#121212;
+}
+#product-desc::-webkit-scrollbar-thumb{
+  background-color:#f0f0f0;
+  width:30px;
+  height:4px;
+  @apply rounded-full;
+} */
