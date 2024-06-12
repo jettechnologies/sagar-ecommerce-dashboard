@@ -8,6 +8,12 @@ import Settings from "./pages/dashboard/Settings";
 import CreateAdmin from "./pages/dashboard/CreateAdmin";
 import AddProduct from "./pages/dashboard/AddProduct";
 import ViewOrders from "./pages/dashboard/ViewOrders";
+import Layout from "./pages/Layout";
+import Index from "./pages/Index";
+import Signup from "./pages/auth/Signup";
+import Login from "./pages/auth/Login";
+import OTP from "./pages/auth/OTP";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 
 function App() {
@@ -15,7 +21,15 @@ function App() {
   return (
     <>
       <Routes >
-        <Route path="/" element = {<AdminLayout />}>
+        <Route path="/" element = {<Layout />}>
+          <Route index element={<Navigate to="welcome" />} />
+          <Route path="welcome" element = {<Index />} />
+          <Route path="login" element = {<Login />} />
+          <Route path="signup" element = {<Signup />} />
+          <Route path="otp" element = {<OTP />} />
+          <Route path="reset-password" element = {<ResetPassword />} />
+        </Route>
+        <Route path="/admin" element = {<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element = {<AdminDashboard />} />
           <Route path="view-orders" element = {<ViewOrders />} />
