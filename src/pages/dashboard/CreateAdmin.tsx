@@ -4,7 +4,6 @@ import Select from "@/components/Select";
 import Button from "@/components/Button";
 
 const nationality:{key:string; value:string}[] = [
-    { "key": "nationality", "value": "Select nationality" },
     { "key": "american", "value": "American" },
     { "key": "canadian", "value": "Canadian" },
     { "key": "british", "value": "British" },
@@ -34,13 +33,11 @@ const nationality:{key:string; value:string}[] = [
   ]
 
   const adminType:{key:string; value:string}[] = [
-    { "key": "adminType", "value": "Select admin type" },
     { "key": "admin", "value": "Other Admin" },
     { "key": "super_admin", "value": "Admin" }
   ]
   
   const adminLevel:{key:string; value:string}[] = [
-    { "key": "adminLevel", "value": "Select admin level" },
     { "key": "level-one", "value": "Level one" },
     { "key": "level-two", "value": "level two" },
     { "key": "level-three", "value": "level three" }
@@ -82,7 +79,13 @@ const CreateAdmin = () => {
                             nationality
                         </label>
                         <div className="mt-3">
-                            <Select id = "nationality" name="nationality" className="border border-[#c0c0c0] text-medium text-sm w-full" select={nationality}/>
+                            <Select 
+                                id = "nationality" 
+                                name="nationality" 
+                                className="border border-[#c0c0c0] text-medium text-sm w-full" 
+                                select={nationality}
+                                defaultText="Select your nationality"
+                            />
                         </div>
                     </div>
                     <div className="flex gap-x-6">
@@ -91,15 +94,27 @@ const CreateAdmin = () => {
                                 admin type
                             </label>
                             <div className="mt-3">
-                                <Select id = "admin-type" name="admin-type" className="border border-[#c0c0c0] text-medium text-sm w-full" select={adminType}/>
+                                <Select 
+                                    id = "admin-type" 
+                                    name="admin-type"
+                                     className="border border-[#c0c0c0] text-medium text-sm w-full" 
+                                    select={adminType}
+                                    defaultText="Select admin type"
+                                />
                             </div>
                         </div>
                         <div className="w-full">
-                            <label htmlFor="admin-level" className="text-size-400 text-text-black font-medium mb-3 capitalize">
-                                admin level
+                            <label htmlFor="access-level" className="text-size-400 text-text-black font-medium mb-3 capitalize">
+                                access level
                             </label>
                             <div className="mt-3">
-                                <Select id = "admin-level" name="admin-level" className="border border-[#c0c0c0] text-medium text-sm w-full" select={adminLevel}/>
+                                <Select 
+                                    id = "access-level" 
+                                    name="access-level" 
+                                    className="border border-[#c0c0c0] text-medium text-sm w-full" 
+                                    select={adminLevel}
+                                    defaultText="Select access level"
+                                />
                             </div>
                         </div>
                     </div>

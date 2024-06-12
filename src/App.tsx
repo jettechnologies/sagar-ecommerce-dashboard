@@ -22,8 +22,7 @@ function App() {
     <>
       <Routes >
         <Route path="/" element = {<Layout />}>
-          <Route index element={<Navigate to="welcome" />} />
-          <Route path="welcome" element = {<Index />} />
+          <Route index element = {<Index />} />
           <Route path="login" element = {<Login />} />
           <Route path="signup" element = {<Signup />} />
           <Route path="otp" element = {<OTP />} />

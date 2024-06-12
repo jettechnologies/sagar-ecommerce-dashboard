@@ -85,7 +85,12 @@ const AddProduct = () => {
                             Category
                         </label>
                         <div className="mt-3">
-                            <Select id = "category" name="category" className="border border-[#c0c0c0] text-medium text-sm w-full" select={[{key: "category", value: "Select categories"}, {key: "electronics", value: "electronics"}, {key: "wearables", value: "wearables"}, {key: "gamings", value: "gamings"}, {key: "cameras", value: "cameras"}]}/>
+                            <Select 
+                                id = "category" 
+                                name="category" className="border border-[#c0c0c0] text-medium text-sm w-full" 
+                                select={[{key: "electronics", value: "electronics"}, {key: "wearables", value: "wearables"}, {key: "gamings", value: "gamings"}, {key: "cameras", value: "cameras"}]}
+                                defaultText="Categories"
+                            />
                         </div>
                     </div>
                     <div className="w-full">

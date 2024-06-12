@@ -9,7 +9,7 @@ const imageArray: { src: string, alt: string, overlayColor: string }[] = [
   {
     src: headphoneImg,
     alt: "headphone image",
-    overlayColor: "bg-yellow",
+    overlayColor: "bg-black",
   },
   {
     src: earpodsImg,

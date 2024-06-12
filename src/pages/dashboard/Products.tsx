@@ -12,16 +12,40 @@ const Products = () => {
                 <div className="flex justify-between">
                     <div className="flex gap-x-4">
                         <div className="w-fit h-full">
-                          <Select id="category" name = "category"  className="border border-[#c0c0c0]" select={[{key: "category", value: "category"}, {key: "electronics", value: "electronics"}, {key: "wearables", value: "wearables"}, {key: "gamings", value: "gamings"}, {key: "cameras", value: "cameras"}]}/>
+                          <Select 
+                            id="category" 
+                            name = "category" 
+                             className="border border-[#c0c0c0]" 
+                            select={[{key: "electronics", value: "electronics"}, {key: "wearables", value: "wearables"}, {key: "gamings", value: "gamings"}, {key: "cameras", value: "cameras"}]}
+                            defaultText="Categories"
+                            />
                         </div>
                         <div className="w-fit h-full">
-                          <Select id = "status" name = "status" className="border border-[#c0c0c0]" select={[{key: "status", value: "status"}, {key: "pending", value: "pending"}, {key: "completed", value: "completed"}, {key: "failed", value: "failed"}]}/>
+                          <Select 
+                                id = "status" 
+                                name = "status" 
+                                className="border border-[#c0c0c0]" 
+                                select={[ {key: "processing", value: "processing"}, {key: "completed", value: "completed"}, {key: "failed", value: "failed"}]}
+                                defaultText="status"
+                            />
                         </div>
                         <div className="w-fit h-full">
-                          <Select id = "price" name="price" className="border border-[#c0c0c0]" select={[{key: "recommend", value: "recommend"}, {key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}/>
+                          <Select 
+                            id = "price" 
+                            name="price" 
+                            className="border border-[#c0c0c0]" 
+                            select={[{key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}
+                            defaultText="price"
+                            />
                         </div>
                         <div className="w-fit h-full">
-                          <Select id = "date" name = "date" className="border border-[#c0c0c0]" select={[{key: "recommend", value: "recommend"}, {key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}/>
+                          <Select 
+                            id = "date" 
+                            name = "date" 
+                            className="border border-[#c0c0c0]" 
+                            select={[{key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}
+                            defaultText="date"
+                            />
                         </div>
                     </div>
                     <Link to = "add-product" className="text-size-xs px-4 py-2 flex gap-2 h-[3rem] bg-black rounded-md text-white items-center justify-center font-normal">
