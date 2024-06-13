@@ -45,7 +45,7 @@ const VerifyEmail = () => {
         console.log(data);
 
         const url = "admin-auth/send-password-reset-token";
-        const headers = {
+        const headers: Headers = {
             'Content-type': 'application/json',
             "Accept": "application/json",
         }
