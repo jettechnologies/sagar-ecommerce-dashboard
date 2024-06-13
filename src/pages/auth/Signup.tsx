@@ -101,7 +101,7 @@ const formSubmit = (e:React.FormEvent<HTMLFormElement>) => {
 
     console.log(data);
 
-  navigate("/otp", { replace: true });
+  navigate("/otp", { replace: true, state: {email: user.email.str, link: "/admin"} });
 
 }
 

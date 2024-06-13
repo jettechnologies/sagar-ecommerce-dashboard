@@ -132,7 +132,7 @@ const Login = () => {
                         <input type="checkbox" name="remember" id="remember" className="w-5 h-5 border-gray"/>
                         <p className="text-sm font-normal text-text-black">Remember me</p>
                     </div>
-                    <Link to = "/reset" className="w-fit text-sm text-blue cursor-pointer hover:-translate-y-1 duration-500 transition-all">Forgot Password ?</Link>
+                    <Link to = "/reset-password/verfiy-email" className="w-fit text-sm text-blue cursor-pointer hover:-translate-y-1 duration-500 transition-all">Forgot Password ?</Link>
                 </div>
                 <div className="w-full">
                     <button type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white ">
