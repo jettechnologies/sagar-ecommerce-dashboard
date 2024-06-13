@@ -1,20 +1,36 @@
-import React,{ useState, useRef, useEffect } from "react";
+import React,{ useState, useRef, useEffect,  } from "react";
 import FormContainer from "@/components/FormContainer";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MailOpen } from "lucide-react";
+// import { useUserForm } from "../hooks/useUserForm";
+import { Headers } from "@/utils/httpRequest";
+import { useSessionStorage } from "@/useSessionStorage";
+import { EasyHTTP } from "@/utils/httpRequest";
+
+const easyHttp = new EasyHTTP;
 
 const OTP = () => {
   const location = useLocation();
   const clientEmail = location.state?.email || "";
+  const endpoint = location.state?.endpoint || "";
   const link = location.state?.link || "";
-  console.log(link);
   const navigate = useNavigate();
 
     let currentOTPIndex = 0;
 
-    const [otp, setOtp] = useState(new Array(6).fill(""));
+    const [otp, setOtp] = useState(new Array(4).fill(""));
     const [activeOTPIndex, setActiveOTPIndex] = useState(0);
     const [error, setError] = useState(false);
+    const { setItem } = useSessionStorage("auth-token");
+
+    const [loading, setLoading] = useState(false);
+    const [resError, setResError] = useState<string | null>(null);
+    const [countdown, setCountdown] = useState(2 * 60);
+    const [isResend, setIsResend] = useState(false);
+
+    // const { getOtpData, response, loading, resError } = useOtp();
+
+    // console.log(link)
   
     const inputRef = useRef<HTMLInputElement>(null);
   
@@ -41,23 +57,95 @@ const OTP = () => {
       inputRef.current?.focus();
     }, [activeOTPIndex]);
 
-    console.log(activeOTPIndex, otp);
-
-    const handleFormSubmit = (e:React.FormEvent<HTMLFormElement>) =>{
+    const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
       e.preventDefault();
 
       const otpString = otp.map(otp => otp.toString()).join("");
 
-      if(otpString === "" || otpString.length !== 6){
+      if(otpString === "" || otpString.length !== 4){
         setError(prevError => !prevError);
         return
       }
+      
+      const data = {
+        otp: otpString,
+      }
+    
+      // for the signup page to enable resend
+    if(!isResend && endpoint !== ""){
+      const url = `admin-auth${endpoint}`;
+      const headers: Headers = {
+        'Content-type': 'application/json',
+        "Accept": "application/json",
+      }
+      
+      try {
+        setLoading(true);
+        const response = await easyHttp.post(url, headers, data);
+        const token = response.accessToken.token;
+        console.log(token)
+        navigate(link, {replace: true});
+        setItem(token);
 
-      console.log(link);
+        setResError(null);
+      } catch (e: any) {
+        setResError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    else if(isResend){
+      const url = "admin-auth/resend-otp";
+      const headers: Headers = {
+        'Content-type': 'application/json',
+        "Accept": "application/json",
+        "email": clientEmail,
+      }
+      try {
+        setLoading(true);
+        const response = await easyHttp.post(url, headers, data);
+        const token = response.accessToken.token;
+        console.log(token)
+        navigate(link, {replace: true});
+        setItem(token);
 
-      navigate(link, { replace: true });
+        setResError(null);
+      } catch (e: any) {
+        setResError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+      console.log(resError)
+
+      // getOtpData(url, headers, data);
+
+      //   const token = response?.accessToken?.token;
+      //   const authToken: string = typeof token === 'string' ? token : '';
+      //   console.log(authToken, response);
+      //   setItem(authToken);
+
+      //   navigate(link , { replace: true });
 
     }
+
+    // countdown logic
+    useEffect(() => {
+      // Exit early when countdown reaches 0
+      if (countdown === 0) {
+        setIsResend(true)
+        return
+      }
+  
+      // Set interval to decrease countdown by 1 every second
+      const intervalId = setInterval(() => {
+        setCountdown(prevCountdown => prevCountdown - 1);
+      }, 1000);
+  
+      // Clean up interval on component unmount or when countdown reaches 0
+      return () => clearInterval(intervalId);
+    }, [countdown]);
 
   return (
     <div className="w-full">
@@ -98,15 +186,56 @@ const OTP = () => {
                     <p className="text-red-500 text-size-400 font-normal m-2 text-center">Please enter the valid OTP sent to your mail</p>
                   )}
                 </div>
-                <div className="w-full">
-                    <button type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white">
-                        Verify account
+                {!isResend ? <div className="w-full">
+                    <button disabled = {loading} type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white">
+                      {loading ? "Loading..." : "Verify account"}
                     </button>
+                  </div>
+                  : <div className="w-full">
+                    <button disabled = {loading} type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white">
+                      {loading ? "Loading..." : "Resend OTP"}
+                    </button>
+                  </div>
+                }
+                <div>
+                  <h1>Timer Countdown</h1>
+                  <div>Countdown: {countdown}</div>
                 </div>
             </form>
         </FormContainer>
     </div>
   )
 }
+
+// interface OtpType{
+//   isvalid?: boolean;
+//   accessToken?:{
+//     token?: string;
+//   }
+// }
+
+// const useOtp = () =>{
+//   const [response, setResponse] = useState<OtpType | null >(null);
+//   const [loading, setLoading] = useState(false);
+//   const [resError, setResError] = useState<string | null>(null);
+
+//   const getOtpData = useCallback(async (url: string, headers: Headers, data: Data): Promise<void> => {
+//     try {
+//       setLoading(true);
+//       const res = await easyHttp.post(url, headers, data);
+//       console.log(res);
+//       setResponse(res)
+//       setResError(null);
+//     } catch (e: any) {
+//       setResError(e.message);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, []);
+
+//   console.log(response)
+
+//   return { response, loading, resError, getOtpData};
+// }
 
 export default OTP

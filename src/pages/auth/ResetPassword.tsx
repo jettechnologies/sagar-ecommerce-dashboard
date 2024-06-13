@@ -76,7 +76,7 @@ const ResetPassword = () => {
 
         console.log(data);
 
-        navigate("/admin", { replace: true });
+        navigate("/login", { replace: true });
     }
 
     useEffect(() =>{

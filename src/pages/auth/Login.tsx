@@ -3,6 +3,9 @@ import FormContainer from "@/components/FormContainer";
 import { Mail, LockKeyhole, Info, CircleUserRoundIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import Notification from "@/components/Notification";
+// import { useUserForm } from "../hooks/useUserForm";
+import { Headers } from "@/utils/httpRequest";
+import { EasyHTTP } from "@/utils/httpRequest";
 
 interface User{
     email: {
@@ -15,7 +18,18 @@ interface User{
     }
 }
 
+interface Data{
+    email: string;
+    password: string;
+}
+
 const Login = () => {
+
+    // const { getUserFormData, resError, response, loading } =  useUserForm();
+    const easyHttp  = new EasyHTTP;
+    const [loading, setLoading] = useState<boolean>(false);
+    const [resError, setResError] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
@@ -35,14 +49,24 @@ const Login = () => {
         status: false,
     });
 
+    useEffect(() => {
+        const authToken = window.sessionStorage.getItem("auth-token");
+        setToken(authToken);
+    }, []);
+
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
         const { name, value } = target;
 
+        if(name === "password"){
+            setUser({ ...user, [name]: {str: value, error: false} });
+            return;
+        }
+
         setUser({ ...user, [name]: {str: value.toLocaleLowerCase(), error: false} });
     }
 
-    const handleFormSubmit = (e:React.FormEvent<HTMLFormElement>) =>{
+    const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
         
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -64,15 +88,32 @@ const Login = () => {
             return;
         }
 
-        const data = {
+        const data:Data = {
             email: email.str,
             password: password.str,
         }
 
-        console.log(data);
+        const url = "admin-auth/login";
+        const headers: Headers = {
+            'Content-type': 'application/json',
+            "Accept": "application/json",
+            'Authorization': `Bearer ${token}`,
+        }
+        try{
+            setLoading(true);
+            const response = await easyHttp.post(url, headers, data);
+            console.log(response);
 
-        navigate("/admin", { replace: true });
+            navigate("/admin", {replace: true })
+        }
+         catch (e: any) {
+            setResError(e.message);
+        } finally {
+            setLoading(false);
+        }
+    
     }
+
 
     useEffect(() =>{
         let errorRemoval: ReturnType<typeof setTimeout>;
@@ -136,7 +177,7 @@ const Login = () => {
                 </div>
                 <div className="w-full">
                     <button type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white ">
-                        login
+                    {loading ? "Loading..." : "login"}
                     </button>
                 </div>
                 <div className="flex w-full justify-center gap-3 accent-blue mt-4">
@@ -145,6 +186,10 @@ const Login = () => {
                 
             </form>
         </FormContainer>
+
+        {resError && <div className="absolute w-fit z-60 top-[6rem] left-[1.5rem]">
+            <Notification className="rounded-md w-[18rem] text-sm font-medium text-white" message={resError} isCloseIcon = {true} type="danger" />
+        </div>}
     </>
   )
 }

@@ -118,6 +118,18 @@ const AddProduct = () => {
                         />
                     </div>
                     <div className="w-full">
+                        <label htmlFor="unit-price" className="text-size-400 text-text-black font-medium mb-3">
+                            Unit price
+                        </label>
+                        <input 
+                            type="number" 
+                            placeholder="Enter unit price" 
+                            id="unit-price" 
+                            name="unit-price"
+                            className="mt-3 border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
+                        />
+                    </div>
+                    <div className="w-full">
                         <label htmlFor="wholesale-price" className="text-size-400 text-text-black font-medium mb-3">
                             Wholesale price
                         </label>
