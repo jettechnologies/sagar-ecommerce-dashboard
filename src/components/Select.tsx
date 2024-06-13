@@ -1,4 +1,5 @@
 import { twMerge } from "tailwind-merge";
+import React from "react"
 
 interface Props{
     select: {
@@ -9,7 +10,7 @@ interface Props{
     defaultText:string;
     id:string;
     name: string;
-    handleInputChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
+    handleInputChange?: (e:React.ChangeEvent<HTMLSelectElement>) => void
 }
 
 const Select:React.FC<Props> = ({select, className, id, name, defaultText, handleInputChange}) => {

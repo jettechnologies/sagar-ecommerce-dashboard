@@ -6,20 +6,44 @@ const Customers = () => {
     <div className="w-full h-full">
         <div className="min-h-16 w-full">
             <Container >
-                <div className="flex gap-x-4">
-                      <div className="w-fit h-full">
-                          <Select id="category" name = "category"  className="border border-[#c0c0c0]" select={[{key: "category", value: "category"}, {key: "electronics", value: "electronics"}, {key: "wearables", value: "wearables"}, {key: "gamings", value: "gamings"}, {key: "cameras", value: "cameras"}]}/>
-                      </div>
-                      <div className="w-fit h-full">
-                          <Select id = "status" name = "status" className="border border-[#c0c0c0]" select={[{key: "status", value: "status"}, {key: "pending", value: "pending"}, {key: "completed", value: "completed"}, {key: "failed", value: "failed"}]}/>
-                      </div>
-                      <div className="w-fit h-full">
-                          <Select id = "price" name="price" className="border border-[#c0c0c0]" select={[{key: "recommend", value: "recommend"}, {key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}/>
-                      </div>
-                      <div className="w-fit h-full">
-                          <Select id = "date" name = "date" className="border border-[#c0c0c0]" select={[{key: "recommend", value: "recommend"}, {key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}/>
-                      </div>
-                </div>
+            <div className="flex gap-x-4">
+                        <div className="w-fit h-full">
+                          <Select 
+                            id="category" 
+                            name = "category" 
+                             className="border border-[#c0c0c0]" 
+                            select={[{key: "electronics", value: "electronics"}, {key: "wearables", value: "wearables"}, {key: "gamings", value: "gamings"}, {key: "cameras", value: "cameras"}]}
+                            defaultText="Categories"
+                            />
+                        </div>
+                        <div className="w-fit h-full">
+                          <Select 
+                                id = "status" 
+                                name = "status" 
+                                className="border border-[#c0c0c0]" 
+                                select={[ {key: "processing", value: "processing"}, {key: "completed", value: "completed"}, {key: "failed", value: "failed"}]}
+                                defaultText="status"
+                            />
+                        </div>
+                        <div className="w-fit h-full">
+                          <Select 
+                            id = "price" 
+                            name="price" 
+                            className="border border-[#c0c0c0]" 
+                            select={[{key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}
+                            defaultText="price"
+                            />
+                        </div>
+                        <div className="w-fit h-full">
+                          <Select 
+                            id = "date" 
+                            name = "date" 
+                            className="border border-[#c0c0c0]" 
+                            select={[{key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}
+                            defaultText="date"
+                            />
+                        </div>
+                    </div>
             </Container>
         </div>
         <Container className="mt-4 min-h-screen">

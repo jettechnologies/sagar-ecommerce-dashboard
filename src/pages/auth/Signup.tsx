@@ -27,7 +27,6 @@ interface Error{
 }
 
 const adminTypes:{key:string; value:string}[] = [
-  { "key": "adminType", "value": "Select admin type"},
   { "key": "admin", "value": "Other Admin" },
   { "key": "super_admin", "value": "Admin" }
 ]
@@ -49,12 +48,13 @@ const Signup = () => {
     });
 
       // setting the values of the input fields
-  function handleInputChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>){
-    const target = e.target as HTMLInputElement | HTMLTextAreaElement;
+  function handleInputChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>){
+    const target = e.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
     const { name, value } = target;
 
     setUser({ ...user, [name]: {str: value.toLocaleLowerCase(), error: false} });
 }
+
 
 const formSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,6 +64,7 @@ const formSubmit = (e:React.FormEvent<HTMLFormElement>) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const {name, password, confirmPassword, email, adminType} = user;
+    console.log(adminType)
 
     if(name.str === "" || email.str === "" || password.str === "" || confirmPassword.str === "" ){
         setError({status: true, msg: "All fields are required!"});
