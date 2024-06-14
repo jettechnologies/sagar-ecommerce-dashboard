@@ -52,7 +52,7 @@ const VerifyEmail = () => {
 
         try{
             await getUserFormData(url, headers, data);
-            navigate("/reset-password/otp", { replace: true, state: { email: email.str, link : "/reset-password", endpoint: "/verify-reset-password-token"} });
+            navigate("/reset-password/otp", { replace: true, state: { email: email.str, link : "/reset-password"} });
             console.log(response, resError)
         }
         catch(e: any){

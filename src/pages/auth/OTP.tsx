@@ -12,7 +12,7 @@ const easyHttp = new EasyHTTP;
 const OTP = () => {
   const location = useLocation();
   const clientEmail = location.state?.email || "";
-  const endpoint = location.state?.endpoint || "";
+  // const endpoint = location.state?.endpoint || "";
   const link = location.state?.link || "";
   const navigate = useNavigate();
 
@@ -27,10 +27,6 @@ const OTP = () => {
     const [resError, setResError] = useState<string | null>(null);
     const [countdown, setCountdown] = useState(2 * 60);
     const [isResend, setIsResend] = useState(false);
-
-    // const { getOtpData, response, loading, resError } = useOtp();
-
-    // console.log(link)
   
     const inputRef = useRef<HTMLInputElement>(null);
   
@@ -72,8 +68,8 @@ const OTP = () => {
       }
     
       // for the signup page to enable resend
-    if(!isResend && endpoint !== ""){
-      const url = `admin-auth${endpoint}`;
+    if(!isResend){
+      const url = `admin-auth/send-password-reset-token`;
       const headers: Headers = {
         'Content-type': 'application/json',
         "Accept": "application/json",
@@ -118,16 +114,6 @@ const OTP = () => {
     }
 
       console.log(resError)
-
-      // getOtpData(url, headers, data);
-
-      //   const token = response?.accessToken?.token;
-      //   const authToken: string = typeof token === 'string' ? token : '';
-      //   console.log(authToken, response);
-      //   setItem(authToken);
-
-      //   navigate(link , { replace: true });
-
     }
 
     // countdown logic
@@ -206,36 +192,5 @@ const OTP = () => {
     </div>
   )
 }
-
-// interface OtpType{
-//   isvalid?: boolean;
-//   accessToken?:{
-//     token?: string;
-//   }
-// }
-
-// const useOtp = () =>{
-//   const [response, setResponse] = useState<OtpType | null >(null);
-//   const [loading, setLoading] = useState(false);
-//   const [resError, setResError] = useState<string | null>(null);
-
-//   const getOtpData = useCallback(async (url: string, headers: Headers, data: Data): Promise<void> => {
-//     try {
-//       setLoading(true);
-//       const res = await easyHttp.post(url, headers, data);
-//       console.log(res);
-//       setResponse(res)
-//       setResError(null);
-//     } catch (e: any) {
-//       setResError(e.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   console.log(response)
-
-//   return { response, loading, resError, getOtpData};
-// }
 
 export default OTP

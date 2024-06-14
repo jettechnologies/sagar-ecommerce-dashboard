@@ -6,6 +6,7 @@ import Notification from "@/components/Notification";
 // import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
 import { EasyHTTP } from "@/utils/httpRequest";
+import { useSessionStorage } from "@/useSessionStorage";
 
 interface User{
     email: {
@@ -30,6 +31,7 @@ const Login = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [resError, setResError] = useState<string | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const { setItem } = useSessionStorage("auth-token");
 
     const navigate = useNavigate();
 
@@ -51,7 +53,9 @@ const Login = () => {
 
     useEffect(() => {
         const authToken = window.sessionStorage.getItem("auth-token");
-        setToken(authToken);
+        if(authToken){
+            setToken(authToken);
+        } 
     }, []);
 
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
@@ -104,12 +108,18 @@ const Login = () => {
             const response = await easyHttp.post(url, headers, data);
             console.log(response);
 
-            navigate("/admin", {replace: true })
+            setItem(response);
+
+            
         }
          catch (e: any) {
             setResError(e.message);
         } finally {
             setLoading(false);
+        }
+
+        if(resError !== null){
+            navigate("/admin", {replace: true })
         }
     
     }

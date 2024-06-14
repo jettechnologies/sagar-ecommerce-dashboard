@@ -15,6 +15,7 @@ import Login from "./pages/auth/Login";
 import OTP from "./pages/auth/OTP";
 import ResetPassword from "./pages/auth/ResetPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
+import ResetOtp from "./pages/auth/ResetOtp";
 
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
           <Route path="otp" element = {<OTP />} />
           <Route path="reset-password" >
             <Route index element = {<ResetPassword />} />
-            <Route path="otp" element = {<OTP />} />
+            <Route path="otp" element = {<ResetOtp />} />
             <Route path = "verfiy-email" element = {<VerifyEmail />} />
           </Route>
 
