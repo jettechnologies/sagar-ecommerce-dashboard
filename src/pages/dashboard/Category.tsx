@@ -14,13 +14,13 @@ interface Category{
     description: string;
 }
 
-interface Categories{
-    name: string;
-    description: string;
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
+// interface Categories{
+//     name: string;
+//     description: string;
+//     id: string;
+//     createdAt: Date;
+//     updatedAt: Date;
+// }
 
 const Category = () => {
 

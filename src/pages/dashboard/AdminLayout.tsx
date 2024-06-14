@@ -1,6 +1,6 @@
 import SideNavBar from "@/components/SideNavBar";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import Button from "@/components/Button";
+// import Button from "@/components/Button";
 import { CircleUserRound, Home, LogOutIcon, Package, Search, Settings, ShoppingCartIcon, UserRoundCogIcon, LibraryBig } from "lucide-react";
 import Logo from "@/components/Logo";
 import earpodImg from "@/assets/images/earpods.webp";
