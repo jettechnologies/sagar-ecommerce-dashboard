@@ -16,6 +16,7 @@ import OTP from "./pages/auth/OTP";
 import ResetPassword from "./pages/auth/ResetPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import ResetOtp from "./pages/auth/ResetOtp";
+import Category from "./pages/dashboard/Category";
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element = {<AdminDashboard />} />
           <Route path="view-orders" element = {<ViewOrders />} />
+          <Route path = "category" element = {<Category />} />
           <Route path="products">
             <Route index = {true} element = {<Products />} />
             <Route path="add-product" element = {<AddProduct />} />

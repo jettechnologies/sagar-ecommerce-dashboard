@@ -1,7 +1,7 @@
 import SideNavBar from "@/components/SideNavBar";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import Button from "@/components/Button";
-import { CircleUserRound, Home, LogOutIcon, Package, Search, Settings, ShoppingCartIcon, UserRoundCogIcon } from "lucide-react";
+import { CircleUserRound, Home, LogOutIcon, Package, Search, Settings, ShoppingCartIcon, UserRoundCogIcon, LibraryBig } from "lucide-react";
 import Logo from "@/components/Logo";
 import earpodImg from "@/assets/images/earpods.webp";
 
@@ -15,15 +15,17 @@ const AdminLayout = () => {
     <main className="max-container min-h-screen grid grid-rows-[auto_1fr] grid-cols-[auto_1fr] bg-gray font-roboto">
         <header className="py-4 col-start-2 col-span-2 w-full min-h-[--header-height] bg-white flex justify-center">
             <form className="w-fit">
-              <div className = "w-full flex p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
+              <div className = "w-full flex items-center p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
+                <div className="p-2 cursor-pointer"><Search color="#c0c0c0"/></div>
                 <input type="text" 
                   placeholder="Search items, categories"
                   className="w-[16rem] h-10 border-none outline-none text-text-black bg-transparent pl-2"
                 />
-                <Button size = "small" className="text-size-400 flex gap-2 h-[3rem] text-white items-center justify-center font-normal">
+                {/* <Search color="#f3f5f7"/> */}
+                {/* <Button size = "small" className="text-size-400 flex gap-2 h-[3rem] text-white items-center justify-center font-normal">
                     <Search color="#fff"/>
                     Search
-                </Button>
+                </Button> */}
               </div>
             </form>
         </header>
@@ -42,6 +44,12 @@ const AdminLayout = () => {
                     <li className={`p-2 flex gap-3 ${paths?.includes("view-orders") ? "text-white bg-black" : "text-text-black"} items-center`}>
                       <ShoppingCartIcon size = {20} color={`${paths.includes("view-orders") ? "#fff" : "#121212"}`}/>
                       <p className="text-size-400 font-normal capitalize">orders</p>
+                    </li>
+                  </Link>
+                  <Link to ="category">
+                    <li className={`p-2 flex gap-3 ${paths?.includes("category") ? "text-white bg-black" : "text-text-black"} items-center`}>
+                      <LibraryBig size = {20} color={`${paths.includes("category") ? "#fff" : "#121212"}`}/>
+                      <p className="text-size-400 font-normal capitalize">category</p>
                     </li>
                   </Link>
                   <Link to ="products">
