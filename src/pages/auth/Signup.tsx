@@ -138,7 +138,7 @@ const formSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
             return;
         }
 
-        navigate("/otp", { replace: true, state: { email: user.email.str, link: "/admin", endpoint: "/verify-email" } });
+        navigate("/otp", { replace: true, state: { email: user.email.str, link: "/admin" } });
       } catch (e) {
         console.error(e);
     }

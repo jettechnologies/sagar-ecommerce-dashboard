@@ -69,7 +69,7 @@ const OTP = () => {
     
       // for the signup page to enable resend
     if(!isResend){
-      const url = `admin-auth/send-password-reset-token`;
+      const url = `admin-auth/verify-email`;
       const headers: Headers = {
         'Content-type': 'application/json',
         "Accept": "application/json",
