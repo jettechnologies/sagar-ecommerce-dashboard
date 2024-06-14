@@ -119,9 +119,9 @@ const Login = () => {
         }
 
         if(resError !== null){
-            navigate("/admin", {replace: true })
+            return;
         }
-    
+        navigate("/admin", {replace: true })
     }
 
 
