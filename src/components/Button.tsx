@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 interface Props{
   children: React.ReactNode;
   size?: "small" | "medium" | "large";
-  type?: "black" | "white";
+  type?: "black" | "white" | "danger";
   handleClick?: () => void;
   className?: string;
 }
@@ -20,6 +20,7 @@ const Button:React.FC<Props> = ({children, type = "black", size = "medium", clas
   const typeClassNames = {
     black: "bg-[#141718] text-white",
     white: "bg-white text-[#141718] border border-black",
+    danger: "bg-red-500 text-white",
   }
 
 return (

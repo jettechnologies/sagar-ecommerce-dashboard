@@ -80,15 +80,17 @@ const OTP = () => {
         const response = await easyHttp.post(url, headers, data);
         const token = response.accessToken.token;
         console.log(token)
-        navigate(link, {replace: true});
         setItem(token);
 
         setResError(null);
       } catch (e: any) {
         setResError(e.message);
+        console.log(e.message)
       } finally {
         setLoading(false);
       }
+
+      navigate(link, {replace: true});
     }
     else if(isResend){
       const url = "admin-auth/resend-otp";

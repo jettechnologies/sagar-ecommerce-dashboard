@@ -6,7 +6,7 @@ import Notification from "@/components/Notification";
 // import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 import { ArrowLeftIcon, CircleUserRoundIcon } from "lucide-react";
-import Select from "@/components/Select";
+// import Select from "@/components/Select";
 import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
 
@@ -18,7 +18,6 @@ interface StateObj{
 interface User{
  name:StateObj;
  email: StateObj;
- adminType:StateObj;
  password: StateObj;
  contact: StateObj;
  confirmPassword: {str:string, error: boolean};
@@ -35,14 +34,7 @@ interface Data{
     mobile: string; 
     password: string; 
     confirmPassword: string; 
-    adminType: string; 
-    accesslevel: string;
 }
-
-const adminTypes:{key:string; value:string}[] = [
-{ "key": "OtherAdmin", "value": "other admin" },
-  { "key": "SuperAdmin", "value": "Super admin" }
-]
 
 const Signup = () => {
 
@@ -53,7 +45,6 @@ const Signup = () => {
         name: {str: "", error: false},
         email: {str: "", error: false},
         contact: {str: "", error: false},
-        adminType: {str: "", error: false},
         password: {str: "", error: false},
         confirmPassword: {str: "", error: false}
     });
@@ -67,7 +58,7 @@ const Signup = () => {
     const target = e.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
     const { name, value } = target;
 
-    if(name === "adminType"  || name === "password" || name == "confirmPassword"){
+    if(name === "password" || name == "confirmPassword"){
         setUser({ ...user, [name]: {str: value, error: false} });
         return;
     }
@@ -83,8 +74,7 @@ const formSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
     const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/i;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    const {name, password, confirmPassword, email, contact, adminType} = user;
-    console.log(adminType)
+    const {name, password, confirmPassword, email, contact} = user;
 
     if(name.str === "" || email.str === "" || password.str === "" || confirmPassword.str === "" ){
         setValidateError({status: true, msg: "All fields are required!"});
@@ -107,10 +97,6 @@ const formSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
         setUser({ ...user, email: { ...email, error: true } });
         return;
     }
-    else if(adminType.str === ""){
-      setUser({ ...user, adminType: { ...password, error: true } });
-      return;
-  }
 
   console.log(resError);
 
@@ -119,8 +105,6 @@ const formSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
         fullname: name.str,
         password: password.str,
         confirmPassword:confirmPassword.str,
-        adminType:adminType.str,
-        accesslevel:"level3",
         mobile: contact.str,
     }
 
@@ -137,12 +121,11 @@ const formSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
         if(resError !== null){
             return;
         }
-
-        navigate("/otp", { replace: true, state: { email: user.email.str, link: "/admin" } });
       } catch (e) {
         console.error(e);
     }
 
+    navigate("/otp", { replace: true, state: { email: user.email.str, link: "/admin" } });
 }
 
 useEffect(() =>{
@@ -213,7 +196,7 @@ useEffect(() =>{
                     </div>
                     {user.contact.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
                 </div>
-                <div>
+                {/* <div>
                     <div className={`flex items-center ${user.adminType.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
                         <User size = {20}/>
                         <Select 
@@ -227,7 +210,7 @@ useEffect(() =>{
                         {user.adminType.error && <Info size={20} color=" rgb(239 68 68)" />}
                     </div>
                     {user.adminType.error && <p className="text-red-500 text-size-400 font-normal m-2">Select a specific admin</p>}
-                </div>
+                </div> */}
                 <div>
                     <div className={`flex items-center ${user.password.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
                         <LockKeyhole size = {20}/>

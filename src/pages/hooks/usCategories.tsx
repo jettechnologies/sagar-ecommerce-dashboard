@@ -22,7 +22,6 @@ export const useCategories = () => {
         try {
           setIsLoading(true);
           const res = await easyHttp.get("browse/fetch-all-product-categories");
-          console.log(res[0]);
           setCategories(res[0])
           setIsError(null);
         } catch (e: any) {

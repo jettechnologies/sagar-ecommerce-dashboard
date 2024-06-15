@@ -109,11 +109,10 @@ const Login = () => {
             console.log(response);
 
             setItem(response);
-
-            
         }
          catch (e: any) {
             setResError(e.message);
+            console.log(e.message)
         } finally {
             setLoading(false);
         }

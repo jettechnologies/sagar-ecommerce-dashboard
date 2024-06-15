@@ -10,7 +10,7 @@ interface Props{
     defaultText:string;
     id:string;
     name: string;
-    handleInputChange?: (e:React.ChangeEvent<HTMLSelectElement>) => void
+    handleInputChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
 }
 
 const Select:React.FC<Props> = ({select, className, id, name, defaultText, handleInputChange}) => {
