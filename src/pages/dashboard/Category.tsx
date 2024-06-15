@@ -419,7 +419,7 @@ const Category = () => {
                         type="white" 
                         size="medium" 
                         className="text-sm uppercase flex-1"
-                        onClick = {() => setIsDeleting(prevState => !prevState)}
+                        handleClick = {() => setIsDeleting(prevState => !prevState)}
                     >
                         no, cancel
                     </Button>
@@ -427,7 +427,6 @@ const Category = () => {
                         type="danger" 
                         size="medium" 
                         className="text-sm uppercase flex-1"
-                        onClick = {handleCategoryDelete}
                     >
                         yes, delete
                     </Button>
