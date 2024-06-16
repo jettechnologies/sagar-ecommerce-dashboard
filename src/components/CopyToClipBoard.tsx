@@ -21,17 +21,18 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ text, children }) => 
 
   return (
     <div className="copy-to-clipboard">
-      <div className="flex gap-2">
-        <div ref={textRef} className="copy-text">
-          {text && text}
+      <div className="flex gap-2 items-center px-2">
+        <div ref={textRef} >
+          <p className="text-sm text-normal text-text-black">{text && text}</p>
         </div>
-        <Button className={`${isCopied ? 'bg-blue' : "bg-transparent"}`} handleClick={copyToClipboard} size='small'>
-          <Copy color = "#121212"/>
+        <Button className={"bg-transparent justify-self-end text-green-500 flex gap-4"} handleClick={copyToClipboard} size='small'>
+          <Copy color = "#d0d0d0"/>
+          {isCopied && "Copied"}
         </Button>
       </div>
       {children}
     </div>
   );
-};
+}
 
 export default CopyToClipboard;

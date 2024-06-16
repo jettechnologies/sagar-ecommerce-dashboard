@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { User, Info, Mail, Shield, LockKeyhole } from "lucide-react";
 import Notification from "@/components/Notification";
-import { useUserForm } from "../hooks/useUserForm";
+// import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
+import { AdminRegistrationResponse } from "@/types";
 // import { error } from "console";
 import Modal from "@/components/Modal";
 import CopyToClipboard from "@/components/CopyToClipBoard";
@@ -53,13 +54,17 @@ interface StateObj{
     confirmPassword: string;
   }
 
+// interface Response{
+//     [key:string]: any;
+// }
+
 const CreateAdmin = () => {
 
-    const { response, getUserFormData, resError, loading } = useUserForm();
+    // const { response, getUserFormData, resError, loading } = useUserForm();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // const [loading, setLoading] = useState(false);
-    // const [resError, setResError] = useState<string | null>(null);
-    // const [response, setResponse] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false);
+    const [resError, setResError] = useState<string | null>(null);
+    const [response, setResponse] = useState<AdminRegistrationResponse | null>(null)
 
     const navigate = useNavigate();
     const [adminData, setAdminData] = useState<AdminData>({
@@ -169,21 +174,52 @@ const CreateAdmin = () => {
             accesslevel: accesslevel.str,
         }
     
-        const url = "admins-mgt/register";
+        // const url = "admins-mgt/register";
         const headers: Headers = {
             'Content-type': 'application/json',
             "Accept": "application/json",
             'Authorization': `Bearer ${token}`,
         }
     
+        // try {
+        //     await getUserFormData(url, headers, data);
+        //     if(resError !== null){
+        //         return;
+        //     }
+        //   } catch (e) {
+        //     console.error(e);
+        // }
+
         try {
-            await getUserFormData(url, headers, data);
-            if(resError !== null){
-                return;
+            setLoading(true);
+            const res = await fetch(
+                "https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/admins-mgt/register",
+                {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify(data)
+                }
+            )
+    
+            if (res.ok) {
+                console.log('Product created successfully');
+                console.log(res)
+                const data = await res.json();
+                setResponse(data);
+
+                // setResponse('Product created successfully');
+            } else {
+                const errorData = await res.json();
+                console.error('Failed to create product:', errorData.message);
+                setResError('Failed to create product: ' + errorData.message);
             }
-          } catch (e) {
-            console.error(e);
+        } catch (error: any) {
+            console.error('Error:', error.message);
+            setResError('Failed to create product');
+        } finally {
+            setLoading(false);
         }
+
 
         setIsModalOpen(true);
         // navigate( );
@@ -196,6 +232,8 @@ const CreateAdmin = () => {
             console.log(response);
         }
     }, [response])
+
+
 
     console.log(response);
 const copyResponse = useCallback(() => {

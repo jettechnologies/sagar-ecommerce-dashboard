@@ -53,3 +53,34 @@ export interface AdminDataType {
     video: any[];
     wholesalePrice: string;
   }
+
+  interface AdminResponse {
+    fullname: string;
+    email: string;
+    password: string;
+    admintype: string;
+    mobile: string;
+    role: string;
+    Nationality: string | null;
+    adminaccessLevel: string;
+    RegisteredAt: string; // Assuming this is a string representing a date/time
+    isActivated: boolean;
+    isRegistered: boolean;
+    isVerified: boolean;
+    adminID: number | null;
+    UpdatedAt: string | null; // Assuming this is a string representing a date/time or null
+    profile_picture: string | null;
+    gender: string | null;
+    isLoggedIn: boolean;
+    isDeactivated: boolean;
+    reset_link_exptime: string | null; // Assuming this is a string representing a date/time or null
+    password_reset_link: string | null;
+    id: number;
+  }
+  
+  export interface AdminRegistrationResponse {
+    message: string;
+    response: AdminResponse;
+    loginCredential: string;
+  }
+  

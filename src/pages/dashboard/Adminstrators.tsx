@@ -1,5 +1,5 @@
-import Notification from "@/components/Notification";
-import Select from "@/components/Select";
+// import Notification from "@/components/Notification";
+// import Select from "@/components/Select";
 import Container from "@/components/Container";
 import { Link } from "react-router-dom";
 import { CirclePlusIcon, GripHorizontal, Edit, Trash, CircleAlert } from "lucide-react";
@@ -101,7 +101,6 @@ const Adminstrators = () => {
         setCurrentId(String(id))
     }
 
-console.log(admins)
     const handleDeleteAccount = async() =>{
         // const id = string(currentId);
         const url = `admins-mgt/delete-other-admin/${currentId}`;
@@ -129,6 +128,7 @@ console.log(admins)
         setIsDeleting(prevState => !prevState);
 
         window.location.reload();
+        console.log(response)
 
     }
   return (

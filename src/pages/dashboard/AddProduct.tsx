@@ -1,13 +1,11 @@
 import Container from "@/components/Container";
 import Button from "@/components/Button";
-import { Trash2 } from "lucide-react";
 import Select from "@/components/Select";
 import { useCategories } from "../hooks/usCategories";
 import { useCallback, useEffect, useState } from "react";
 import { FileDrop } from "@/components/FileDrop";
 import { imageValidate } from "@/utils/imageValidate";
 // import { useUserForm } from "../hooks/useUserForm";
-import { Headers, EasyHTTP } from "@/utils/httpRequest";
 import { useNavigate } from "react-router-dom";
 // import MultiSelect from "@/components/MultiSelect";
 
@@ -50,6 +48,7 @@ const AddProduct = () => {
   });
   const [colors, setColors] = useState<string []>([]);
   const [sizes, setSizes] = useState<string []>([]);
+
 
   const handleVariants = (
     e: React.ChangeEvent<
@@ -281,6 +280,8 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     }
 
     navigate("/admin/products", {replace: true});
+
+  console.log(resError, response)
 };
 
 //   console.log(response, resError);
