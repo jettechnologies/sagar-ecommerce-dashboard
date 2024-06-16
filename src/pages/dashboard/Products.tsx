@@ -124,6 +124,8 @@ const Products = () => {
             return;
         }
 
+        console.log(response)
+
         // setIsDeleting(prevState => !prevState);
 
         // window.location.reload();
