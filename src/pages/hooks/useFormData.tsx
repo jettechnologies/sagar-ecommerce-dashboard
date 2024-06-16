@@ -10,20 +10,20 @@ interface UseFormDataProps {
   method?: 'post' | 'patch' | 'put' | 'delete';
 }
 
-interface UseFormDataReturn<T> {
-  data: T | null;
+interface UseFormDataReturn {
+  data: unknown;
   error: string | null;
   loading: boolean;
   execute: () => Promise<void>;
 }
 
-export const useFormData = <T>({
+export const useFormData = ({
   url,
   headers,
   formData,
   method = 'post',
-}: (UseFormDataProps): UseFormDataReturn<T> => {
-  const [data, setData] = useState<T | null>(null);
+}: UseFormDataProps): UseFormDataReturn => {
+  const [data, setData] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
