@@ -30,7 +30,7 @@ const Login = () => {
     const easyHttp  = new EasyHTTP;
     const [loading, setLoading] = useState<boolean>(false);
     const [resError, setResError] = useState<string | null>(null);
-    const [token, setToken] = useState<string | null>(null);
+    // const [token, setToken] = useState<string | null>(null);
     const { setItem } = useSessionStorage("auth-token");
 
     const navigate = useNavigate();
@@ -51,12 +51,12 @@ const Login = () => {
         status: false,
     });
 
-    useEffect(() => {
-        const authToken = window.sessionStorage.getItem("auth-token");
-        if(authToken){
-            setToken(authToken);
-        } 
-    }, []);
+    // useEffect(() => {
+    //     const authToken = window.sessionStorage.getItem("auth-token");
+    //     if(authToken){
+    //         setToken(authToken);
+    //     } 
+    // }, []);
 
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
@@ -101,7 +101,6 @@ const Login = () => {
         const headers: Headers = {
             'Content-type': 'application/json',
             "Accept": "application/json",
-            'Authorization': `Bearer ${token}`,
         }
         try{
             setLoading(true);

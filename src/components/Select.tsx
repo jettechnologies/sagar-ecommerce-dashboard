@@ -10,15 +10,17 @@ interface Props{
     defaultText:string;
     id:string;
     name: string;
+    isMultiple?:boolean;
     handleInputChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
 }
 
-const Select:React.FC<Props> = ({select, className, id, name, defaultText, handleInputChange}) => {
-  
+const Select:React.FC<Props> = ({select, className, isMultiple, id, name, defaultText, handleInputChange}) => {
+
   return (
     <select 
       name={name} 
       id={id} 
+      multiple = {isMultiple}
       className={twMerge("p-3 rounded-md text-size-500 font-medium font-roboto text-text-black capitalize cursor-pointer", className)}
       onChange={handleInputChange}
     >

@@ -10,6 +10,7 @@ export const useUserForm = () => {
 
   const getUserFormData = useCallback(async (url: string, headers: Headers, data: Data): Promise<void> => {
     try {
+      console.log(url);
       setLoading(true);
       const res = await easyHttp.post(url, headers, data);
       setResponse(res)
@@ -17,7 +18,6 @@ export const useUserForm = () => {
     } catch (e: any) {
       console.log(e.message)
       setResError(e.message);
-
       throw new Error(e.message)
     } finally {
       setLoading(false);

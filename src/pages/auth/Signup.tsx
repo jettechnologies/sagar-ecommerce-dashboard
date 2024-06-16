@@ -196,21 +196,6 @@ useEffect(() =>{
                     </div>
                     {user.contact.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
                 </div>
-                {/* <div>
-                    <div className={`flex items-center ${user.adminType.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
-                        <User size = {20}/>
-                        <Select 
-                          id = "admin-type" 
-                          name="adminType" 
-                          select={adminTypes} 
-                          className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
-                          defaultText="Select admin type"
-                          handleInputChange={handleInputChange}
-                        />
-                        {user.adminType.error && <Info size={20} color=" rgb(239 68 68)" />}
-                    </div>
-                    {user.adminType.error && <p className="text-red-500 text-size-400 font-normal m-2">Select a specific admin</p>}
-                </div> */}
                 <div>
                     <div className={`flex items-center ${user.password.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
                         <LockKeyhole size = {20}/>

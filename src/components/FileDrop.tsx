@@ -1,42 +1,36 @@
 import { DragEvent, useEffect, useState } from "react";
 import { Images, Upload } from "lucide-react";
-
-interface FormData {
-    name: string;
-    description: string;
-    stock: string;
-    price: string;
-    productImage: File[] | [];
-    categoryId: string;
-}
+import { ProductData } from "@/pages/dashboard/AddProduct";
 
 interface Props{
     handleImgUpload?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     // setFormData?: React.Dispatch<React.SetStateAction<FormData>>
-    setFormData?: React.Dispatch<React.SetStateAction<FormData>>;
+    setProductData?: React.Dispatch<React.SetStateAction<ProductData>>;
     setImgString?: React.Dispatch<React.SetStateAction<[] | {
         name: string;
         src: string;
     }[]>>;
+    name: string
 }
 
 export function FileDrop({
     handleImgUpload,
-    setFormData,
-    setImgString
+    setProductData,
+    setImgString,
+    name,
 }: Props) {
   const [isOver, setIsOver] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
 
 
   useEffect(() =>{
-    if (setFormData && files.length > 0) {
-        setFormData(prevFormData => ({
+    if (setProductData && files.length > 0) {
+        setProductData(prevFormData => ({
             ...prevFormData,
-            productImage: [...prevFormData.productImage, ...files]
+            productImage: files,
         }));
     }
-  }, [setFormData, files]);
+  }, [setProductData, files]);
 
   // Define the event handlers
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
@@ -107,10 +101,10 @@ const readFileAsBase64 = (file: File): Promise<string> => {
                         <p className="text-sm font-normal text-text-black">Drop your files here or <span className = "text-blue font-medium">Browse</span></p>
                     </div>
             </div>
-            <input 
-                multiple 
+            <input  
                 id="dropzone-file" 
                 type="file" 
+                name = {name}
                 onChange={handleImgUpload}
                  className="hidden" 
             />

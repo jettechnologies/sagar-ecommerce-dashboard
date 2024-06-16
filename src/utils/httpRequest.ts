@@ -14,6 +14,7 @@ export interface Headers {
   export class EasyHTTP {
     // Make an HTTP GET Request 
     async get(url: string): Promise<any> {
+
       try {
         const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`);
         const resData = await response.json();
@@ -23,9 +24,29 @@ export interface Headers {
         throw error;
       }
     }
-  
+  // async get(url: string, token = ""): Promise<any> {
+  //   try {
+  //     const headers: Headers = token !== "" ? {
+  //       'Authorization': `Bearer ${token}`,
+  //     } : {};
+
+  //     const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
+  //       headers: headers
+  //     });
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.message || 'Error fetching data');
+  //     }
+  //     const resData = await response.json();
+  //     return resData;
+  //   } catch (error: any) {
+  //     console.error('Fetch error:', error.message);
+  //     throw error;
+  //   }
+  // }
     // Make an HTTP POST Request
     async post(url: string, headers: Headers, data: Data): Promise<any> {
+      console.log(url)
       const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
         method: 'POST',
         headers: headers,
@@ -66,14 +87,32 @@ export interface Headers {
     }
   
     // Make an HTTP DELETE Request
-    async delete(url: string, headers: Headers, msg: string): Promise<any> {
+    async delete(url: string, headers: Headers): Promise<any> {
       const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
         method: 'DELETE',
         headers: headers
       });
   
-      const resData = await msg;
-      if (!response.ok) throw new Error("Item delete not possible");
+      const resData = await response.json();
+      if (!response.ok) throw new Error(resData.message);
+      return resData;
+    }
+
+    // Method to handle formData for anytype of request
+    async formData(
+      url: string, 
+      headers: Headers, 
+      formData: FormData, 
+      method:"post"|"put"|"patch"|"delete" = "post"
+    ): Promise<any> {
+      const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
+        method: method.toUpperCase(),
+        headers: headers,
+        body: formData,
+      });
+  
+      const resData = await response.json();
+      if (!response.ok) throw new Error(resData.message);
       return resData;
     }
   }

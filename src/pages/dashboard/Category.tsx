@@ -4,26 +4,22 @@ import Button from "@/components/Button"
 import { CirclePlusIcon, Edit, GripHorizontal, Trash, CircleAlert } from "lucide-react";
 import Modal from "@/components/Modal";
 import { useEffect, useState } from "react";
-import { EasyHTTP, Headers } from "@/utils/httpRequest";
+import { Headers, EasyHTTP } from "@/utils/httpRequest";
 import { useCategories } from "../hooks/usCategories";
 import Notification from "@/components/Notification";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import { imageValidate } from "@/utils/imageValidate";
+// import { useFormData } from "../hooks/useFormData";
+
 
 interface Category{
     name: string;
     description: string;
-    banner: string;
+    banner: File | string;
 }
 
-// interface Categories{
-//     name: string;
-//     description: string;
-//     id: string;
-//     createdAt: Date;
-//     updatedAt: Date;
-// }
+const easyHttp = new EasyHTTP();
 
 const Category = () => {
 
@@ -43,13 +39,14 @@ const Category = () => {
     const handlePopupToggle = (id:number) => {
         setActivePopupId(prevId => (prevId === id ? null : id));
     };
+    
     const { isLoading, isError, getCategories, categories } = useCategories();
-
     const [category, setCategory] = useState<Category>({
         name: "",
         description: "",
         banner: "",
     })
+    const [currentId, setCurrentId] = useState(0);
 
     useEffect(() =>{
         getCategories()
@@ -67,7 +64,7 @@ const Category = () => {
         return () => clearTimeout(errorTimer)
     }, [resError]);
 
-    const easyHttp = new EasyHTTP;
+    // const easyHttp = new EasyHTTP;
 
     
     useEffect(() => {
@@ -119,27 +116,56 @@ const Category = () => {
             return;
         }
 
-        imgArr.forEach(file => {
-            const reader = new FileReader();
-            // const fileName = file.name;
-    
-            reader.onload = (event) => {
-                const img = new Image();
-                img.src = event.target?.result as string;
-    
-                img.onload = () => {
-                    const base64String = event.target?.result as string;
-                    setCategory({ ...category, [name]: base64String});
-                };
-            };
-    
-            reader.readAsDataURL(file);
-        });
+        setCategory({...category, [name]: imgArr[0]});
+
     }
 
-    // const handleDeleteCategory = () =>{
+    // handling editing of a category
+    const handleIsEditing = (id:number)  =>{
+        setIsEditing(prevState => !prevState)
 
-    // }
+        setCurrentId(id)
+    }
+
+    // Stuff for deleting a category
+    const handleIsDeleting = (id: number) =>{
+        setIsDeleting(prevState => !prevState);
+
+        setCurrentId(id)
+    }
+
+    const handleDeleteCategory = async() =>{
+        const id = currentId;
+        console.log(id)
+        const url = `product-mgt/delete-product-category/${id}`;
+        const headers: Headers = {
+            'Authorization': `Bearer ${token}`,
+        }
+
+        try{
+            setLoading(true)
+            const res = await easyHttp.delete(url, headers);
+            setResponse(res)
+        }
+        catch(e: any){
+            console.log(e.message)
+            setResError(e.message);
+        }
+        finally{
+            setLoading(false)
+        }
+
+        if(resError !== null){
+            return;
+        }
+
+        // setIsDeleting(prevState => !prevState);
+
+        // window.location.reload();
+
+    }
+
+    
 
     // handle form submit
     const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
@@ -147,29 +173,35 @@ const Category = () => {
 
         const { name, description, banner } = category;
 
+        console.log(category)
+
         if(name === "" || description === ""){
             setError({msg: "All fields are required", status: true});
             return
+
         }
 
-        const data = {
-            name,
-            description,
-            banner
+        console.log(name, description)
+
+        const formData = new FormData();
+    
+        // Append form data
+        formData.append('name', category.name);
+        formData.append('description', category.description);
+        if (banner) {
+            formData.append('banner', category.banner);
         }
+        console.log(formData);
+
         const url = "product-mgt/new-product-category";
         const headers: Headers = {
-            'Content-type': 'application/json',
-            "Accept": "application/json",
             'Authorization': `Bearer ${token}`,
         }
 
         try{
             setLoading(true)
-            const res = await easyHttp.post(url, headers, data);
-            console.log(res);
-
-            setResponse(response);
+            const res = await easyHttp.formData(url, headers, formData);
+            setResponse(res)
         }
         catch(e: any){
             console.log(e.message)
@@ -185,11 +217,9 @@ const Category = () => {
 
         setIsOpen(prevIsOpen => !prevIsOpen);
 
-        // window.location.reload();
+        window.location.reload();
         
     }
-
-    console.log(resError)
 
     useEffect(() =>{
         let errorRemoval: ReturnType<typeof setTimeout>;
@@ -202,6 +232,8 @@ const Category = () => {
     
         return() => clearTimeout(errorRemoval)
     }, [error]);
+
+    // console.log(currentId)
 
   return (
     <div className="w-full h-full">
@@ -243,14 +275,14 @@ const Category = () => {
                                             >
                                                 <GripHorizontal />
                                             </Button>
-
+                                    
                                             {activePopupId === category.id && (
                                                 <Popup className="top-16">
-                                                    <div className="w-full border-b border-black flex justify-center">
+                                                    <div className="w-full border-b border-[#f0f0f0] flex justify-center">
                                                         <Button 
                                                             size="small" 
                                                             type="white" 
-                                                            handleClick = {() => setIsEditing(prevState => !prevState)}
+                                                            handleClick = {() => handleIsEditing(category.id)}
                                                             className="bg-transparent border-none flex gap-3 text-sm items-center"
                                                         >
                                                             <Edit />
@@ -262,7 +294,7 @@ const Category = () => {
                                                             size="small" 
                                                             type="white" 
                                                             className="border-none bg-transparent flex gap-3 text-sm items-center"
-                                                            handleClick = {() => setIsDeleting(prevState => !prevState)}
+                                                            handleClick = {() => handleIsDeleting(category.id)}
                                                         >
                                                             <Trash />
                                                             Delete category
@@ -345,10 +377,10 @@ const Category = () => {
                     <label htmlFor="category-banner" className="text-size-400 text-text-black font-medium mb-3">
                         Category Banner
                     </label>
-                    <input 
+                    <input  
                         type="file"  
                         id="category-banner" 
-                        name="banne"
+                        name="banner"
                         onChange={handleImgUpload}
                         className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
                     />
@@ -414,7 +446,7 @@ const Category = () => {
                         Are you sure u want to delete this category ?
                     </p>
                 </div>
-                <div className="flex gap-5 mt-5 border-t pt-3">
+                <div className="flex gap-5 mt-5 border-t border-[#f0f0f0] pt-3">
                     <Button 
                         type="white" 
                         size="medium" 
@@ -425,10 +457,11 @@ const Category = () => {
                     </Button>
                     <Button 
                         type="danger" 
-                        size="medium" 
+                        size="medium"
+                         handleClick={() => handleDeleteCategory()}
                         className="text-sm uppercase flex-1"
                     >
-                        yes, delete
+                        {loading ? "loading" : "yes, delete"}
                     </Button>
                 </div>
             </div>
