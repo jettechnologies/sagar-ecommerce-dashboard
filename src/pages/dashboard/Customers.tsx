@@ -64,7 +64,7 @@ const Customers = () => {
         }
       }, []);
 
-      console.log(token)
+      console.log(token, loading, error);
     
       const fetchAllCustomers = async(token:string) => {
         try {

@@ -11,7 +11,7 @@ import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
 import { EasyHTTP } from "@/utils/httpRequest";
-import { ArrowLeftIcon, ArrowRightIcon } from "@/icons/svg";
+import { ArrowLeftIcon } from "@/icons/svg";
 
 const easyHttp = new EasyHTTP();
 
@@ -27,6 +27,27 @@ const Adminstrators = () => {
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false);
 
+    useEffect(() => {
+        const sessionStoragelabel: string | null =
+          window.sessionStorage.getItem("auth-token");
+        let sessionStorageData: { token: string } | undefined;
+    
+        // Check to ensure that the sessionStorage is not empty
+        if (sessionStoragelabel !== null) {
+          try {
+            sessionStorageData = JSON.parse(sessionStoragelabel) as {
+              token: string;
+            };
+          } catch (error) {
+            console.error("Failed to parse session storage label:", error);
+            sessionStorageData = undefined;
+          }
+        }
+        if (sessionStorageData?.token) {
+          const token = sessionStorageData.token;
+          setToken(token);
+        }
+      }, []);
 
     useEffect(() =>{
         if (!token) return;
@@ -121,6 +142,7 @@ const Adminstrators = () => {
         try{
             setLoading(true)
             const res = await easyHttp.delete(url, headers);
+            console.log(res);
         }
         catch(e: any){
             console.log(e.message)
@@ -260,7 +282,7 @@ const Adminstrators = () => {
                                 <div className="w-full h-full  grid place-content-center gap-4">
                                     <h1>An error occurred while fetching</h1>
                                     <Link to = "/admin/" 
-                                        className="mt-5 w-[20rem] py-3 cursor-pointer text-center text-size-500 font-medium text-white bg-black text-center"
+                                        className="mt-5 w-[20rem] py-3 cursor-pointer text-size-500 font-medium text-white bg-black text-center"
                                     >
                                         Refresh page
                                     </Link>

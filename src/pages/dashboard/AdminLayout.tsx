@@ -27,6 +27,8 @@ const AdminLayout = () => {
   const paths:string[] = location.pathname.split("/").filter(Boolean);
 
 
+  console.log(error);
+
   useEffect(() => {
     const sessionStoragelabel: string | null =
       window.sessionStorage.getItem("auth-token");

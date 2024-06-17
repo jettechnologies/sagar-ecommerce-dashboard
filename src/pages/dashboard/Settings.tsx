@@ -46,6 +46,7 @@ const Settings = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentEmail,setCurrentEmail] = useState("");
+  console.log(error)
 
   const [coupon, setCoupon] = useState<Coupon>({
     code : "",

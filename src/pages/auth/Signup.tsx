@@ -1,6 +1,6 @@
 import FormContainer from "@/components/FormContainer";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Info, LockKeyhole } from "lucide-react";
+import { User, Mail, Info, LockKeyhole, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import Notification from "@/components/Notification";
 // import Button from "../../components/Button";
@@ -183,7 +183,7 @@ useEffect(() =>{
                 </div>
                 <div>
                     <div className={`flex items-center ${user.email.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
-                        <Mail size = {20}/>
+                        <Phone size = {20}/>
                         <input 
                             className="pl-2 w-full outline-none border-none" 
                             type="number" 
