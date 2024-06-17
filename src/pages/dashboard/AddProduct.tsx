@@ -4,7 +4,7 @@ import Select from "@/components/Select";
 import { useCategories } from "../hooks/usCategories";
 import { useCallback, useEffect, useState } from "react";
 import { FileDrop } from "@/components/FileDrop";
-import { imageValidate } from "@/utils/imageValidate";
+// import { imageValidate } from "@/utils/imageValidate";
 // import { useUserForm } from "../hooks/useUserForm";
 import { useNavigate } from "react-router-dom";
 // import MultiSelect from "@/components/MultiSelect";
@@ -162,13 +162,13 @@ const AddProduct = () => {
     }
 
     const imgArr = Array.from(files);
-    const validate = imageValidate(imgArr);
+    // const validate = imageValidate(imgArr);
 
-    if (!validate) {
-      console.log("the validation failed");
+    // if (!validate) {
+    //   console.log("the validation failed");
 
-      return;
-    }
+    //   return;
+    // }
 
     setProductData((prevFormData) => ({
       ...prevFormData,

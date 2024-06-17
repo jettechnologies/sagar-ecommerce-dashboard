@@ -51,6 +51,8 @@ const AdminLayout = () => {
     }
   }, []);
 
+  console.log(token);
+
   const getUserData = async(token:string) => {
     try {
       setLoading(true);

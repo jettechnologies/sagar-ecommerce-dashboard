@@ -9,7 +9,7 @@ import { useCategories } from "../hooks/usCategories";
 import Notification from "@/components/Notification";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
-import { imageValidate } from "@/utils/imageValidate";
+// import { imageValidate } from "@/utils/imageValidate";
 import Image from "@/components/Image";
 // import { useFormData } from "../hooks/useFormData";
 
@@ -108,14 +108,14 @@ const Category = () => {
             return;
         }
 
-        const imgArr = Array.from(files);
-        const validate = imageValidate(imgArr);
+        // const imgArr = Array.from(files);
+        // const validate = imageValidate(imgArr);
 
-        if(!validate){
-            console.log("the validation failed");
+        // if(!validate){
+        //     console.log("the validation failed");
 
-            return;
-        }
+        //     return;
+        // }
 
         setCategory({...category, [name]: imgArr[0]});
 
