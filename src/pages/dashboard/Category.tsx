@@ -108,7 +108,7 @@ const Category = () => {
             return;
         }
 
-        // const imgArr = Array.from(files);
+        const imgArr = Array.from(files);
         // const validate = imageValidate(imgArr);
 
         // if(!validate){
