@@ -240,6 +240,10 @@ input[type = "number"] {
   margin-bottom:1.25rem;
 }
 
+tr > td{
+  @apply align-middle;
+}
+
 /* customizing the product description scrollbar */
 /* #product-desc::-webkit-scrollbar{
   width:12px;

@@ -19,7 +19,7 @@ const Products = () => {
     const [token, setToken] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState<ProductType[] | []>([]);
     const [response, setResponse] = useState<string | null | []>(null)
     const [currentId, setCurrentId] = useState("");
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
@@ -61,6 +61,7 @@ const Products = () => {
         });
         
         const data = await res.json();
+        console.log(data[0])
 
         if (!res.ok) {
           console.log(res);
@@ -81,6 +82,8 @@ const Products = () => {
     }, [token]);
 
     
+    console.log(products)
+
 
     const handlePopupToggle = (id:number) => {
         setActivePopupId(prevId => (prevId === id ? null : id));
@@ -101,8 +104,9 @@ const Products = () => {
     }
 
     const handleDeleteProduct = async() =>{
+        console.log(token, currentId)
         // const id = string(currentId);
-        const url = `product-mgt/delete-product-category/${currentId}`;
+        const url = `product-mgt/take-down-product/${currentId}`;
         const headers = {
             'Authorization': `Bearer ${token}`,
         }
@@ -126,9 +130,9 @@ const Products = () => {
 
         console.log(response)
 
-        // setIsDeleting(prevState => !prevState);
+        setIsDeleting(prevState => !prevState);
 
-        // window.location.reload();
+        window.location.reload();
 
     }
 
@@ -175,7 +179,7 @@ const Products = () => {
                             />
                         </div>
                     </div>
-                    <Link to = "add-product" className="text-size-xs px-4 py-2 flex gap-2 h-[3rem] bg-black rounded-md text-white items-center justify-center font-normal">
+                    <Link to = "add-product" className="text-size-xs px-6 py-2 flex gap-2 bg-black rounded-md text-white items-center justify-center font-normal">
                       <CirclePlusIcon color="#fff"/>
                       Add Product
                     </Link>
@@ -195,83 +199,87 @@ const Products = () => {
                 <table className="min-w-full text-center text-sm font-light">
                     <thead className="font-medium border-b bg-black text-white">
                         <tr>
+                            <th scope="col" className="px-6 py-4">Product Image</th>
                             <th scope="col" className="px-6 py-4">Product Name</th>
                             <th scope="col" className="px-6 py-4">Category</th>
                             <th scope="col" className="px-6 py-4">Stock</th>
                             <th scope="col" className="px-6 py-4">Unit Price</th>
                             <th scope="col" className="px-6 py-4">Wholesale price</th>
                             <th scope="col" className="px-6 py-4">Status</th>
-                            <th scope="col" className="px-6 py-4">Product Image</th>
                             <th scope="col" className="px-6 py-4">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            products.map((product: ProductType) =>(
-                                <tr key = {product.id} className="border border-gray hover:bg-gray cursor-pointer capitalize items-center">
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.name}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.category.name}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.stock}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.price}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.wholesalePrice}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">
-                                        <Notification 
-                                            type = {
-                                                product.isOutOfStock ?
-                                                "danger" :
-                                                "success"
-                                            } 
-                                            message={
-                                                product.isOutOfStock ?
-                                                "Out of Stock" :
-                                                "In Stock"
-                                            }  className="text-white rounded-md w-fit"/>
-                                    </td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">
-                                        <Image 
-                                            src = {product.productImage}
-                                            className="w-[3rem] h-[3rem] rounded-full"
-                                            alt="product image"
-                                        />
-                                    </td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm relative">
-                                    <Button 
-                                        size="small" 
-                                        type="white"
-                                        handleClick={() => handlePopupToggle(product.id)}
-                                        className={`border-none z-10`}
-                                    >
-                                        <GripHorizontal />
-                                    </Button>
-                                    {activePopupId === product.id && (
-                                                <Popup className="top-16">
-                                                    <div className="w-full border-b border-[#f0f0f0] flex justify-center">
-                                                        <Button 
-                                                            size="small" 
-                                                            type="white" 
-                                                            handleClick = {() => handleIsEditing(product.id)}
-                                                            className="bg-transparent border-none flex gap-3 text-sm items-center"
-                                                        >
-                                                            <Edit />
-                                                            Edit category
-                                                        </Button>
-                                                    </div>
-                                                    <div className="flex w-full justify-center">
-                                                        <Button 
-                                                            size="small" 
-                                                            type="white" 
-                                                            className="border-none bg-transparent flex gap-3 text-sm items-center"
-                                                            handleClick = {() => handleIsDeleting(product.id)}
-                                                        >
-                                                            <Trash />
-                                                            Delete category
-                                                        </Button>
-                                                    </div>
-                                                </Popup>
-                                            )}
-                                    </td>
-                                </tr>
+                            products.map((product) => (
+                            <tr key = {product.id} className="border border-gray hover:bg-gray cursor-pointer capitalize items-center">
+                                <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">
+                                    <Image 
+                                        src = {product.productImage}
+                                        className="w-[3rem] h-[3rem] rounded-md"
+                                        alt="product image"
+                                    />
+                                </td>
+                                <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.name}</td>
+                                <td className="whitespace-nowrap px-6 py-4 font-medium text-sm ">{product?.category?.name}</td>
+                                <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.stock}</td>
+                                <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.price}</td>
+                                <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{product.wholesalePrice}</td>
+                                <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">
+                                    <Notification 
+                                        type = {
+                                            product.isOutOfStock ?
+                                            "danger" :
+                                            "success"
+                                        } 
+                                        message={
+                                            product.isOutOfStock ?
+                                            "Out of Stock" :
+                                            "In Stock"
+                                        }  className="text-white rounded-md w-fit"/>
+                                </td>
+                                <td className="whitespace-nowrap px-6 py-4 font-medium text-sm relative">
+                                <Button 
+                                    size="small" 
+                                    type="white"
+                                    handleClick={() => handlePopupToggle(product.id)}
+                                    className={`border-none z-10`}
+                                >
+                                    <GripHorizontal />
+                                </Button>
+                                {activePopupId === product.id && (
+                                            <Popup className="top-16">
+                                                <div className="w-full border-b border-[#f0f0f0] flex justify-center">
+                                                    <Button 
+                                                        size="small" 
+                                                        type="white" 
+                                                        handleClick = {() => handleIsEditing(product.id)}
+                                                        className="bg-transparent border-none flex gap-3 text-sm items-center"
+                                                    >
+                                                        <Edit />
+                                                        Edit category
+                                                    </Button>
+                                                </div>
+                                                <div className="flex w-full justify-center">
+                                                    <Button 
+                                                        size="small" 
+                                                        type="white" 
+                                                        className="border-none bg-transparent flex gap-3 text-sm items-center"
+                                                        handleClick = {() => handleIsDeleting(product.id)}
+                                                    >
+                                                        <Trash />
+                                                        Delete category
+                                                    </Button>
+                                                </div>
+                                            </Popup>
+                                        )}
+                                </td>
+                            </tr>
                             ))
+                            // products.map((product: ProductType) =>(
+                                
+                            // ))
+                            
                         }
                     </tbody>
                         {

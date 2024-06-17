@@ -1,0 +1,22 @@
+export const Nationalities: {key:string; value:string}[] = [
+    { "key": "US", "value": "United States" },
+    { "key": "CN", "value": "China" },
+    { "key": "IN", "value": "India" },
+    { "key": "BR", "value": "Brazil" },
+    { "key": "RU", "value": "Russia" },
+    { "key": "NG", "value": "Nigeria" },
+    { "key": "JP", "value": "Japan" },
+    { "key": "DE", "value": "Germany" },
+    { "key": "GB", "value": "United Kingdom" },
+    { "key": "FR", "value": "France" },
+    { "key": "EG", "value": "Egypt" },
+    { "key": "ZA", "value": "South Africa" },
+    { "key": "AU", "value": "Australia" },
+    { "key": "CA", "value": "Canada" },
+    { "key": "MX", "value": "Mexico" },
+    { "key": "SA", "value": "Saudi Arabia" },
+    { "key": "AR", "value": "Argentina" },
+    { "key": "IT", "value": "Italy" },
+    { "key": "ES", "value": "Spain" },
+    { "key": "ID", "value": "Indonesia" }
+]

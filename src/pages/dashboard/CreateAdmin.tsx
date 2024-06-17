@@ -4,7 +4,7 @@ import Select from "@/components/Select";
 import Button from "@/components/Button";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import { User, Info, Mail, Shield, LockKeyhole } from "lucide-react";
+import { User, Info, Mail, Shield, LockKeyhole, Earth } from "lucide-react";
 import Notification from "@/components/Notification";
 // import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
@@ -26,6 +26,7 @@ interface StateObj{
     mobile: StateObj;
     adminType: StateObj;
     accesslevel:StateObj;
+    nationality: StateObj;
   }
 
   interface Error{
@@ -44,6 +45,29 @@ interface StateObj{
     { "key": "level3", "value": "level three" }
   ]
 
+  export const nationalities: {key:string; value:string}[] = [
+        { "key": "US", "value": "United States" },
+        { "key": "CN", "value": "China" },
+        { "key": "IN", "value": "India" },
+        { "key": "BR", "value": "Brazil" },
+        { "key": "RU", "value": "Russia" },
+        { "key": "NG", "value": "Nigeria" },
+        { "key": "JP", "value": "Japan" },
+        { "key": "DE", "value": "Germany" },
+        { "key": "GB", "value": "United Kingdom" },
+        { "key": "FR", "value": "France" },
+        { "key": "EG", "value": "Egypt" },
+        { "key": "ZA", "value": "South Africa" },
+        { "key": "AU", "value": "Australia" },
+        { "key": "CA", "value": "Canada" },
+        { "key": "MX", "value": "Mexico" },
+        { "key": "SA", "value": "Saudi Arabia" },
+        { "key": "AR", "value": "Argentina" },
+        { "key": "IT", "value": "Italy" },
+        { "key": "ES", "value": "Spain" },
+        { "key": "ID", "value": "Indonesia" }
+]
+
   interface Data{
     fullname: string;
     email: string;
@@ -52,6 +76,7 @@ interface StateObj{
     adminType: string;
     password: string;
     confirmPassword: string;
+    Nationality: string;
   }
 
 // interface Response{
@@ -75,6 +100,7 @@ const CreateAdmin = () => {
         mobile: { str: "", error: false},
         adminType: { str: "", error: false},
         accesslevel: { str: "", error: false},
+        nationality: { str: "", error: false },
     });
     const [token, setToken] = useState("");
 
@@ -138,7 +164,7 @@ const CreateAdmin = () => {
         const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/i;
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
-        const {fullname, password, confirmPassword, email, mobile, adminType, accesslevel} = adminData;
+        const {fullname, password, confirmPassword, nationality, email, mobile, adminType, accesslevel} = adminData;
     
         if(fullname.str === "" || email.str === "" || adminType.str === "" || accesslevel.str === "" || password.str === "" || confirmPassword.str === "" ){
             setValidateError({status: true, msg: "All fields are required!"});
@@ -172,6 +198,7 @@ const CreateAdmin = () => {
             mobile: mobile.str,
             adminType: adminType.str,
             accesslevel: accesslevel.str,
+            Nationality: nationality.str,
         }
     
         // const url = "admins-mgt/register";
@@ -207,6 +234,8 @@ const CreateAdmin = () => {
                 const data = await res.json();
                 setResponse(data);
 
+            setIsModalOpen(true);
+
                 // setResponse('Product created successfully');
             } else {
                 const errorData = await res.json();
@@ -219,9 +248,6 @@ const CreateAdmin = () => {
         } finally {
             setLoading(false);
         }
-
-
-        setIsModalOpen(true);
         // navigate( );
     }
 
@@ -288,21 +314,38 @@ const copyResponse = useCallback(() => {
                     </div>
                     {adminData.email.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
                 </div>
-                    <div>
-                        <div className={`flex items-center ${adminData.mobile.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
-                            <Contact size = {20}/>
-                            <input 
-                                className="pl-2 w-full outline-none border-none" 
-                                type="text" 
-                                name="mobile" 
-                                id="mobile" 
-                                placeholder="Enter phone number" 
-                                onChange={handleInputChange}
-                            />
-                            {adminData.mobile.error && <Info size={20} color=" rgb(239 68 68)" />}
-                        </div>
-                        {adminData.mobile.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
+                <div>
+                    <div className={`flex items-center ${adminData.mobile.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
+                        <Contact size = {20}/>
+                        <input 
+                            className="pl-2 w-full outline-none border-none" 
+                            type="text" 
+                            name="mobile" 
+                            id="mobile" 
+                            placeholder="Enter phone number" 
+                            onChange={handleInputChange}
+                        />
+                        {adminData.mobile.error && <Info size={20} color=" rgb(239 68 68)" />}
                     </div>
+                    {adminData.mobile.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
+                </div>
+                <div>
+                    <div className={`flex px-3 items-center ${adminData.email.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 rounded-md`}>
+                        <Earth size = {20}/>
+                        <div className="w-full h-full">
+                            <Select
+                                id="nationality"
+                                name="nationaility"
+                                className="font-normal text-sm w-full py-3"
+                                select={nationalities}
+                                defaultText="Select your nationality"
+                                handleInputChange={handleInputChange}
+                            />
+                        </div>
+                        {adminData.email.error && <Info size={20} color=" rgb(239 68 68)" />}
+                    </div>
+                    {adminData.email.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
+                </div>
                     <div>
                         <div className={`flex items-center ${adminData.password.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
                             <LockKeyhole size = {20}/>
@@ -338,12 +381,12 @@ const copyResponse = useCallback(() => {
                             <div className={`flex items-center ${adminData.adminType.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
                                 <User size = {20}/>
                                 <Select
-                                id = "admin-type" 
-                                name="adminType" 
-                                select={adminTypes} 
-                                className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
-                                defaultText="Select admin type"
-                                handleInputChange={handleInputChange}
+                                    id = "admin-type" 
+                                    name="adminType" 
+                                    select={adminTypes} 
+                                    className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
+                                    defaultText="Select admin type"
+                                    handleInputChange={handleInputChange}
                                 />
                                 {adminData.adminType.error && <Info size={20} color=" rgb(239 68 68)" />}
                             </div>
@@ -381,15 +424,6 @@ const copyResponse = useCallback(() => {
                         New User created with email and password
                    </p>
                 </div>
-                   {/* <div className = "">
-                        <p className="">
-                            email: {response?.loginCredential?.email}
-                        </p>
-                        <p className="">
-                            password: {response?.loginCredential?.password}
-                        </p>
-                   </div>
-                </div> */}
                 <CopyToClipboard text={copyResponse()}>
                     <div className="flex gap-5 mt-5 border-t border-[#f0f0f0] pt-3">
                         <Button 

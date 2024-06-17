@@ -10,6 +10,7 @@ import Notification from "@/components/Notification";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import { imageValidate } from "@/utils/imageValidate";
+import Image from "@/components/Image";
 // import { useFormData } from "../hooks/useFormData";
 
 
@@ -240,32 +241,36 @@ const Category = () => {
     <Container className="mt-4 min-h-screen relative">
             <div className="flex justify-between items-center w-full mb-4">
                 <h3 className="font-semibold text-size-500 text-text-bold">
-                    Administrators
+                    Categories
                 </h3>
                 <Button handleClick={handleModalOpen} size="medium" className="text-size-xs px-4 py-2 flex gap-2 text-white items-center justify-center font-normal">
                     <CirclePlusIcon color="#fff"/>
                     Create new category
                 </Button>
             </div>
-            <div className="h-full">
+            <div className="h-full mt-4">
                 <table className="min-w-full text-center text-sm font-light">
                     <thead className="font-medium border-b bg-black text-white">
                         <tr>
                             <th scope="col" className="px-6 py-4">#ID</th>
+                            <th scope="col" className="px-6 py-4">Category Image</th>
                             <th scope="col" className="px-6 py-4">Name</th>
                             <th scope="col" className="px-6 py-4">Description</th>
                             <th scope="col" className="px-6 py-4">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {categories.length > 0 && (
+                        {(categories && categories.length > 0) ? (
                             categories
                                 .sort((a, b) => a.id - b.id)
-                                .map((category) => (
+                                .map((category, index) => (
                                     <tr key={category.id} className={`border border-gray hover:bg-gray cursor-pointer ${activePopupId === category.id && "relative"} z-20`}>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm capitalize">{category.id}</td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm capitalize">{index + 1}</td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm capitalize">
+                                            <Image src = {category?.banner} alt = "category image" className = "w-[3rem] h-[3rem] rounded-md"/>    
+                                        </td>
                                         <td className="whitespace-nowrap px-6 py-4 font-medium text-sm first-letter:uppercase">{category.name}</td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm first-letter:uppercase">{category.description?.slice(0, 200) + "..."}</td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm first-letter:uppercase">{category.description?.slice(0,40) + "..."}</td>
                                         <td className="z-20 whitespace-nowrap px-6 py-4 font-medium text-sm">
                                             <Button 
                                                 size="small" 
@@ -305,7 +310,11 @@ const Category = () => {
                                         </td>
                                     </tr>
                                 ))
-                        )}
+                        ): <div className="w-full *:h-[50dvh] mt-4">
+                            <p className="text-xl text-text-black font-bold">
+                                No Categories found    
+                            </p>    
+                        </div>}
                     </tbody>
                 </table>
                 {

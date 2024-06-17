@@ -2,7 +2,7 @@
 // import Select from "@/components/Select";
 import Container from "@/components/Container";
 import { Link } from "react-router-dom";
-import { CirclePlusIcon, GripHorizontal, Edit, Trash, CircleAlert } from "lucide-react";
+import { CirclePlusIcon, GripHorizontal, Edit, Trash, CircleAlert, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "@/components/Image";
 import Button from "@/components/Button";
@@ -10,8 +10,8 @@ import { AdminDataType } from "@/types";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
-import userOne from "@/assets/images/testimonial/testimonial2.webp";
 import { EasyHTTP } from "@/utils/httpRequest";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/icons/svg";
 
 const easyHttp = new EasyHTTP();
 
@@ -20,34 +20,13 @@ const Adminstrators = () => {
     const [token, setToken] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [admins, setAdmins] = useState([]);
-    const [response, setResponse] = useState<string | null | []>(null)
+    const [admins, setAdmins] = useState<AdminDataType [] | []>([]);
+    // const [response, setResponse] = useState<string | null | []>(null)
     const [currentId, setCurrentId] = useState("");
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false);
 
-    useEffect(() =>{
-        const sessionStoragelabel: string | null =
-          window.sessionStorage.getItem("auth-token");
-        let sessionStorageData: { token: string } | undefined;
-    
-        // Check to ensure that the sessionStorage is not empty
-        if (sessionStoragelabel !== null) {
-          try {
-            sessionStorageData = JSON.parse(sessionStoragelabel) as {
-              token: string;
-            };
-          } catch (error) {
-            console.error("Failed to parse session storage label:", error);
-            sessionStorageData = undefined;
-          }
-        }
-        if (sessionStorageData?.token) {
-          const token = sessionStorageData.token;
-          setToken(token);
-        }
-    }, []);
 
     useEffect(() =>{
         if (!token) return;
@@ -69,7 +48,38 @@ const Adminstrators = () => {
           return;
         }
 
-        setAdmins(data[0]);
+        const mapResponseToAdminData = (response: any): AdminDataType => {
+            return {
+              id: response.id,
+              adminID: response.adminID,
+              email: response.email,
+              role: response.role,
+              adminType: response.admintype,
+              adminAccessLevel: response.adminaccessLevel,
+              password: response.password,
+              mobile: response.mobile,
+              fullname: response.fullname,
+              updatedAt: response.UpdatedAt,
+              registeredAt: response.RegisteredAt,
+              profilePicture: response.profile_picture,
+              gender: response.gender,
+              nationality: response.Nationality,
+              isLoggedIn: response.isLoggedIn,
+              isRegistered: response.isRegistered,
+              isActivated: response.isActivated,
+              isDeactivated: response.isDeactivated,
+              isVerified: response.isVerified,
+              resetLinkExpTime: response.reset_link_exptime,
+              passwordResetLink: response.password_reset_link,
+            };
+          };
+
+        const mapResponsesToAdminDataArray = (responses: any[]): AdminDataType[] => {
+            return responses.map((response) => mapResponseToAdminData(response));
+          };
+          const adminData: AdminDataType[] = mapResponsesToAdminDataArray(data[0]);
+          console.log(adminData)
+          setAdmins(adminData);
       } catch (e : any) {
         console.log(e.message);
         setError(e.message);
@@ -111,7 +121,6 @@ const Adminstrators = () => {
         try{
             setLoading(true)
             const res = await easyHttp.delete(url, headers);
-            setResponse(res)
         }
         catch(e: any){
             console.log(e.message)
@@ -128,16 +137,18 @@ const Adminstrators = () => {
         setIsDeleting(prevState => !prevState);
 
         window.location.reload();
-        console.log(response)
 
     }
+
+    console.log(admins)
+    
   return (
     <Container className="mt-4 min-h-screen">
             <div className="flex justify-between items-center w-full mb-4">
                 <h3 className="font-semibold text-size-500 text-text-bold">
                     Administrators
                 </h3>
-                <Link to = "create-admin" className="text-size-xs px-4 py-2 flex gap-2 h-[3rem] bg-black rounded-md text-white items-center justify-center font-normal">
+                <Link to = "create-admin" className="text-size-xs px-6 py-2 flex gap-2 bg-black rounded-md text-white items-center justify-center font-normal">
                     <CirclePlusIcon color="#fff"/>
                     Create Admin
                 </Link>
@@ -145,36 +156,44 @@ const Adminstrators = () => {
             <div className="h-full w-full">
                 <table className="min-w-full text-center text-sm font-light">
                     <thead className="font-medium border-b bg-black text-white">
-                        <tr>
-                            <th scope="col" className="px-6 py-4">#ID</th>
-                            <th scope="col" className="px-6 py-4">Date</th>
-                            <th scope="col" className="px-6 py-4">Name</th>
+                        <tr className = "text-center">
+                            <th scope="col" className="px-6 py-4">Admin name</th>
                             <th scope="col" className="px-6 py-4">Email</th>
-                            <th scope="col" className="px-6 py-4">Access Levels</th>
-                            <th scope="col" className="px-6 py-4">mobile</th>
+                            <th scope="col" className="px-6 py-4">Mobile</th>
+                            <th scope="col" className="px-6 py-4">Access Level</th>
                             <th scope="col" className="px-6 py-4">Nationality</th>
-                            <th scope="col" className="px-6 py-4">Profile Image</th>
                             <th scope="col" className="px-6 py-4">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
+                            
+
                             admins.map((admin: AdminDataType, index) =>(
                                 <tr key = {index} className="border border-gray hover:bg-gray cursor-pointer capitalize items-center">
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{index + 1}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.registeredAt}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.fullname}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.email}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.adminAccessLevel}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.mobile}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.nationality ? admin.nationality : "was not set"}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">
-                                        <Image 
-                                            src = {admin.profilePicture ? admin.profilePicture : userOne} 
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex gap-4 items-center">
+                                        <div className="w-[3rem] h-[3rem] rounded-full">
+                                        {admin.profilePicture ? <Image 
+                                            src = {admin.profilePicture && admin.profilePicture} 
                                             alt="profile image"
                                             className="w-[3rem] h-[3rem] rounded-full"  
                                         />
+                                            :<p className="text-size-600 uppercase text-white bg-black text-center flex items-center justify-center w-full h-full rounded-full border">{admin.fullname.split(" ")[0].substring(0,1)}</p>
+                                        }
+                                        </div>
+                                        <div className="flex gap-y-2 flex-col">
+                                            <p className="text-size-500 text-text-black font-semibold">
+                                                {admin.fullname}
+                                            </p>
+                                            <p className="text-sm text-text-black font-normal">
+                                                {admin.registeredAt.split("T")[0]}
+                                            </p>
+                                        </div>
                                     </td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.email}</td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.mobile}</td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.adminAccessLevel}</td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.nationality ? admin.nationality : "was not set"}</td>
                                     <td className="whitespace-nowrap px-6 py-4 font-medium text-sm relative">
                                     <Button 
                                         size="small" 
@@ -186,26 +205,37 @@ const Adminstrators = () => {
                                     </Button>
                                     {activePopupId === admin.id && (
                                                 <Popup className="top-16">
-                                                    <div className="w-full border-b border-[#f0f0f0] flex justify-center">
+                                                    <div className="w-full border-b border-[#f0f0f0] flex">
                                                         <Button 
                                                             size="small" 
                                                             type="white" 
                                                             handleClick = {() => handleIsEditing(admin.id)}
-                                                            className="bg-transparent border-none flex gap-3 text-sm items-center"
+                                                            className="capitalize bg-transparent border-none flex gap-x-5 text-sm items-center"
                                                         >
                                                             <Edit />
-                                                            Edit category
+                                                            update
                                                         </Button>
                                                     </div>
                                                     <div className="flex w-full justify-center">
                                                         <Button 
                                                             size="small" 
                                                             type="white" 
-                                                            className="border-none bg-transparent flex gap-3 text-sm items-center"
+                                                            className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
                                                             handleClick = {() => handleIsDeleting(admin.id)}
                                                         >
                                                             <Trash />
-                                                            Delete category
+                                                            Delete
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex w-full justify-center">
+                                                        <Button 
+                                                            size="small" 
+                                                            type="white" 
+                                                            className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
+                                                            handleClick = {() => handleIsDeleting(admin.id)}
+                                                        >
+                                                            <Shield />
+                                                            Change Access level
                                                         </Button>
                                                     </div>
                                                 </Popup>
@@ -214,6 +244,7 @@ const Adminstrators = () => {
                                 </tr>
                             ))
                         }
+
                     </tbody>
                 </table>
 
@@ -226,19 +257,19 @@ const Adminstrators = () => {
 
                         {
                             error ? (
-                                <div className="w-full h-full  grid place-items-center">
+                                <div className="w-full h-full  grid place-content-center gap-4">
                                     <h1>An error occurred while fetching</h1>
-                                    <Link to = "/admin/category" 
-                                        className="mt-5 w-[20rem] py-3 cursor-pointer text-size-500 font-medium text-white bg-black text-center"
+                                    <Link to = "/admin/" 
+                                        className="mt-5 w-[20rem] py-3 cursor-pointer text-center text-size-500 font-medium text-white bg-black text-center"
                                     >
                                         Refresh page
                                     </Link>
                                 </div>
                             )
-                            : (admins.length === 0) && (<div className="w-full h-full grid place-items-center">
-                                <h1>No sub admins</h1>
-                                <Link to = "/admin/category" 
-                                    className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white bg-black"
+                            : (admins.length === 0) && (<div className="w-full h-full grid place-content-center gap-4">
+                                <h1 className="text-center">No sub admins</h1>
+                                <Link to = "/admin/" 
+                                    className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white bg-black text-center "
                                 >
                                     Refresh page
                                 </Link>
@@ -248,8 +279,10 @@ const Adminstrators = () => {
 
             </div>
             <div className="mt-6 w-full flex justify-end">
-                <div className="w-48 h-10 border-2 border-black">
-
+                <div className="w-48 h-10 border-2 border-black flex gap-8">
+                    <Button size = "small" className="w-[12rem] justify-center flex">
+                        <ArrowLeftIcon />
+                    </Button>
                 </div>
             </div>
 

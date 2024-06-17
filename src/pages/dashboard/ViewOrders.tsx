@@ -13,12 +13,11 @@ const ViewOrders = () => {
                 <table className="min-w-full text-center text-sm font-light">
                     <thead className="font-medium border-b bg-black text-white">
                         <tr>
+                            <th scope="col" className="px-6 py-4">Order No</th>
+                            <th scope="col" className="px-6 py-4">Date</th>
                             <th scope="col" className="px-6 py-4">Customer Name</th>
-                            <th scope="col" className="px-6 py-4">#ID</th>
-                            <th scope="col" className="px-6 py-4">Spent</th>
-                            <th scope="col" className="px-6 py-4">Last Ordered</th>
                             <th scope="col" className="px-6 py-4">Email</th>
-                            <th scope="col" className="px-6 py-4">Phone Number</th>
+                            <th scope="col" className="px-6 py-4">Price</th>
                             <th scope="col" className="px-6 py-4">Status</th>
                             <th scope="col" className="px-6 py-4">Action</th>
                         </tr>
@@ -33,99 +32,7 @@ const ViewOrders = () => {
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-sm"><Notification type = "warning" message="pending" className="text-orange-500 rounded-md w-fit"/></td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                        </tr>
-                        <tr className="border border-gray rounded-lg cursor-pointer">
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm items-center flex gap-2">
-                                <input type="checkbox" className=""/>
-                                John Doe
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm"><Notification type = "warning" message="pending" className="text-orange-500 rounded-md w-fit"/></td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                        </tr>
-                        <tr className="border border-gray hover:bg-gray cursor-pointer">
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm items-center flex gap-2">
-                                <input type="checkbox" className=""/>
-                                John Doe
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm"><Notification type = "warning" message="pending" className="text-orange-500 rounded-md w-fit"/></td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                        </tr>
-                        <tr className="border border-gray rounded-lg cursor-pointer">
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm items-center flex gap-2">
-                                <input type="checkbox" className=""/>
-                                John Doe
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm"><Notification type = "warning" message="pending" className="text-orange-500 rounded-md w-fit"/></td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                        </tr>
-                        <tr className="border border-gray hover:bg-gray cursor-pointer">
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm items-center flex gap-2">
-                                <input type="checkbox" className=""/>
-                                John Doe
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm"><Notification type = "success" message="success" className="text-green-700 rounded-md w-fit"/></td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                        </tr>
-                        <tr className="border border-gray rounded-lg cursor-pointer">
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm items-center flex gap-2">
-                                <input type="checkbox" className=""/>
-                                John Doe
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm"><Notification type = "success" message="success" className="text-green-700 rounded-md w-fit"/></td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                        </tr>
-                        <tr className="border border-gray hover:bg-gray cursor-pointer">
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm items-center flex gap-2">
-                                <input type="checkbox" className=""/>
-                                John Doe
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm"><Notification type = "warning" message="pending" className="text-orange-500 rounded-md w-fit"/></td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                        </tr>
-                        <tr className="border border-gray hover:bg-gray cursor-pointer">
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm items-center flex gap-2">
-                                <input type="checkbox" className=""/>
-                                John Doe
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm"><Notification type = "success" message="success" className="text-green-700 rounded-md w-fit"/></td>
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>
                         </tr>
                     </tbody>

@@ -21,7 +21,7 @@ const Select:React.FC<Props> = ({select, className, isMultiple, id, name, defaul
       name={name} 
       id={id} 
       multiple = {isMultiple}
-      className={twMerge("p-3 rounded-md text-size-500 font-medium font-roboto text-text-black capitalize cursor-pointer", className)}
+      className={twMerge("py-2 px-4 rounded-md text-size-400 font-normal font-roboto text-text-black capitalize cursor-pointer", className)}
       onChange={handleInputChange}
     >
       <option disabled selected hidden value="">

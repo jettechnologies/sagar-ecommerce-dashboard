@@ -5,6 +5,7 @@ interface Categories{
     name: string;
     description: string;
     id: number;
+    banner: string;
     createdAt: Date;
     updatedAt: Date;
 }
