@@ -108,6 +108,7 @@ const Login = () => {
             console.log(response);
 
             setItem(response);
+            navigate("/admin", {replace: true })
         }
          catch (e: any) {
             setResError(e.message);
@@ -119,7 +120,7 @@ const Login = () => {
         if(resError !== null){
             return;
         }
-        navigate("/admin", {replace: true })
+        
     }
 
 

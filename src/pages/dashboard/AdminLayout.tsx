@@ -153,7 +153,7 @@ const AdminLayout = () => {
                   </Link>
                   <Link to ="inventory">
                     <li className={`p-2 flex gap-3 ${paths?.includes("accounts") ? "text-white bg-black" : "text-text-black"} items-center`}>
-                      <Layers3 size = {20} color={`${paths.includes("accounts") ? "#fff" : "#121212"}`}/>
+                      <Layers3 size = {20} color={`${paths.includes("inventory") ? "#fff" : "#121212"}`}/>
                       <p className="text-size-400 font-normal capitalize">inventory</p>
                     </li>
                   </Link>

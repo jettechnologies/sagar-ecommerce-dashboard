@@ -12,8 +12,8 @@ export const imageValidate = (imageArr: File[]) =>{
             isValid = false;
             return;
         }
-        else if(fileSize > 2){
-            alert("File to big");
+        else if(fileSize > 6){
+            alert("File to bigger than 6mb");
             console.log("file to big");
             isValid = false;
             return;

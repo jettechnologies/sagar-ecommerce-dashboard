@@ -4,7 +4,7 @@ import Select from "@/components/Select";
 import { useCategories } from "../hooks/usCategories";
 import { useCallback, useEffect, useState } from "react";
 import { FileDrop } from "@/components/FileDrop";
-// import { imageValidate } from "@/utils/imageValidate";
+import { imageValidate } from "@/utils/imageValidate";
 // import { useUserForm } from "../hooks/useUserForm";
 import { useNavigate } from "react-router-dom";
 // import MultiSelect from "@/components/MultiSelect";
@@ -18,6 +18,7 @@ export interface ProductData {
   taxRate: string;
   wholesalePrice: string;
   minWholesaleQuantity: string;
+  productWeight: string;
   categoryId: string;
 }
 
@@ -39,7 +40,8 @@ const AddProduct = () => {
     categoryId: "",
     wholesalePrice: "",
     minWholesaleQuantity: "",
-    taxRate: ""
+    taxRate: "",
+    productWeight: "",
   });
 
   const [variants, setVariants] = useState<{color: string; size: string}>({
@@ -162,13 +164,13 @@ const AddProduct = () => {
     }
 
     const imgArr = Array.from(files);
-    // const validate = imageValidate(imgArr);
+    const validate = imageValidate(imgArr);
 
-    // if (!validate) {
-    //   console.log("the validation failed");
+    if (!validate) {
+      console.log("the validation failed");
 
-    //   return;
-    // }
+      return;
+    }
 
     setProductData((prevFormData) => ({
       ...prevFormData,
@@ -234,6 +236,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     formDataToSend.append("price", productData.price);
     formDataToSend.append("categoryId", productData.categoryId);
     formDataToSend.append("wholesalePrice", productData.wholesalePrice);
+    formDataToSend.append("weight", productData.productWeight);
     formDataToSend.append("minWholesaleQuantity", productData.minWholesaleQuantity);
 
     // Append optional fields if they exist
@@ -467,6 +470,22 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 placeholder="Enter minimum wholesale unit"
                 id="min-wholesale-unit"
                 name="minWholesaleQuantity"
+                onChange={handleInputChange}
+                className="mt-3 border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
+              />
+            </div>
+            <div className="w-full">
+              <label
+                htmlFor="product-weight"
+                className="text-size-400 text-text-black font-medium mb-3"
+              >
+                Product weight
+              </label>
+              <input
+                type="number"
+                placeholder="Enter product weight"
+                id="product-weight"
+                name="productWeight"
                 onChange={handleInputChange}
                 className="mt-3 border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
               />
