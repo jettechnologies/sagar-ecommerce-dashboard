@@ -4,16 +4,24 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MailOpen } from "lucide-react";
 // import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
-import { useSessionStorage } from "@/useSessionStorage";
 import { EasyHTTP } from "@/utils/httpRequest";
+import Cookies from "js-cookie";
+import { formatDistanceStrict, addSeconds } from 'date-fns';
+import { useAuth } from "@/context/authContext";
+import { AdminType } from "@/types";
 
 const easyHttp = new EasyHTTP;
+
+interface Response {
+  accessToken:{
+      token:string;
+  };
+  admin: AdminType;
+}
 
 const OTP = () => {
   const location = useLocation();
   const clientEmail = location.state?.email || "";
-  // const endpoint = location.state?.endpoint || "";
-  const link = location.state?.link || "";
   const navigate = useNavigate();
 
     let currentOTPIndex = 0;
@@ -21,12 +29,14 @@ const OTP = () => {
     const [otp, setOtp] = useState(new Array(4).fill(""));
     const [activeOTPIndex, setActiveOTPIndex] = useState(0);
     const [error, setError] = useState(false);
-    const { setItem } = useSessionStorage("auth-token");
+    const { setToken, setAdminProfile } = useAuth();
+    const [response, setResponse] = useState<Response | null>(null);
 
     const [loading, setLoading] = useState(false);
     const [resError, setResError] = useState<string | null>(null);
     const [countdown, setCountdown] = useState(2 * 60);
     const [isResend, setIsResend] = useState(false);
+    const [formattedTime, setFormattedTime] = useState<string>('');
   
     const inputRef = useRef<HTMLInputElement>(null);
   
@@ -53,6 +63,13 @@ const OTP = () => {
       inputRef.current?.focus();
     }, [activeOTPIndex]);
 
+    // function for updating the value of the human reabable timer
+    useEffect(() => {
+      const endTime = addSeconds(new Date(), countdown);
+      const formatted = formatDistanceStrict(new Date(), endTime);
+      setFormattedTime(formatted);
+    }, [countdown]);
+
     const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
       e.preventDefault();
 
@@ -78,19 +95,18 @@ const OTP = () => {
       try {
         setLoading(true);
         const response = await easyHttp.post(url, headers, data);
-        const token = response.accessToken.token;
+        const token = response?.accessToken?.token;
         console.log(token)
-        setItem(token);
-
+        
+        setResponse(response);
         setResError(null);
-      } catch (e: any) {
-        setResError(e.message);
-        console.log(e.message)
+      } catch (e) {
+        setResError((e as Error).message);
+        console.log((e as Error).message)
       } finally {
         setLoading(false);
       }
 
-      navigate(link, {replace: true});
     }
     else if(isResend){
       const url = "admin-auth/resend-otp";
@@ -104,12 +120,13 @@ const OTP = () => {
         const response = await easyHttp.post(url, headers, data);
         const token = response.accessToken.token;
         console.log(token)
-        navigate(link, {replace: true});
-        setItem(token);
+        setResponse(response);
 
         setResError(null);
-      } catch (e: any) {
-        setResError(e.message);
+      } catch (e) {
+        setResError((e as Error).message);
+        console.log((e as Error).message)
+
       } finally {
         setLoading(false);
       }
@@ -117,6 +134,24 @@ const OTP = () => {
 
       console.log(resError)
     }
+
+    // useEffect for setting the token
+    useEffect(() =>{
+        if(response){
+          // setting the expiration day for 30 days
+          const expires = new Date();
+          expires.setDate(expires.getDate() + 30);
+
+          Cookies.set("auth", JSON.stringify(response), {
+            expires: expires
+          });
+
+          setToken(response?.accessToken?.token)
+          setAdminProfile(response?.admin)
+
+          navigate("/admin", {replace: true});
+        }
+    }, [navigate, response, setAdminProfile, setToken]);
 
     // countdown logic
     useEffect(() => {
@@ -144,12 +179,15 @@ const OTP = () => {
                         <MailOpen size={60} strokeWidth={1}/>
                     </div>
                     <p className="font-semibold text-size-400 text-blue w-[80%] text-center">
-                        Please verify your account by entering the 6 digit code sent to
+                        Please verify your account by entering the 4 digit code sent to
                         <br />
                         <span className="text-black text-size-500 capitalize">
                           {clientEmail}
                         </span>
                     </p>
+                    <div>
+                  <div>{formattedTime}</div>
+                </div>
                 </div>
                 <div className="flex flex-col gap-y-2 mb-8">
                   <div className="flex gap-1 md:gap-3 xl:gap-5 justify-center py-2">
@@ -185,10 +223,6 @@ const OTP = () => {
                     </button>
                   </div>
                 }
-                <div>
-                  <h1>Timer Countdown</h1>
-                  <div>Countdown: {countdown}</div>
-                </div>
             </form>
         </FormContainer>
     </div>

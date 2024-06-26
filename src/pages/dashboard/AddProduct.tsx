@@ -7,7 +7,7 @@ import { FileDrop } from "@/components/FileDrop";
 import { imageValidate } from "@/utils/imageValidate";
 // import { useUserForm } from "../hooks/useUserForm";
 import { useNavigate } from "react-router-dom";
-// import MultiSelect from "@/components/MultiSelect";
+import { useAuth } from "@/context/authContext";
 
 export interface ProductData {
   name: string;
@@ -50,6 +50,7 @@ const AddProduct = () => {
   });
   const [colors, setColors] = useState<string []>([]);
   const [sizes, setSizes] = useState<string []>([]);
+  const { token } = useAuth();
 
 
   const handleVariants = (
@@ -83,13 +84,6 @@ const AddProduct = () => {
       setSizes(trimmedSizes);
     }
   }, [variants.color, variants.size]);
-  
-
-//   useEffect(() =>{
-      
-//   }, [variants.color, variants.size]);
-
-  const [token, setToken] = useState<string>("");
 
   const [imgString, setImgString] = useState<
     { name: string; src: string }[] | []
@@ -99,27 +93,6 @@ const AddProduct = () => {
     getCategories();
   }, [getCategories]);
 
-  useEffect(() => {
-    const sessionStoragelabel: string | null =
-      window.sessionStorage.getItem("auth-token");
-    let sessionStorageData: { token: string } | undefined;
-
-    // Check to ensure that the sessionStorage is not empty
-    if (sessionStoragelabel !== null) {
-      try {
-        sessionStorageData = JSON.parse(sessionStoragelabel) as {
-          token: string;
-        };
-      } catch (error) {
-        console.error("Failed to parse session storage label:", error);
-        sessionStorageData = undefined;
-      }
-    }
-    if (sessionStorageData?.token) {
-      const token = sessionStorageData.token;
-      setToken(token);
-    }
-  }, []);
 
   const productCategories: { key: string; value: string }[] = categories.map(
     (category) => ({

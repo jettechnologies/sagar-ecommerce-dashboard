@@ -11,6 +11,7 @@ import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 // import { imageValidate } from "@/utils/imageValidate";
 import Image from "@/components/Image";
+import { useAuth } from "@/context/authContext";
 // import { useFormData } from "../hooks/useFormData";
 
 
@@ -32,11 +33,12 @@ const Category = () => {
         msg: "",
         status: false,
     });
-    const [token, setToken] = useState<string>("");
+    // const [token, setToken] = useState<string>("");
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false);
-
+    const { token } = useAuth();
+    
     const handlePopupToggle = (id:number) => {
         setActivePopupId(prevId => (prevId === id ? null : id));
     };
@@ -65,27 +67,6 @@ const Category = () => {
         return () => clearTimeout(errorTimer)
     }, [resError]);
 
-    // const easyHttp = new EasyHTTP;
-
-    
-    useEffect(() => {
-        const sessionStorageValue: string | null = window.sessionStorage.getItem("auth-token");
-        let sessionStorageData: { token: string } | undefined;
-    
-        // Check to ensure that the sessionStorage is not empty
-        if (sessionStorageValue !== null) {
-            try {
-                sessionStorageData = JSON.parse(sessionStorageValue) as { token: string };
-            } catch (error) {
-                console.error("Failed to parse session storage value:", error);
-                sessionStorageData = undefined;
-            }
-        }
-        if (sessionStorageData?.token) {
-            const token = sessionStorageData.token;
-            setToken(token);
-        }
-    }, []);
 
     const handleModalOpen = () =>{
         setIsOpen(prevIsOpen => !prevIsOpen)
@@ -148,9 +129,9 @@ const Category = () => {
             const res = await easyHttp.delete(url, headers);
             setResponse(res)
         }
-        catch(e: any){
-            console.log(e.message)
-            setResError(e.message);
+        catch(e){
+            console.log((e as Error).message)
+            setResError((e as Error).message);
         }
         finally{
             setLoading(false)
@@ -204,9 +185,9 @@ const Category = () => {
             const res = await easyHttp.formData(url, headers, formData);
             setResponse(res)
         }
-        catch(e: any){
-            console.log(e.message)
-            setResError(e.message);
+        catch(e){
+            console.log((e as Error).message)
+            setResError((e as Error).message);
         }
         finally{
             setLoading(false)

@@ -1,17 +1,18 @@
 import Container from "@/components/Container"
 import { useState, useEffect } from "react";
 import Select from "@/components/Select";
-// import { LockKeyhole } from "lucide-react";
 import { Nationalities } from "@/data";
 import Button from "@/components/Button";
 import { Headers } from "@/utils/httpRequest";
+import { useAuth } from "@/context/authContext";
+import { EasyHTTP } from "@/utils/httpRequest";
 
 
 interface Coupon{
   code: string;
-  durationInDays: string,
-  durationInWeeks: string,
-  percentOff: string,
+  durationInDays: number,
+  durationInWeeks: number,
+  percentOff: number,
 }
 
 interface EditUser{
@@ -42,7 +43,8 @@ type CouponState = {
 
 const Settings = () => {
 
-  const [token, setToken] = useState("");
+  // const [token, setToken] = useState("");
+  const easyHttp = new EasyHTTP();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentEmail,setCurrentEmail] = useState("");
@@ -50,9 +52,9 @@ const Settings = () => {
 
   const [coupon, setCoupon] = useState<Coupon>({
     code : "",
-    durationInDays: "",
-    durationInWeeks: "",
-    percentOff: "",
+    durationInDays: 0,
+    durationInWeeks: 0,
+    percentOff: 0,
   });
   const [isCouponActive, setIsCouponActive] = useState<CouponState>({
     days: false,
@@ -77,26 +79,7 @@ const Settings = () => {
     mobile: "",
     gender: "",
   });
-
-  // setting the auth token in state
-  useEffect(() => {
-    const sessionStorageValue: string | null = window.sessionStorage.getItem("auth-token");
-    let sessionStorageData: { token: string } | undefined;
-
-    // Check to ensure that the sessionStorage is not empty
-    if (sessionStorageValue !== null) {
-        try {
-            sessionStorageData = JSON.parse(sessionStorageValue) as { token: string };
-        } catch (error) {
-            console.error("Failed to parse session storage value:", error);
-            sessionStorageData = undefined;
-        }
-    }
-    if (sessionStorageData?.token) {
-        const token = sessionStorageData.token;
-        setToken(token);
-    }
-}, []);
+  const { token } = useAuth();
 
 // fetching the profile info
   const getAdminInfo = async(token:string) =>{
@@ -156,7 +139,9 @@ const Settings = () => {
     const target = e.target as HTMLInputElement | HTMLTextAreaElement;
     const { name, value } = target;
 
-    setCoupon({ ...coupon, [name]: value.toLocaleLowerCase().trim()});
+    if(name === "code"){setCoupon({ ...coupon, [name]: value.trim()}); return;}
+    
+    setCoupon({ ...coupon, [name]: parseInt(value.trim())});
   }
 
   const handleShippingInput =  (
@@ -256,10 +241,58 @@ const Settings = () => {
         setLoading(false);
     }
   
-    
   }
 
+  const handleCreateCoupon = async(e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
+    const { code, percentOff, durationInDays, durationInWeeks } = coupon;
+
+    if(percentOff > 0 && (durationInDays > 0 || durationInWeeks > 0) && code !== ""){
+        
+      const url = "order-mgt/set-discount-Coupon";
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+        }
+
+        const data = {
+          discountCode: code,
+          DiscountDuration_weeks: durationInWeeks === 0 ? null : durationInWeeks,
+          DiscountDuration_days: durationInDays === 0 ? null : durationInDays,
+          percentageOff: percentOff,
+        }
+
+        console.log(data)
+
+        try{
+          setLoading(true)
+        
+            const res = await fetch(
+                "https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/order-mgt/set-discount-Coupon",
+                {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify(data)
+                }
+            )
+      
+            if (!res.ok) {
+              throw new Error("server response error")
+            }
+            console.log('coupon created successfully');
+            console.log(res)
+                const response = await res.json();
+              console.log(response)
+        }
+        catch(e){
+          console.log((e as Error).message)
+          setError((e as Error).message);
+      }
+      finally{
+          setLoading(false)
+      }
+    }
+  }
 
 
   console.log(isCouponActive)
@@ -322,14 +355,14 @@ const Settings = () => {
             <div className="w-full flex gap-x-4">
               <div className="flex-1">
               <h4 className="text-size-500 text-text-black font-medium">Coupons</h4>
-              <form id = "coupon-form" className="w-full flex flex-col gap-5 border border-gray p-5 mt-5 shadow-md">
+              <form id = "coupon-form" onSubmit={handleCreateCoupon} className="w-full flex flex-col gap-5 border border-gray p-5 mt-5 shadow-md">
                 <div className="w-full">
                   <label htmlFor="coupon-code" className="text-size-400 text-text-black font-medium mb-3">
                     Coupon code
                   </label>
                   <input 
                     type="text" 
-                    placeholder="create a coupon code" 
+                    placeholder="Create a coupon code" 
                     id="coupon-code" 
                     name="code"
                     onChange={handleCouponInput}
@@ -369,7 +402,7 @@ const Settings = () => {
                       Duration in weeks
                     </label>
                     <input 
-                      type="text" 
+                      type="number" 
                       placeholder="Weeks" 
                       id="coupon-duration-weeks" 
                       name="durationInWeeks"
@@ -382,7 +415,7 @@ const Settings = () => {
                       Duration in days
                     </label>
                     <input 
-                      type="text" 
+                      type="number" 
                       placeholder="Days" 
                       id="coupon-duration-days" 
                       name="durationInDays"
@@ -396,8 +429,8 @@ const Settings = () => {
                     Percentage off
                   </label>
                   <input 
-                    type="text" 
-                    placeholder="Perentage off" 
+                    type="number" 
+                    placeholder="Percentage off" 
                     id = "coupon-percent-off"
                     name="percentOff"
                     onChange={handleCouponInput}
@@ -405,7 +438,7 @@ const Settings = () => {
                   />
                 </div>
                 <Button size = "small" className = "">
-                  Create coupon
+                  {loading ? "Loading ...": "Create coupon"}
                 </Button>
               </form>
               </div>

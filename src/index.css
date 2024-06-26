@@ -244,6 +244,10 @@ tr > td{
   @apply align-middle;
 }
 
+#edit_user_div:hover #edit_user_img{
+  display:flex;
+}
+
 /* customizing the product description scrollbar */
 /* #product-desc::-webkit-scrollbar{
   width:12px;

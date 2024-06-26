@@ -1,8 +1,8 @@
 // import Notification from "@/components/Notification";
 // import Select from "@/components/Select";
 import Container from "@/components/Container";
-import { Link } from "react-router-dom";
-import { CirclePlusIcon, GripHorizontal, Edit, Trash, CircleAlert, Shield } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { CirclePlusIcon, GripHorizontal, Trash, CircleAlert, Shield, User2,  } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "@/components/Image";
 import Button from "@/components/Button";
@@ -12,42 +12,42 @@ import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
 import { EasyHTTP } from "@/utils/httpRequest";
 import { ArrowLeftIcon } from "@/icons/svg";
+import { useAuth } from "@/context/authContext";
+import Select from "@/components/Select";
+
+
+const adminTypes:{key:string; value:string}[] = [
+    { "key": "otherAdmin", "value": "Other Admin" },
+    { "key": "SuperAdmin", "value": "super admin" }
+  ]
+  
+  const accessLevels:{key:string; value:string}[] = [
+    { "key": "level1", "value": "Level one" },
+    { "key": "level2", "value": "level two" },
+    { "key": "level3", "value": "level three" }
+  ]
 
 const easyHttp = new EasyHTTP();
 
 const Adminstrators = () => {
 
-    const [token, setToken] = useState("");
+    const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [admins, setAdmins] = useState<AdminDataType [] | []>([]);
     // const [response, setResponse] = useState<string | null | []>(null)
     const [currentId, setCurrentId] = useState("");
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
-    const [isEditing, setIsEditing] = useState(false)
+    const [changeType, setChangeType] = useState(false);
+    const [changeLevel, setChangeLevel] = useState(false);
+    const [adminChange, setAdminChange] = useState({
+        adminType: "",
+        accesslevel: "",
+    });
     const [isDeleting, setIsDeleting] = useState(false);
+    const { token } = useAuth();
 
-    useEffect(() => {
-        const sessionStoragelabel: string | null =
-          window.sessionStorage.getItem("auth-token");
-        let sessionStorageData: { token: string } | undefined;
-    
-        // Check to ensure that the sessionStorage is not empty
-        if (sessionStoragelabel !== null) {
-          try {
-            sessionStorageData = JSON.parse(sessionStoragelabel) as {
-              token: string;
-            };
-          } catch (error) {
-            console.error("Failed to parse session storage label:", error);
-            sessionStorageData = undefined;
-          }
-        }
-        if (sessionStorageData?.token) {
-          const token = sessionStorageData.token;
-          setToken(token);
-        }
-      }, []);
+    console.log(token, loading);
 
     useEffect(() =>{
         if (!token) return;
@@ -112,15 +112,21 @@ const Adminstrators = () => {
     getAllAdmins(token);
     }, [token]);
 
-    
 
     const handlePopupToggle = (id:number) => {
         setActivePopupId(prevId => (prevId === id ? null : id));
     };
 
     // handling editing of a category
-    const handleIsEditing = (id:number)  =>{
-        setIsEditing(prevState => !prevState)
+    const handleChangeType = (id:number)  =>{
+        setChangeType(prevState => !prevState)
+
+        setCurrentId(String(id))
+    }
+
+    // handng admin chnagee level
+    const handleChangeLevel = (id:number)  =>{
+        setChangeLevel(prevState => !prevState)
 
         setCurrentId(String(id))
     }
@@ -130,6 +136,107 @@ const Adminstrators = () => {
         setIsDeleting(prevState => !prevState);
 
         setCurrentId(String(id))
+    }
+
+    // function for changing admin type and level
+
+    const handleInputChange = (
+        e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) =>{
+        const target = e.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+        const { name, value } = target;
+
+        setAdminChange({ ...adminChange, [name]: value.trim() });          
+    }
+
+    const changeAdminType = async(e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        
+        if(adminChange.adminType !== ""){
+            const url = `admins-mgt/change-other-admin-admintype/${currentId}`;
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+            }
+
+            const data = {
+                adminType: adminChange.adminType
+            }
+
+            try{
+                setLoading(true)
+                const res = await easyHttp.patch(url, headers, data);
+                console.log(res);
+            }
+            catch(e){
+                console.log((e as Error).message)
+                setError((e as Error).message);
+            }
+            finally{
+                setLoading(false)
+            }
+
+            if(error !== null){
+                return;
+            }
+
+            setChangeType(prevState => !prevState);
+
+            // window.location.reload();
+            navigate("/admin/accounts", {replace: true});
+        }
+    }
+
+    console.log(adminChange);
+
+    const changeAdminLevel = async(e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        
+        if(adminChange.accesslevel !== ""){
+            const url = `admins-mgt/change-other-admin-accesslevel/${currentId}`;
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+            }
+
+            const data = {
+                accesslevel: adminChange.accesslevel
+            }
+
+            try{
+                setLoading(true)
+                // const res = await easyHttp.patch(url, headers, data);
+                // console.log(res);
+                const res  = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
+                    method:"PATCH",
+                    headers,
+                    body: JSON.stringify(data)
+                });
+
+                if (!res.ok) {
+                    console.error(`Error fetching cart: ${res.status} - ${res.statusText}`);
+                    return;
+                }
+
+                const response = await res.json();
+                console.log(response);
+
+            }   
+            catch(e){
+                console.log((e as Error).message)
+                setError((e as Error).message);
+            }
+            finally{
+                setLoading(false)
+            }
+
+            if(error !== null){
+                return;
+            }
+
+            setChangeType(prevState => !prevState);
+
+            // window.location.reload();
+            navigate("/admin/accounts", {replace: true});
+        }
     }
 
     const handleDeleteAccount = async() =>{
@@ -158,7 +265,8 @@ const Adminstrators = () => {
 
         setIsDeleting(prevState => !prevState);
 
-        window.location.reload();
+        // window.location.reload();
+        navigate("/admin/accounts", {replace: true});
 
     }
 
@@ -231,14 +339,25 @@ const Adminstrators = () => {
                                                         <Button 
                                                             size="small" 
                                                             type="white" 
-                                                            handleClick = {() => handleIsEditing(admin.id)}
-                                                            className="capitalize bg-transparent border-none flex gap-x-5 text-sm items-center"
+                                                            handleClick = {() => handleChangeType(admin.id)}
+                                                            className="capitalize border-none bg-transparent flex gap-x-5 text-sm items-center"
                                                         >
-                                                            <Edit />
-                                                            update
+                                                            <User2 />
+                                                            Change Admin Type
                                                         </Button>
                                                     </div>
-                                                    <div className="flex w-full justify-center">
+                                                    <div className="flex w-full border-b border-[#f0f0f0]">
+                                                        <Button 
+                                                            size="small" 
+                                                            type="white" 
+                                                            className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
+                                                            handleClick = {() => handleChangeLevel(admin.id)}
+                                                        >
+                                                            <Shield />
+                                                            Change Access level
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex w-full border-b border-[#f0f0f0]">
                                                         <Button 
                                                             size="small" 
                                                             type="white" 
@@ -246,18 +365,7 @@ const Adminstrators = () => {
                                                             handleClick = {() => handleIsDeleting(admin.id)}
                                                         >
                                                             <Trash />
-                                                            Delete
-                                                        </Button>
-                                                    </div>
-                                                    <div className="flex w-full justify-center">
-                                                        <Button 
-                                                            size="small" 
-                                                            type="white" 
-                                                            className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
-                                                            handleClick = {() => handleIsDeleting(admin.id)}
-                                                        >
-                                                            <Shield />
-                                                            Change Access level
+                                                            Delete Admin
                                                         </Button>
                                                     </div>
                                                 </Popup>
@@ -309,54 +417,57 @@ const Adminstrators = () => {
             </div>
 
                {/* Editing existing product category */}
-        <Modal title = "Edit existing product" isOpen={isEditing} handleModalOpen={() => setIsEditing(prevState => !prevState)}>
-            <form id ="edit-category-form" className="w-full">
-                {/* {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>} */}
-                    <div className="w-full">
-                        <label htmlFor="category-name" className="text-size-400 text-text-black font-medium mb-3">
-                            Category Name
-                        </label>
-                        <input 
-                            type="text" 
-                            placeholder="Name a category" 
-                            id="category-name" 
-                            name="name"
-                            
-                            className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
-                        />
-                    </div>
-                    <div className="w-full">
-                        <label htmlFor="category-desc" className="text-size-400 text-text-black font-medium mb-3">
-                            Category Description
-                        </label>
-                        <textarea 
-                            name="description" 
-                            id="category-desc" 
-                            rows={3} 
-                            placeholder="Write category descriptions"
-                           
-                            className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
-                        > 
-                        </textarea>
-                    </div>
-                    <div className="w-full">
-                        <label htmlFor="category-banner" className="text-size-400 text-text-black font-medium mb-3">
-                            Category Banner
-                        </label>
-                        <input 
-                            type="file"  
-                            id="category-banner" 
-                            name="banne"
-                            
-                            className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
-                        />
-                    </div>
-                    <Button size = "large" className="w-full mt-4 uppercase">{loading ? "Loading..." : "Create catergory"}</Button>
-                </form>
-        </Modal>
+        
+                <Modal title = "change admin type" isOpen={changeType} handleModalOpen={() => setChangeType(prevState => !prevState)}>
+                    <form id ="edit-admin-type" onSubmit={changeAdminType} className="w-full">
+                        {/* {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>} */}
+                            <div className="w-full">
+                                <label htmlFor="admin-type" className="text-size-500 font-medium text-text-black mb-4">
+                                    Select admin type
+                                </label>
+                                <div className={`flex items-center border-2 border-gray focus-within:border-blue mb-3 py-3 px-3 rounded-md`}>
+                                    <User2 size = {20}/>
+                                    <Select
+                                        id = "admin-type" 
+                                        name="adminType" 
+                                        select={adminTypes} 
+                                        className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
+                                        defaultText="Select admin type"
+                                        handleInputChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
+                            <Button size = "large" className="w-full mt-4 uppercase">{loading ? "Loading..." : "Change admin type"}</Button>
+                        </form>
+                </Modal>
+
+                {/* for changing the admin level */}
+                <Modal title = "change admin level" isOpen={changeLevel} handleModalOpen={() => setChangeLevel(prevState => !prevState)}>
+                    <form id ="edit-admin-level" onSubmit={changeAdminLevel} className="w-full">
+                        {/* {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>} */}
+                            <div className="w-full">
+                                <label htmlFor="admin-level" className="text-size-500 font-medium text-text-black mb-4">
+                                    Select admin level
+                                </label>
+                                <div className={`flex items-center border-2 border-gray focus-within:border-blue mb-3 py-3 px-3 rounded-md`}>
+                                    <User2 size = {20}/>
+                                    <Select
+                                        id = "admin-level" 
+                                        name="accesslevel" 
+                                        select={accessLevels} 
+                                        className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
+                                        defaultText="Select admin level"
+                                        handleInputChange={handleInputChange}
+                                    />
+                                </div>
+                            </div>
+                            <Button size = "large" className="w-full mt-4 uppercase">{loading ? "Loading..." : "Change admin level"}</Button>
+                        </form>
+                </Modal>
+
 
         {/* Deleting existing product category */}
-        <Modal title = "Delete existing product" isOpen={isDeleting} handleModalOpen={() => setIsDeleting(prevState => !prevState)}>
+        <Modal title = "Delete other admins" isOpen={isDeleting} handleModalOpen={() => setIsDeleting(prevState => !prevState)}>
             <div className="flex flex-col w-full">
                 <div className="flex items-center gap-3">
                     {/* <MessageSquareWarning size = {35} color = "rgb(239 68 68)"/> */}

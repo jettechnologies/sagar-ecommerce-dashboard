@@ -6,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { User, Info, Mail, Shield, LockKeyhole, Earth } from "lucide-react";
 import Notification from "@/components/Notification";
-// import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
 import { AdminRegistrationResponse } from "@/types";
-// import { error } from "console";
 import Modal from "@/components/Modal";
 import CopyToClipboard from "@/components/CopyToClipBoard";
+import { Nationalities } from "@/data";
+import { useAuth } from "@/context/authContext";
 
 interface StateObj{
     str: string;
@@ -44,29 +44,6 @@ interface StateObj{
     { "key": "level2", "value": "level two" },
     { "key": "level3", "value": "level three" }
   ]
-
-  export const nationalities: {key:string; value:string}[] = [
-        { "key": "US", "value": "United States" },
-        { "key": "CN", "value": "China" },
-        { "key": "IN", "value": "India" },
-        { "key": "BR", "value": "Brazil" },
-        { "key": "RU", "value": "Russia" },
-        { "key": "NG", "value": "Nigeria" },
-        { "key": "JP", "value": "Japan" },
-        { "key": "DE", "value": "Germany" },
-        { "key": "GB", "value": "United Kingdom" },
-        { "key": "FR", "value": "France" },
-        { "key": "EG", "value": "Egypt" },
-        { "key": "ZA", "value": "South Africa" },
-        { "key": "AU", "value": "Australia" },
-        { "key": "CA", "value": "Canada" },
-        { "key": "MX", "value": "Mexico" },
-        { "key": "SA", "value": "Saudi Arabia" },
-        { "key": "AR", "value": "Argentina" },
-        { "key": "IT", "value": "Italy" },
-        { "key": "ES", "value": "Spain" },
-        { "key": "ID", "value": "Indonesia" }
-]
 
   interface Data{
     fullname: string;
@@ -102,8 +79,7 @@ const CreateAdmin = () => {
         accesslevel: { str: "", error: false},
         nationality: { str: "", error: false },
     });
-    const [token, setToken] = useState("");
-
+    const { token } = useAuth();
 
     const [validateError, setValidateError] = useState<Error>({
         status: false,
@@ -122,26 +98,6 @@ const CreateAdmin = () => {
         return() => clearTimeout(errorRemoval)
     }, [validateError]);
 
-    useEffect(() => {
-        const sessionStorageValue: string | null = window.sessionStorage.getItem("auth-token");
-        let sessionStorageData: { token: string } | undefined;
-    
-        // Check to ensure that the sessionStorage is not empty
-        if (sessionStorageValue !== null) {
-            try {
-                sessionStorageData = JSON.parse(sessionStorageValue) as { token: string };
-            } catch (error) {
-                console.error("Failed to parse session storage value:", error);
-                sessionStorageData = undefined;
-            }
-        }
-        if (sessionStorageData?.token) {
-            const token = sessionStorageData.token;
-            setToken(token);
-        }
-    }, []);
-
-    console.log(token);
     const handleInputChange = (
         e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) =>{
@@ -164,6 +120,9 @@ const CreateAdmin = () => {
         const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/i;
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
+
+        console.log(setAdminData);
+
         const {fullname, password, confirmPassword, nationality, email, mobile, adminType, accesslevel} = adminData;
     
         if(fullname.str === "" || email.str === "" || adminType.str === "" || accesslevel.str === "" || password.str === "" || confirmPassword.str === "" ){
@@ -200,6 +159,8 @@ const CreateAdmin = () => {
             accesslevel: accesslevel.str,
             Nationality: nationality.str,
         }
+
+        console.log(data);
     
         // const url = "admins-mgt/register";
         const headers: Headers = {
@@ -234,7 +195,7 @@ const CreateAdmin = () => {
                 const data = await res.json();
                 setResponse(data);
 
-            setIsModalOpen(true);
+                setIsModalOpen(true);
 
                 // setResponse('Product created successfully');
             } else {
@@ -335,16 +296,16 @@ const copyResponse = useCallback(() => {
                         <div className="w-full h-full">
                             <Select
                                 id="nationality"
-                                name="nationaility"
+                                name="nationality"
                                 className="font-normal text-sm w-full py-3"
-                                select={nationalities}
+                                select={Nationalities}
                                 defaultText="Select your nationality"
                                 handleInputChange={handleInputChange}
                             />
                         </div>
-                        {adminData.email.error && <Info size={20} color=" rgb(239 68 68)" />}
+                        {adminData.nationality.error && <Info size={20} color=" rgb(239 68 68)" />}
                     </div>
-                    {adminData.email.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
+                    {adminData.nationality.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
                 </div>
                     <div>
                         <div className={`flex items-center ${adminData.password.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
@@ -426,14 +387,14 @@ const copyResponse = useCallback(() => {
                 </div>
                 <CopyToClipboard text={copyResponse()}>
                     <div className="flex gap-5 mt-5 border-t border-[#f0f0f0] pt-3">
-                        <Button 
+                        {/* <Button 
                             type="white" 
                             size="small" 
                             className="text-sm uppercase flex-1"
                             handleClick = {() => setIsModalOpen(prevState => !prevState)}
                         >
                             no, cancel
-                        </Button>
+                        </Button> */}
                         <Button  
                             size="small"
                             handleClick={() => {

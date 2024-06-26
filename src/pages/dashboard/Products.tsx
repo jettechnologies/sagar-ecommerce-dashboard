@@ -11,12 +11,13 @@ import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
 import { EasyHTTP } from "@/utils/httpRequest";
+import { useAuth } from "@/context/authContext";
 
 const easyHttp = new EasyHTTP();
 
 const Products = () => {
 
-    const [token, setToken] = useState("");
+    // const [token, setToken] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [products, setProducts] = useState<ProductType[] | []>([]);
@@ -25,28 +26,7 @@ const Products = () => {
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false);
-
-    useEffect(() =>{
-        const sessionStoragelabel: string | null =
-          window.sessionStorage.getItem("auth-token");
-        let sessionStorageData: { token: string } | undefined;
-    
-        // Check to ensure that the sessionStorage is not empty
-        if (sessionStoragelabel !== null) {
-          try {
-            sessionStorageData = JSON.parse(sessionStoragelabel) as {
-              token: string;
-            };
-          } catch (error) {
-            console.error("Failed to parse session storage label:", error);
-            sessionStorageData = undefined;
-          }
-        }
-        if (sessionStorageData?.token) {
-          const token = sessionStorageData.token;
-          setToken(token);
-        }
-    }, []);
+    const { token } = useAuth();
 
     useEffect(() =>{
         if (!token) return;
@@ -70,9 +50,9 @@ const Products = () => {
         }
 
         setProducts(data[0]);
-      } catch (e : any) {
-        console.log(e.message);
-        setError(e.message);
+      } catch (e) {
+        console.log((e as Error).message);
+        setError((e as Error).message);
       } finally {
         setLoading(false);
       }
@@ -116,9 +96,9 @@ const Products = () => {
             const res = await easyHttp.delete(url, headers);
             setResponse(res)
         }
-        catch(e: any){
-            console.log(e.message)
-            setError(e.message);
+        catch(e){
+            console.log((e as Error).message)
+            setError((e as Error).message);
         }
         finally{
             setLoading(false)
@@ -282,7 +262,8 @@ const Products = () => {
                             
                         }
                     </tbody>
-                        {
+                </table>
+                {
                             loading && (
                                 <div className="w-full h-full grid place-items-center border-2 border-black">
                                     <Spinner />
@@ -301,7 +282,6 @@ const Products = () => {
                                 </div>
                             ) 
                         }
-                </table>
             </div>
             <div className="mt-6 w-full flex justify-end">
                 <div className="w-48 h-10 border-2 border-black">

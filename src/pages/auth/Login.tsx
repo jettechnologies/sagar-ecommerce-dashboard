@@ -6,7 +6,10 @@ import Notification from "@/components/Notification";
 // import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
 import { EasyHTTP } from "@/utils/httpRequest";
-import { useSessionStorage } from "@/useSessionStorage";
+// import { useSessionStorage } from "@/useSessionStorage";
+import Cookies from "js-cookie";
+import { useAuth } from "@/context/authContext";
+import { AdminType } from "@/types";
 
 interface User{
     email: {
@@ -24,15 +27,20 @@ interface Data{
     password: string;
 }
 
+interface Response {
+    accesstoken:{
+        token:string;
+    };
+    admin: AdminType;
+}
+
 const Login = () => {
 
-    // const { getUserFormData, resError, response, loading } =  useUserForm();
     const easyHttp  = new EasyHTTP;
     const [loading, setLoading] = useState<boolean>(false);
     const [resError, setResError] = useState<string | null>(null);
-    // const [token, setToken] = useState<string | null>(null);
-    const { setItem } = useSessionStorage("auth-token");
-
+    const { setToken, setAdminProfile, token } = useAuth();
+    const [response, setResponse] = useState<Response | null>(null);
     const navigate = useNavigate();
 
     const [user, setUser] = useState<User>({
@@ -51,12 +59,12 @@ const Login = () => {
         status: false,
     });
 
-    // useEffect(() => {
-    //     const authToken = window.sessionStorage.getItem("auth-token");
-    //     if(authToken){
-    //         setToken(authToken);
-    //     } 
-    // }, []);
+    // useEffect for auto redirecting.
+    useEffect(()=>{
+        if(token){
+            navigate("/admin", {replace: true })
+        }
+    }, [navigate, token]);
 
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
@@ -107,8 +115,9 @@ const Login = () => {
             const response = await easyHttp.post(url, headers, data);
             console.log(response);
 
-            setItem(response);
-            navigate("/admin", {replace: true })
+            // setting the expiration day for 30 days
+            setResponse(response);
+            // setItem(response);
         }
          catch (e: any) {
             setResError(e.message);
@@ -123,6 +132,24 @@ const Login = () => {
         
     }
 
+    // useEffeect for setting tokens
+    useEffect(() =>{
+        if(response){
+            const { admin, accesstoken } = response;
+            const expires = new Date();
+            expires.setDate(expires.getDate() + 30);
+            
+            
+            Cookies.set("auth", JSON.stringify(response), {
+                expires: expires
+            });
+
+            setToken(accesstoken.token);
+            setAdminProfile(admin);
+
+            navigate("/admin", {replace: true })
+        }
+    }, [navigate, response, setAdminProfile, setToken]);
 
     useEffect(() =>{
         let errorRemoval: ReturnType<typeof setTimeout>;

@@ -1,103 +1,96 @@
 import SideNavBar from "@/components/SideNavBar";
-import { Link, Outlet, useLocation } from "react-router-dom";
-// import Button from "@/components/Button";
-import { CircleUserRound, Layers3, Home, LogOutIcon, Package, Search, Settings, ShoppingCartIcon, UserRoundCogIcon, LibraryBig } from "lucide-react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import Button from "@/components/Button";
+import { CircleUserRound, Layers3, CircleAlert, BadgeCheck, Home, LogOutIcon, Package, ImageUp, Search, Settings, ShoppingCartIcon, UserRoundCogIcon, LibraryBig } from "lucide-react";
 import Logo from "@/components/Logo";
 import Image from "@/components/Image";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { useAuth } from "@/context/authContext";
+import { imageValidate } from "@/utils/imageValidate";
+import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner";
-
-interface UserData{
-  fullname: string;
-  adminType: string;
-  profilePic: string;
-}
 
 const AdminLayout = () => {
 
-  const [token, setToken] = useState<string>("");
-  const [userData, setUserData] = useState<UserData>({
-    fullname: "",
-    adminType: "",
-    profilePic: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const { adminProfile } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
   const paths:string[] = location.pathname.split("/").filter(Boolean);
 
+  console.log(adminProfile)
 
-  console.log(error);
+  const { token } = useAuth();
+  const [response, setResponse] = useState("");
+  const [resError, setResError] = useState("");
+  const [isOpen,setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const sessionStoragelabel: string | null =
-      window.sessionStorage.getItem("auth-token");
-    let sessionStorageData: { token: string } | undefined;
+  const handleImgUpload = useCallback(async(e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    const formData = new FormData();
+    const { files } = target;
 
-    // Check to ensure that the sessionStorage is not empty
-    if (sessionStoragelabel !== null) {
-      try {
-        sessionStorageData = JSON.parse(sessionStoragelabel) as {
-          token: string;
-        };
-      } catch (error) {
-        console.error("Failed to parse session storage label:", error);
-        sessionStorageData = undefined;
-      }
+    if (!files || files.length === 0) {
+      return;
     }
-    if (sessionStorageData?.token) {
-      const token = sessionStorageData.token;
-      setToken(token);
+
+    const imgArr = Array.from(files);
+    const validate = imageValidate(imgArr);
+
+    if (!validate) {
+      console.log("the validation failed");
+
+      return;
     }
-  }, []);
 
-  console.log(token);
+    const profilePic = imgArr[0];
+    console.log(profilePic)
 
-  const getUserData = async(token:string) => {
+    formData.append("profilePics", profilePic);
+    console.log(formData)
     try {
-      setLoading(true);
-      const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/admin-auth/profile", {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        }
-      });
-      
-      const data = await res.json();
+        setLoading(true);
+        const res = await fetch(
+            "https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/admin-profile-mgt/upload-profile-pics",
+            {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
+            }
+        );
 
-      if (!res.ok) {
-        console.log(res);
-        setError(data.message || 'An error occurred');
-        return;
-      }
-      const user:UserData = {
-        fullname: data.fullname,
-        adminType: data.admintype,
-        profilePic: data.profile_picture,
-      }
-      setUserData(user)
-    }
-    catch(e: any){
-      console.log(e.message);
+        if (res.ok) {
+            setLoading(false)
+            setResponse('Profile image uploaded successfully');
+            setIsOpen(prevState => !prevState);
+        } else {
+            const errorData = await res.json();
+            console.error('Failed to create product:', errorData.message);
+            // setResError('Failed to create product: ' + errorData.message);
+        }
+    } catch (error) {
+        setLoading(false)
+        console.error('Error:', (error as Error).message);
+        setResError('Failed to uploaded profile image');
+        setIsOpen(prevState => !prevState);
     }
     finally{
-      setLoading(false)
+      setLoading(false);
     }
-  }
 
-  useEffect(() => {
-    if(token !== ""){getUserData(token);}
-  }, [token]);
-
-
-  console.log(userData.adminType);
-  // const currentPath = paths.at(-1)
+}, [token]);
 
   return (
-    <main className="max-container min-h-screen grid grid-rows-[auto_1fr] grid-cols-[auto_1fr] bg-gray font-roboto">
+    <>
+      <main className="max-container min-h-screen grid grid-rows-[auto_1fr] grid-cols-[auto_1fr] bg-gray font-roboto">
         <header className="py-4 px-6 col-start-2 col-span-2 w-full min-h-[--header-height] bg-white flex justify-between">
             <form className="w-fit">
               <div className = "w-full flex items-center p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
-                <div className="p-2 cursor-pointer"><Search color="#c0c0c0"/></div>
+                <div className="p-2 cursor-pointer">
+                  <Search color="#c0c0c0"/>
+                </div>
                 <input type="text" 
                   placeholder="Search items, categories"
                   className="w-[25em] h-10 border-none outline-none text-text-black bg-transparent pl-2"
@@ -106,25 +99,39 @@ const AdminLayout = () => {
             </form>
             <div className="flex w-fit h-[3rem] items-center gap-x-3">
                 {/* <img src={userData.profilePic} alt="admin image" className="w-10 h-10 object-container"/> */}
-                {
-                  loading ? <div className="w-full flex items-center">
-                    <Spinner />
-                  </div> : <>
-                    <div className="w-[3rem] h-[3rem]">
-                      {userData.profilePic ? <Image 
-                            src = {userData.profilePic} 
-                            alt="admin image"
-                          className="rounded-full"  
-                        />
-                        :<p className="text-size-600 uppercase text-white bg-black text-center flex items-center justify-center w-full h-full rounded-full">{userData.fullname.split(" ")[0].substring(0,1)}</p>
-                      }
-                    </div>
-                    <div className="flex-1 px-2">
-                      <h4 className="font-medium text-size-500 text-text-black capitalize">{userData.fullname}</h4>
-                      <p className="text-xs text-text-black font-normal capitalize">{userData.adminType}</p>
-                    </div>
-                  </>
-                }
+              <>
+              <div id="edit_user_div" className="w-[3rem] h-[3rem] rounded-full relative">
+                {loading ? <div className = "w-full h-full rounded-full flex items-center justify-center"><Spinner /></div>
+                  : adminProfile?.profile_picture ? (
+                    <Image 
+                        src={adminProfile?.profile_picture} 
+                        alt="profile image"
+                        className="w-[3rem] h-[3rem] rounded-full"  
+                    />
+                ) : (
+                    <p className="text-size-600 uppercase text-white bg-black text-center flex items-center justify-center w-full h-full rounded-full border">
+                        {adminProfile?.fullname.split(" ")[0].substring(0, 1)}
+                    </p>
+                )}
+                <label 
+                    htmlFor="edit_user_img" 
+                    id="edit_user_img"
+                    className="hidden bg-black z-80 absolute top-[0.25rem] left-[0.25rem] items-center justify-center w-[2.5rem] h-[2.5rem] rounded-full cursor-pointer"
+                >
+                    <ImageUp size={20} color="#fff" />
+                    <input 
+                        type="file" 
+                        id="edit_user_img" 
+                        onChange={handleImgUpload}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                </label>
+              </div>
+              <div className="flex-1 px-2">
+                <h4 className="font-medium text-size-500 text-text-black capitalize">{adminProfile?.fullname}</h4>
+                <p className="text-xs text-text-black font-normal capitalize">{adminProfile?.admintype}</p>
+              </div>
+              </>
                 <LogOutIcon color="#121212"/>
               </div>
         </header>
@@ -152,7 +159,7 @@ const AdminLayout = () => {
                     </li>
                   </Link>
                   <Link to ="inventory">
-                    <li className={`p-2 flex gap-3 ${paths?.includes("accounts") ? "text-white bg-black" : "text-text-black"} items-center`}>
+                    <li className={`p-2 flex gap-3 ${paths?.includes("inventory") ? "text-white bg-black" : "text-text-black"} items-center`}>
                       <Layers3 size = {20} color={`${paths.includes("inventory") ? "#fff" : "#121212"}`}/>
                       <p className="text-size-400 font-normal capitalize">inventory</p>
                     </li>
@@ -189,6 +196,50 @@ const AdminLayout = () => {
             <Outlet />
         </div>
     </main>
+
+    {/* For showing success message or error message */}
+    <Modal isOpen={isOpen} handleModalOpen={() => setIsOpen(prevState => !prevState)}>
+        <div className="flex flex-col w-full">
+            <div className="flex items-center gap-3">
+                {/* <MessageSquareWarning size = {35} color = "rgb(239 68 68)"/> */}
+                {resError !== "" ? <CircleAlert size = {35} color = "rgb(255 201 92)" /> : 
+                    response !== "" && <BadgeCheck size = {35} color = "rgb(34 197 94)"/>
+                }
+
+                {response !== "" ?<p>
+                    {response}
+                </p> 
+                : resError !== "" && <p>
+                    {response}
+                </p>
+                }
+            </div>
+            <div className="flex gap-5 mt-5 border-t border-[#f0f0f0] pt-3">
+                {response !== "" ?<Button  
+                    size="medium"
+                    handleClick={() => {
+                    // navigate("/auth/login", {replace: true});
+                        window.location.reload();
+                    }}
+                    className="text-sm uppercase flex-1"
+                >
+                    Back to profile
+                </Button>
+                    : resError !== "" && <Button  
+                    size="medium"
+                    handleClick={() => {
+                    navigate("/admin", {replace: true});
+                        // window.location.reload();
+                    }}
+                    className="text-sm uppercase flex-1"
+                >
+                    retry again
+                </Button>    
+            }
+            </div>
+        </div>
+    </Modal>
+    </>
   )
 }
 

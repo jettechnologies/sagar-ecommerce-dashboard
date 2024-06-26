@@ -84,3 +84,28 @@ export interface AdminDataType {
     loginCredential: string;
   }
   
+  export interface AdminType {
+    id: number;
+    adminID: string;
+    email: string;
+    role: string;
+    admintype: string;
+    adminaccessLevel: string;
+    password: string;
+    mobile: string;
+    fullname: string;
+    home_address: string | null;
+    UpdatedAt: string | null;
+    RegisteredAt: string;
+    profile_picture: string | null;
+    gender: string | null;
+    Nationality: string | null;
+    isLoggedIn: boolean;
+    isRegistered: boolean;
+    isActivated: boolean;
+    isDeactivated: boolean;
+    isVerified: boolean;
+    reset_link_exptime: string | null;
+    password_reset_link: string | null;
+  }
+  

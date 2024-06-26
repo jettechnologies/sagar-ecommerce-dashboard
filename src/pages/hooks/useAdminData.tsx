@@ -6,31 +6,6 @@ export const useAdminData = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState<string | null>(null);
 
-
-//   const getAdminData = useCallback(
-//     async (
-//         token:string,
-//     ): Promise<void> => {
-//         try {
-//           setIsLoading(true);
-//           const res = await fetch("browse/fetch-all-product-categories", {
-//             headers : {
-//                 'Authorization': `Bearer ${token}`,
-//             }
-//           });
-//           setAdminData(res[0])
-//           setIsError(null);
-//         } catch (e: any) {
-//             setIsError(e.message);
-//           throw new Error(e.message)
-//         } finally {
-//           setIsLoading(false);
-//         }
-//       },
-
-//     []
-//   );
-
 const getAdminData = useCallback(
     async (
       token: string,

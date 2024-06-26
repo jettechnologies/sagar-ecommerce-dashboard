@@ -4,6 +4,7 @@ import Image from "@/components/Image";
 import { useState, useEffect } from "react";
 import { Eye } from "lucide-react";
 import Modal from "@/components/Modal";
+import { useAuth } from "@/context/authContext";
 
 interface CustomerData {
         DOB: null;
@@ -35,34 +36,11 @@ interface CustomerData {
 
 const Customers = () => {
 
-    const [token, setToken] = useState<string>("");
     const [customers, setCustomers] = useState<CustomerData[] | []>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    useEffect(() => {
-        const sessionStoragelabel: string | null =
-          window.sessionStorage.getItem("auth-token");
-        let sessionStorageData: { token: string } | undefined;
-    
-        // Check to ensure that the sessionStorage is not empty
-        if (sessionStoragelabel !== null) {
-          try {
-            sessionStorageData = JSON.parse(sessionStoragelabel) as {
-              token: string;
-            };
-          } catch (error) {
-            console.error("Failed to parse session storage label:", error);
-            sessionStorageData = undefined;
-          }
-        }
-        if (sessionStorageData?.token) {
-          const token = sessionStorageData.token;
-          console.log(token)
-          setToken(token);
-        }
-      }, []);
+    const { token } = useAuth();
 
       console.log(token, loading, error);
     

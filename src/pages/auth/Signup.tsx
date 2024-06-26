@@ -121,11 +121,11 @@ const formSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
         if(resError !== null){
             return;
         }
+
+        navigate("/otp", { replace: true, state: { email: user.email.str } });
       } catch (e) {
         console.error(e);
     }
-
-    navigate("/otp", { replace: true, state: { email: user.email.str, link: "/admin" } });
 }
 
 useEffect(() =>{

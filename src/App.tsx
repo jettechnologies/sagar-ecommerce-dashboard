@@ -18,6 +18,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import ResetOtp from "./pages/auth/ResetOtp";
 import Category from "./pages/dashboard/Category";
 import Inventory from "./pages/dashboard/Inventory";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 
 function App() {
@@ -37,22 +38,24 @@ function App() {
           </Route>
 
         </Route>
-        <Route path="/admin" element = {<AdminLayout />}>
-          <Route index element={<Navigate to="dashboard" />} />
-          <Route path="dashboard" element = {<AdminDashboard />} />
-          <Route path="view-orders" element = {<ViewOrders />} />
-          <Route path = "category" element = {<Category />} />
-          <Route path = "inventory" element = {<Inventory />} />
-          <Route path="products">
-            <Route index = {true} element = {<Products />} />
-            <Route path="add-product" element = {<AddProduct />} />
+        <Route element = {<ProtectedRoutes />}>
+          <Route path="/admin" element = {<AdminLayout />}>
+            <Route index element={<Navigate to="dashboard" />} />
+            <Route path="dashboard" element = {<AdminDashboard />} />
+            <Route path="view-orders" element = {<ViewOrders />} />
+            <Route path = "category" element = {<Category />} />
+            <Route path = "inventory" element = {<Inventory />} />
+            <Route path="products">
+              <Route index = {true} element = {<Products />} />
+              <Route path="add-product" element = {<AddProduct />} />
+            </Route>
+            <Route path="view-customers" element = {<Customers />} />
+            <Route path="accounts">
+              <Route index = {true} element = {<Adminstrators />} />
+              <Route path="create-admin" element = {<CreateAdmin />} />
+            </Route>
+            <Route path="account-setting" element = {<Settings />} />
           </Route>
-          <Route path="view-customers" element = {<Customers />} />
-          <Route path="accounts">
-            <Route index = {true} element = {<Adminstrators />} />
-            <Route path="create-admin" element = {<CreateAdmin />} />
-          </Route>
-          <Route path="account-setting" element = {<Settings />} />
         </Route>
       </Routes>
     </>
