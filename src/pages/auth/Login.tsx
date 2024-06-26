@@ -43,6 +43,8 @@ const Login = () => {
     const [response, setResponse] = useState<Response | null>(null);
     const navigate = useNavigate();
 
+    console.log(response);
+
     const [user, setUser] = useState<User>({
         email: {
             str: "",
