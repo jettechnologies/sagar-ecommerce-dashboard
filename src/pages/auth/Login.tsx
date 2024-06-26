@@ -39,7 +39,7 @@ const Login = () => {
     const easyHttp  = new EasyHTTP;
     const [loading, setLoading] = useState<boolean>(false);
     const [resError, setResError] = useState<string | null>(null);
-    const { setToken, setAdminProfile, token } = useAuth();
+    const { setToken, setAdminProfile } = useAuth();
     const [response, setResponse] = useState<Response | null>(null);
     const navigate = useNavigate();
 
@@ -60,11 +60,11 @@ const Login = () => {
     });
 
     // useEffect for auto redirecting.
-    useEffect(()=>{
-        if(token){
-            navigate("/admin", {replace: true })
-        }
-    }, [navigate, token]);
+    // useEffect(()=>{
+    //     if(token){
+    //         navigate("/admin", {replace: true })
+    //     }
+    // }, [navigate, token]);
 
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
@@ -116,6 +116,19 @@ const Login = () => {
             console.log(response);
 
             // setting the expiration day for 30 days
+            const { admin, accesstoken } = response;
+            const expires = new Date();
+            expires.setDate(expires.getDate() + 30);
+            
+            
+            Cookies.set("auth", JSON.stringify(response), {
+                expires: expires
+            });
+
+            setToken(accesstoken.token);
+            setAdminProfile(admin);
+
+            navigate("/admin", {replace: true });
             setResponse(response);
             // setItem(response);
         }
@@ -133,23 +146,23 @@ const Login = () => {
     }
 
     // useEffeect for setting tokens
-    useEffect(() =>{
-        if(response){
-            const { admin, accesstoken } = response;
-            const expires = new Date();
-            expires.setDate(expires.getDate() + 30);
+    // useEffect(() =>{
+    //     if(!response && response !== null){
+    //         const { admin, accesstoken } = response;
+    //         const expires = new Date();
+    //         expires.setDate(expires.getDate() + 30);
             
             
-            Cookies.set("auth", JSON.stringify(response), {
-                expires: expires
-            });
+    //         Cookies.set("auth", JSON.stringify(response), {
+    //             expires: expires
+    //         });
 
-            setToken(accesstoken.token);
-            setAdminProfile(admin);
+    //         setToken(accesstoken.token);
+    //         setAdminProfile(admin);
 
-            navigate("/admin", {replace: true })
-        }
-    }, [navigate, response, setAdminProfile, setToken]);
+    //         navigate("/admin", {replace: true })
+    //     }
+    // }, [navigate, response, setAdminProfile, setToken]);
 
     useEffect(() =>{
         let errorRemoval: ReturnType<typeof setTimeout>;

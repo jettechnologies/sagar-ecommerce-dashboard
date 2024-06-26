@@ -9,10 +9,11 @@ import { useAuth } from "@/context/authContext";
 import { imageValidate } from "@/utils/imageValidate";
 import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner";
+import Cookies from "js-cookie";
 
 const AdminLayout = () => {
 
-  const { adminProfile } = useAuth();
+  const { adminProfile, setToken, setIsLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const paths:string[] = location.pathname.split("/").filter(Boolean);
@@ -25,62 +26,69 @@ const AdminLayout = () => {
   const [isOpen,setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleImgUpload = useCallback(async(e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImgUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     const formData = new FormData();
     const { files } = target;
-
+  
     if (!files || files.length === 0) {
       return;
     }
-
+  
     const imgArr = Array.from(files);
     const validate = imageValidate(imgArr);
-
+  
     if (!validate) {
-      console.log("the validation failed");
-
+      console.log("The validation failed");
       return;
     }
-
+  
     const profilePic = imgArr[0];
-    console.log(profilePic)
-
+    console.log(profilePic);
+  
     formData.append("profilePics", profilePic);
-    console.log(formData)
+    console.log(formData);
+  
     try {
-        setLoading(true);
-        const res = await fetch(
-            "https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/admin-profile-mgt/upload-profile-pics",
-            {
-                method: "PATCH",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
-            }
-        );
-
-        if (res.ok) {
-            setLoading(false)
-            setResponse('Profile image uploaded successfully');
-            setIsOpen(prevState => !prevState);
-        } else {
-            const errorData = await res.json();
-            console.error('Failed to create product:', errorData.message);
-            // setResError('Failed to create product: ' + errorData.message);
-        }
-    } catch (error) {
-        setLoading(false)
-        console.error('Error:', (error as Error).message);
-        setResError('Failed to uploaded profile image');
+      setLoading(true);
+      const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/admin-profile-mgt/upload-profile-pics", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+  
+      if (res.ok) {
+        setLoading(false);
+        setResponse('Profile image uploaded successfully');
         setIsOpen(prevState => !prevState);
-    }
-    finally{
+        // Optionally refresh or re-fetch user data here
+      } else {
+        const errorData = await res.json();
+        console.error('Failed to upload profile image:', errorData.message);
+        setResError('Failed to upload profile image: ' + errorData.message);
+        setIsOpen(prevState => !prevState);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error('Error:', (error as Error).message);
+      setResError('Failed to upload profile image');
+      setIsOpen(prevState => !prevState);
+    } finally {
       setLoading(false);
     }
+  }, [token]);
+  
+const handleLogout = () => {
+  Cookies.remove("auth");
+  setToken('');
+  setIsLogin(false);
+  // setAdminProfile(null);
+  navigate("/login", { replace: true });
+  window.location.reload();
+};
 
-}, [token]);
 
   return (
     <>
@@ -132,7 +140,12 @@ const AdminLayout = () => {
                 <p className="text-xs text-text-black font-normal capitalize">{adminProfile?.admintype}</p>
               </div>
               </>
-                <LogOutIcon color="#121212"/>
+                <div 
+                  className = "border-2 p-2 cursor-pointer" 
+                  onClick = {handleLogout}
+                >
+                  <LogOutIcon color="#121212"/>
+                </div>
               </div>
         </header>
         <SideNavBar className="row-start-1 row-span-2 col-start-1 w-[15rem] shadow-lg bg-white">
@@ -218,8 +231,10 @@ const AdminLayout = () => {
                 {response !== "" ?<Button  
                     size="medium"
                     handleClick={() => {
-                    // navigate("/auth/login", {replace: true});
-                        window.location.reload();
+                    navigate("/admin/dashboard", {replace: true});
+                      // window.location.reload();
+                      setResponse("");
+                      setIsOpen(prevState => !prevState);
                     }}
                     className="text-sm uppercase flex-1"
                 >

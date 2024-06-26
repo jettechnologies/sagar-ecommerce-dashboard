@@ -12,7 +12,6 @@ interface AuthState {
 // Define the shape of the context methods
 interface AuthContextProps extends AuthState {
   setToken: (token: string) => void;
-  // setIsLogin: (isLogin: boolean) => void;
   setAdminProfile: (adminProfile: AdminType) => void;
 }
 
@@ -25,29 +24,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [adminProfile, setAdminProfile] = useState<AdminType | null>(null);
 
-  useEffect(() =>{
+  useEffect(() => {
     const auth = Cookies.get("auth");
-    if(auth){
-      const auth_string = JSON.parse(auth);
-      const { accesstoken, admin } = auth_string;
+    if (auth) {
+      const authData = JSON.parse(auth);
+      const { accesstoken, admin } = authData;
       setToken(accesstoken.token);
       setAdminProfile(admin);
-      setIsLogin(true)
-    }
-    // if(auth_token){
-    //     setToken(auth_token);
-    //     setIsLogin(true);
-    // }
-  }, []);
-
-  useEffect(() =>{
-    if(token){
       setIsLogin(true);
     }
-  }, [token, setIsLogin])
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      setIsLogin(true);
+    }
+  }, [token]);
+
+  const saveToken = (newToken: string) => {
+    setToken(newToken);
+    Cookies.set("auth", JSON.stringify({ accesstoken: { token: newToken }, admin: adminProfile }), {
+      expires: 30, // 30 days
+    });
+  };
+
+  const saveAdminProfile = (admin: AdminType) => {
+    setAdminProfile(admin);
+    Cookies.set("auth", JSON.stringify({ accesstoken: { token }, admin }), {
+      expires: 30, // 30 days
+    });
+  };
 
   return (
-    <AuthContext.Provider value={{ token, isLogin, setToken, setAdminProfile, adminProfile }}>
+    <AuthContext.Provider value={{ token, isLogin, setToken: saveToken, setAdminProfile: saveAdminProfile, adminProfile }}>
       {children}
     </AuthContext.Provider>
   );
