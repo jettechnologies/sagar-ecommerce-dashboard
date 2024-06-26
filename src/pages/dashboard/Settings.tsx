@@ -5,7 +5,7 @@ import { Nationalities } from "@/data";
 import Button from "@/components/Button";
 import { Headers } from "@/utils/httpRequest";
 import { useAuth } from "@/context/authContext";
-import { EasyHTTP } from "@/utils/httpRequest";
+// import { EasyHTTP } from "@/utils/httpRequest";
 
 
 interface Coupon{
@@ -44,7 +44,7 @@ type CouponState = {
 const Settings = () => {
 
   // const [token, setToken] = useState("");
-  const easyHttp = new EasyHTTP();
+  // const easyHttp = new EasyHTTP();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentEmail,setCurrentEmail] = useState("");
@@ -250,7 +250,7 @@ const Settings = () => {
 
     if(percentOff > 0 && (durationInDays > 0 || durationInWeeks > 0) && code !== ""){
         
-      const url = "order-mgt/set-discount-Coupon";
+      // const url = "order-mgt/set-discount-Coupon";
         const headers = {
           'Authorization': `Bearer ${token}`,
         }
