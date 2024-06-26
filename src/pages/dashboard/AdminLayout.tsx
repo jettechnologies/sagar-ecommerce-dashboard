@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 
 const AdminLayout = () => {
 
-  const { adminProfile, setToken, setIsLogin } = useAuth();
+  const { adminProfile, setToken } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const paths:string[] = location.pathname.split("/").filter(Boolean);
@@ -83,7 +83,7 @@ const AdminLayout = () => {
 const handleLogout = () => {
   Cookies.remove("auth");
   setToken('');
-  setIsLogin(false);
+  // setIsLogin(false);
   // setAdminProfile(null);
   navigate("/login", { replace: true });
   window.location.reload();
