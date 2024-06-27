@@ -29,7 +29,7 @@ const OTP = () => {
     const [otp, setOtp] = useState(new Array(4).fill(""));
     const [activeOTPIndex, setActiveOTPIndex] = useState(0);
     const [error, setError] = useState(false);
-    const { setToken, setAdminProfile } = useAuth();
+    const { setToken } = useAuth();
     const [response, setResponse] = useState<Response | null>(null);
 
     const [loading, setLoading] = useState(false);
@@ -137,21 +137,21 @@ const OTP = () => {
 
     // useEffect for setting the token
     useEffect(() =>{
-        if(response){
+        if(response !== null){
           // setting the expiration day for 30 days
           const expires = new Date();
           expires.setDate(expires.getDate() + 30);
 
-          Cookies.set("auth", JSON.stringify(response), {
+          Cookies.set("auth_token", response.accessToken.token, {
             expires: expires
           });
 
           setToken(response?.accessToken?.token)
-          setAdminProfile(response?.admin)
+          // setAdminProfile(response?.admin)
 
           navigate("/admin", {replace: true});
         }
-    }, [navigate, response, setAdminProfile, setToken]);
+    }, [navigate, response, setToken]);
 
     // countdown logic
     useEffect(() => {

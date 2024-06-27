@@ -149,6 +149,8 @@ const Adminstrators = () => {
         setAdminChange({ ...adminChange, [name]: value.trim() });          
     }
 
+    console.log(adminChange);
+
     const changeAdminType = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         
@@ -194,6 +196,8 @@ const Adminstrators = () => {
         if(adminChange.accesslevel !== ""){
             const url = `admins-mgt/change-other-admin-accesslevel/${currentId}`;
             const headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             }
 
@@ -243,6 +247,8 @@ const Adminstrators = () => {
         // const id = string(currentId);
         const url = `admins-mgt/delete-other-admin/${currentId}`;
         const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         }
 
@@ -265,7 +271,7 @@ const Adminstrators = () => {
 
         setIsDeleting(prevState => !prevState);
 
-        // window.location.reload();
+        window.location.reload();
         navigate("/admin/accounts", {replace: true});
 
     }

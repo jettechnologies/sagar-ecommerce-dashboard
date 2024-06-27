@@ -45,7 +45,7 @@ export class EasyHTTP {
 //   }
 // }
   // Make an HTTP POST Request
-  async post(url: string, headers: Headers, data: Data): Promise<any> {
+  async post(url: string, headers: HeadersInit, data: Data): Promise<any> {
     console.log(url)
     const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
       method: 'POST',
@@ -60,7 +60,7 @@ export class EasyHTTP {
   }
 
   // Make an HTTP PATCH Request
-  async patch(url: string, headers: Headers, data: Data): Promise<any> {
+  async patch(url: string, headers: HeadersInit, data: Data): Promise<any> {
     const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
       method: 'PATCH',
       headers: headers,

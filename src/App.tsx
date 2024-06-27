@@ -18,7 +18,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import ResetOtp from "./pages/auth/ResetOtp";
 import Category from "./pages/dashboard/Category";
 import Inventory from "./pages/dashboard/Inventory";
-import ProtectedRoutes from "./components/ProtectedRoutes";
+// import ProtectedRoutes from "./components/ProtectedRoutes";
 
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
           </Route>
 
         </Route>
-        <Route element = {<ProtectedRoutes />}>
+        {/* <Route element = {<ProtectedRoutes />}> */}
           <Route path="/admin" element = {<AdminLayout />}>
             <Route index element={<Navigate to="dashboard" />} />
             <Route path="dashboard" element = {<AdminDashboard />} />
@@ -56,7 +56,7 @@ function App() {
             </Route>
             <Route path="account-setting" element = {<Settings />} />
           </Route>
-        </Route>
+        {/* </Route> */}
       </Routes>
     </>
   )

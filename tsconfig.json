@@ -25,7 +25,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "useLocalStorage.ts", "Layout.tsx"],
+  "include": ["src", "useLocalStorage.ts", "Layout.tsx", "src/pages/hooks"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
 

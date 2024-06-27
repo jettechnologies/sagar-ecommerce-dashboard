@@ -12,17 +12,37 @@ import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
 import { EasyHTTP } from "@/utils/httpRequest";
 import { useAuth } from "@/context/authContext";
+import EditProduct from "@/sections/EditProduct";
 
 const easyHttp = new EasyHTTP();
+
+interface ProductContentType {
+    name: string;
+    description: string;
+    price: string;
+    stock: string;
+    // categoryId: string;
+    productimage: File | null;
+}
 
 const Products = () => {
 
     // const [token, setToken] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
     const [products, setProducts] = useState<ProductType[] | []>([]);
     const [response, setResponse] = useState<string | null | []>(null)
     const [currentId, setCurrentId] = useState("");
+    // useState for the new product content
+    const [productContent, setProductContent] = useState<ProductContentType>({
+        name: "",
+        description: "",
+        price: "",
+        stock: "",
+        // categoryId: "",
+        productimage: null,
+    });
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false);
@@ -92,7 +112,7 @@ const Products = () => {
         }
 
         try{
-            setLoading(true)
+            setDeleteLoading(true)
             const res = await easyHttp.delete(url, headers);
             setResponse(res)
         }
@@ -101,7 +121,7 @@ const Products = () => {
             setError((e as Error).message);
         }
         finally{
-            setLoading(false)
+            setDeleteLoading(false)
         }
 
         if(error !== null){
@@ -113,7 +133,6 @@ const Products = () => {
         setIsDeleting(prevState => !prevState);
 
         window.location.reload();
-
     }
 
   return (
@@ -265,7 +284,7 @@ const Products = () => {
                 </table>
                 {
                             loading && (
-                                <div className="w-full h-full grid place-items-center border-2 border-black">
+                                <div className="w-full h-full grid place-items-center">
                                     <Spinner />
                                 </div>)
                         }
@@ -289,52 +308,14 @@ const Products = () => {
                 </div>
             </div>
             
-                    {/* Editing existing product category */}
-        <Modal title = "Edit existing product" isOpen={isEditing} handleModalOpen={() => setIsEditing(prevState => !prevState)}>
-            <form id ="edit-category-form" className="w-full">
-                {/* {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>} */}
-                    <div className="w-full">
-                        <label htmlFor="category-name" className="text-size-400 text-text-black font-medium mb-3">
-                            Category Name
-                        </label>
-                        <input 
-                            type="text" 
-                            placeholder="Name a category" 
-                            id="category-name" 
-                            name="name"
-                            
-                            className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
-                        />
-                    </div>
-                    <div className="w-full">
-                        <label htmlFor="category-desc" className="text-size-400 text-text-black font-medium mb-3">
-                            Category Description
-                        </label>
-                        <textarea 
-                            name="description" 
-                            id="category-desc" 
-                            rows={3} 
-                            placeholder="Write category descriptions"
-                           
-                            className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
-                        > 
-                        </textarea>
-                    </div>
-                    <div className="w-full">
-                        <label htmlFor="category-banner" className="text-size-400 text-text-black font-medium mb-3">
-                            Category Banner
-                        </label>
-                        <input 
-                            type="file"  
-                            id="category-banner" 
-                            name="banne"
-                            
-                            className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
-                        />
-                    </div>
-                    <Button size = "large" className="w-full mt-4 uppercase">{loading ? "Loading..." : "Create catergory"}</Button>
-                </form>
-        </Modal>
+             {/* editing existing product category */}
+             <EditProduct 
+                isOpen = {isEditing}  
+                content = {productContent}
+                productId={currentId}
+                setProductChange={setProductContent} 
+                handleModalClose={() => setIsEditing(prevState => !prevState)} 
+            />
 
         {/* Deleting existing product category */}
         <Modal title = "Delete existing product" isOpen={isDeleting} handleModalOpen={() => setIsDeleting(prevState => !prevState)}>
@@ -361,7 +342,7 @@ const Products = () => {
                          handleClick={() => handleDeleteProduct()}
                         className="text-sm uppercase flex-1"
                     >
-                        {loading ? "loading" : "yes, delete"}
+                        {deleteLoading ? "loading" : "yes, delete"}
                     </Button>
                 </div>
             </div>
