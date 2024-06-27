@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { AdminType } from '@/types';
+// import { AdminType } from '@/types';
 
 // Define the shape of the context state
 interface AuthState {

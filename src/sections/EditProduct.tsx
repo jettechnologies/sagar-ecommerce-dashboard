@@ -44,6 +44,8 @@ const EditProduct: React.FC<EditProductType> = ({
   const [resError, setResError] = useState("");
   const [response, setResponse] = useState("");
 
+  console.log(resError, response)
+
 //   useEffect(() => {
 //     getCategories();
 //   }, [getCategories]);

@@ -60,6 +60,7 @@ const ResetPassword = ({token}: ResetPasswordProps) => {
         }
         catch(err){
             console.log((err as Error).message)
+            setError((err as Error).message);
         }
         finally{
             setLoading(false)

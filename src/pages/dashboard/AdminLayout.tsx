@@ -1,5 +1,5 @@
 import SideNavBar from "@/components/SideNavBar";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Button from "@/components/Button";
 import { CircleAlert, BadgeCheck, LogOutIcon, ImageUp, Search } from "lucide-react";
 import Image from "@/components/Image";
