@@ -1,7 +1,12 @@
 import Notification from "@/components/Notification";
 import Container from "@/components/Container";
+// import { EasyHTTP } from "@/utils/httpRequest";
+// import useGetRequest from "../hooks/useGetRequest";
 
 const ViewOrders = () => {
+
+    // const { loading:fetchingOrders, error:orderError, data:orders } = useGetRequest("");
+
   return (
     <Container className="mt-4 min-h-screen">
             <div className="flex justify-between items-center w-full mb-4">
@@ -24,10 +29,7 @@ const ViewOrders = () => {
                     </thead>
                     <tbody>
                         <tr className="border border-gray hover:bg-gray cursor-pointer">
-                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm items-center flex gap-2">
-                                <input type="checkbox" className=""/>
-                                John Doe
-                            </td>
+                            <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Mark</td>
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">Otto</td>
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">@mdo</td>

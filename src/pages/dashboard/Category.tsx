@@ -215,7 +215,11 @@ const Category = () => {
         return() => clearTimeout(errorRemoval)
     }, [error]);
 
-    // console.log(currentId)
+    if(loading){
+        return<div className="w-full h-full">
+            <Spinner />
+        </div>
+    }
 
   return (
     <div className="w-full h-full">
@@ -241,7 +245,7 @@ const Category = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {(categories && categories.length > 0) ? (
+                        {(categories && categories.length > 0) && (
                             categories
                                 .sort((a, b) => a.id - b.id)
                                 .map((category, index) => (
@@ -291,11 +295,7 @@ const Category = () => {
                                         </td>
                                     </tr>
                                 ))
-                        ): <div className="w-full *:h-[50dvh] mt-4">
-                            <p className="text-xl text-text-black font-bold">
-                                No Categories found    
-                            </p>    
-                        </div>}
+                        )}
                     </tbody>
                 </table>
                 {

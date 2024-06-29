@@ -480,24 +480,6 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               ></textarea>
             </div>
             <div className="w-full flex flex-col gap-y-2">
-              {/* <div className="w-full">
-                <label
-                    htmlFor="available-colors"
-                    className="text-size-400 text-text-black font-medium mb-3"
-                >
-                    Available Colors
-                </label>
-                <div className="mt-3">
-                    <Select
-                    id="available-colors"
-                    name="color"
-                    className="border border-[#c0c0c0] text-medium text-sm w-full"
-                    select={availableColors}
-                    defaultText="Available Colors"
-                    handleInputChange={handleVariants}
-                    />
-                </div>
-              </div> */}
               <div className="w-full">
                     <label
                         htmlFor="available_colors"
@@ -529,24 +511,6 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               </div>
             </div>
             <div className="w-full flex flex-col gap-y-2">
-              {/* <div className="w-full">
-                <label
-                    htmlFor="available-sizes"
-                    className="text-size-400 text-text-black font-medium mb-3"
-                >
-                    Available Sizes
-                </label>
-                <div className="mt-3">
-                    <Select
-                    id="available-sizes"
-                    name="size"
-                    className="border border-[#c0c0c0] text-medium text-sm w-full"
-                    select={availableSizes}
-                    defaultText="Available sizes"
-                    handleInputChange={handleVariants}
-                    />
-                </div>
-              </div> */}
                 <div className="w-full">
                     <label
                         htmlFor="available_sizes"

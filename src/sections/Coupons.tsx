@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Button from "@/components/Button";
 import { EasyHTTP } from "@/utils/httpRequest";
+import { useNavigate } from "react-router-dom";
 
 interface Coupon{
     code: string;
@@ -24,6 +25,8 @@ const easyHttp = new EasyHTTP();
 
 const Coupons = ({token}: CouponProps) => {
 
+
+    const navigate = useNavigate();
     const [coupon, setCoupon] = useState<Coupon>({
         code : "",
         durationInDays: 0,
@@ -90,7 +93,8 @@ const Coupons = ({token}: CouponProps) => {
                 setLoading(true);
                 const response = await easyHttp.post(url, headers, data);
                 console.log(response);
-            }
+                navigate("/admin", {replace: true})
+              }
             catch(err){
                 console.log((err as Error).message)
                 setError((err as Error).message)
@@ -111,11 +115,11 @@ const Coupons = ({token}: CouponProps) => {
         //             }
         //         )
           
-        //         if (!res.ok) {
-        //           throw new Error("server response error")
-        //         }
-        //         console.log('coupon created successfully');
-        //         console.log(res)
+                // if (!res.ok) {
+                //   throw new Error("server response error")
+                // }
+                // console.log('coupon created successfully');
+                // console.log(res)
         //             const response = await res.json();
         //           console.log(response)
         //     }
