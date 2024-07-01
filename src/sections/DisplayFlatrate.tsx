@@ -137,6 +137,8 @@ const DisplayFlatrate = () => {
             }
           </div>
 
+          {/* for editing the flatrate */}
+          {/* 
             {/* Deleting existing product category */}
             <Modal title = "Delete flatrates" isOpen={isDeleting} handleModalOpen={() => setIsDeleting(prevState => !prevState)}>
             <div className="flex flex-col w-full">

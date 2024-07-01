@@ -19,6 +19,7 @@ import ResetOtp from "./pages/auth/ResetOtp";
 import Category from "./pages/dashboard/Category";
 import Inventory from "./pages/dashboard/Inventory";
 import CustomersReview from "./pages/dashboard/CustomersReview";
+import PaymentConfiguration from "./pages/dashboard/PaymentConfiguration";
 // import ProtectedRoutes from "./components/ProtectedRoutes";
 
 
@@ -57,6 +58,7 @@ function App() {
             </Route>
             <Route path="customers-review" element = {<CustomersReview/>} />
             <Route path="account-setting" element = {<Settings />} />
+            <Route path="payment-configuration" element = {<PaymentConfiguration />} />
           </Route>
         {/* </Route> */}
       </Routes>

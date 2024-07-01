@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, ShoppingCartIcon, LibraryBig, Layers3, Package, CircleUserRound, UserRoundCogIcon, UsersRound, Settings, Edit, Trash } from "lucide-react";
+import { Home, ShoppingCartIcon, LibraryBig, CreditCard, Layers3, Package, CircleUserRound, UserRoundCogIcon, UsersRound, Settings, Edit, Trash } from "lucide-react";
 import Logo from "@/components/Logo";
 // import logo from "@/assets/icons/logo.png";
 import { formatDateDifference, formatToHumanReadableDate } from "@/utils/dateFunctions";
@@ -236,6 +236,16 @@ const SideNavBar = ({ className, setCouponActions, setCurrentId, setCurrentCoupo
                         }`}>
                     <UsersRound size = {20}/>
                     <p className="text-size-400 font-normal capitalize">customers review</p>
+                  </li>
+                </Link>
+                <Link to="payment-configuration">
+                  <li className={`p-2 flex gap-3 items-center  ${
+                          paths?.includes("payment-configuration")
+                            ? "text-white bg-black"
+                            : "text-text-black"
+                        }`}>
+                    <CreditCard size = {20}/>
+                    <p className="text-size-400 font-normal capitalize">payment configuration</p>
                   </li>
                 </Link>
               </ul>
