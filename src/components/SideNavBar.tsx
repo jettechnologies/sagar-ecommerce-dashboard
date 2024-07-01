@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, ShoppingCartIcon, LibraryBig, Layers3, Package, CircleUserRound, UserRoundCogIcon, Settings, Edit, Trash } from "lucide-react";
+import { Home, ShoppingCartIcon, LibraryBig, Layers3, Package, CircleUserRound, UserRoundCogIcon, UsersRound, Settings, Edit, Trash } from "lucide-react";
 import Logo from "@/components/Logo";
+// import logo from "@/assets/icons/logo.png";
 import { formatDateDifference, formatToHumanReadableDate } from "@/utils/dateFunctions";
+import { useAuth } from "@/context/authContext";
 
 interface Coupon{
   code: string;
@@ -25,7 +27,6 @@ interface CouponType {
 
 interface Props{
   className?: string;
-  token: string;
   setCouponActions?: React.Dispatch<React.SetStateAction<{
     isEditing: boolean;
     isDeleting: boolean;
@@ -34,7 +35,9 @@ interface Props{
   setCurrentCoupon?: React.Dispatch<React.SetStateAction<Coupon>>;
 }
 
-const SideNavBar = ({ className, token, setCouponActions, setCurrentId, setCurrentCoupon }: Props) => {
+const SideNavBar = ({ className, setCouponActions, setCurrentId, setCurrentCoupon }: Props) => {
+
+  const { token } = useAuth();
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [coupons, setCoupons] = useState<CouponType[] | []>([]);
   const sideNavBarRef = useRef<HTMLDivElement>(null);
@@ -84,7 +87,7 @@ const SideNavBar = ({ className, token, setCouponActions, setCurrentId, setCurre
 
     }
 
-    fetchCoupons()
+    if(token){fetchCoupons();}
   }, [token]);
 
   // function to handle editing
@@ -135,9 +138,15 @@ const SideNavBar = ({ className, token, setCouponActions, setCurrentId, setCurre
       className={`${className} p-5`}
     >
         <div className={`${isOverflowing ? "show-scrollbar" : "hide-scrollbar"}`}>
-          <div className="h-full flex flex-col gap-y-5">
+          <div className="h-full flex flex-col gap-y-10">
+            {/* <div className="w-[5rem] h-fit border-2 mx-auto">
+                <img src={logo} alt="logo image" className="w- rotate-90 object-cover"/>
+            </div> */}
             <nav className="flex flex-col gap-y-10">
-              <Logo />
+              <Link to = "/" className="flex items-center w-[11rem]">
+                <Logo />
+              </Link>
+              
               <ul className="flex flex-col gap-y-4">
                 <Link to="dashboard">
                   <li className={`p-2 flex gap-3 items-center ${
@@ -151,7 +160,7 @@ const SideNavBar = ({ className, token, setCouponActions, setCurrentId, setCurre
                 </Link>
                 <Link to="view-orders">
                   <li className={`p-2 flex gap-3 items-center ${
-                          paths?.includes("orders")
+                          paths?.includes("view-orders")
                             ? "text-white bg-black"
                             : "text-text-black"
                         } `}>
@@ -219,6 +228,16 @@ const SideNavBar = ({ className, token, setCouponActions, setCurrentId, setCurre
                     <p className="text-size-400 font-normal capitalize">settings</p>
                   </li>
                 </Link>
+                <Link to="customers-review">
+                  <li className={`p-2 flex gap-3 items-center  ${
+                          paths?.includes("customers-review")
+                            ? "text-white bg-black"
+                            : "text-text-black"
+                        }`}>
+                    <UsersRound size = {20}/>
+                    <p className="text-size-400 font-normal capitalize">customers review</p>
+                  </li>
+                </Link>
               </ul>
             </nav>
             <div className="w-full flex flex-col gap-y-4">
@@ -240,7 +259,7 @@ const SideNavBar = ({ className, token, setCouponActions, setCurrentId, setCurre
                       </div>
                       <div className="flex gap-x-33">
                         <p className="text-text-400 font-medium text-green-500">
-                          {coupon.percentageOff}% Discount set for {formatDateDifference(coupon.expires_in)} days
+                          {coupon.percentageOff}% Discount set for {formatDateDifference(coupon.expires_in)}
                         </p>
                           
                       </div>

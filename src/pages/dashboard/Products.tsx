@@ -185,7 +185,7 @@ const Products = () => {
                 </div>
             </Container>
         </div>
-        <Container className="mt-4 min-h-screen">
+        <Container className="mt-4 min-h-screen border-2 ">
             <div className="flex justify-between items-center w-full mb-4">
                 <h3 className="font-semibold text-size-500 text-text-bold">
                     Products
@@ -195,7 +195,7 @@ const Products = () => {
                 </p>
             </div>
             <div className="h-full">
-                <table className="min-w-full text-center text-sm font-light">
+                <table className="w-full text-center text-sm font-light">
                     <thead className="font-medium border-b bg-black text-white">
                         <tr>
                             <th scope="col" className="px-6 py-4">Product Image</th>

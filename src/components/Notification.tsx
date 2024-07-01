@@ -32,7 +32,7 @@ const Notification:React.FC<Props> = ({
     // }
 
   return (
-    <div className={twMerge("py-2 px-4 flex items-center justify-between", notificationType[type], className )}>
+    <div className={twMerge("py-2 px-4 flex items-center justify-between text-white", notificationType[type], className )}>
         <p className="text-size-400 font-normal">{message}</p>
         {isCloseIcon && <div className="p-1 cursor-pointer"><CircleX size = {20} /></div>}
     </div>

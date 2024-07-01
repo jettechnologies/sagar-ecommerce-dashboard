@@ -7,6 +7,8 @@ import EditProfile from "@/sections/EditProfile";
 import ResetPassword from "@/sections/ResetPassword";
 import Coupons from "@/sections/Coupons";
 import { EasyHTTP } from "@/utils/httpRequest";
+import DisplayFlatrate from "@/sections/DisplayFlatrate";
+
 
 const currencies = [
   {key:"pound", value : "Pound"},
@@ -135,62 +137,7 @@ const Settings = () => {
             <EditProfile token={token} />
           </div>
           {/* the end of the second section of the editprofile */}
-          <div className="w-full flex gap-x-12 shadow-md pt-6 border-t border-[#c0c0c0]">
-            <div className="w-fit">
-                <h4 className="mb-6">
-                  Newletter Subscribers
-                </h4>
-                <table className="min-w-full text-center text-sm font-light">
-                    <thead className="font-medium border-b bg-black text-white">
-                        <tr>
-                            <th scope="col" className="px-6 py-4">S/N</th>
-                            <th scope="col" className="px-6 py-4">Email Address</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          1
-                        </td>
-                        <td>
-                          John@gmail.com
-                        </td>
-                      </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div className="flex-1">
-              <h4 className="mb-6">
-                  Customer Feedbacks
-                </h4>
-                <table className="min-w-full text-center text-sm font-light">
-                    <thead className="font-medium border-b bg-black text-white">
-                        <tr>
-                            <th scope="col" className="px-6 py-4">S/N</th>
-                            <th scope="col" className="px-6 py-4">Email Address</th>
-                            <th scope="col" className="px-6 py-4">Shopping Experience Rating</th>
-                            <th scope="col" className="px-6 py-4">Additional Feedback</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          1
-                        </td>
-                        <td>
-                          John@gmail.com
-                        </td>
-                        <td>
-                          The experience was plensant
-                        </td>
-                        <td>
-                          The product was nice
-                        </td>
-                      </tr>
-                    </tbody>
-                </table>
-            </div>
-          </div>
+          <DisplayFlatrate />
         </div>
       </Container>
     </div>

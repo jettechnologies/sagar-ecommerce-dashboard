@@ -109,3 +109,61 @@ export interface AdminDataType {
     password_reset_link: string | null;
   }
   
+  type User = {
+    id: number;
+    userID: string;
+    email: string;
+    role: string;
+    DOB: string | null;
+    age: number | null;
+    password: string;
+    mobile: string;
+    fullname: string;
+    cityOfResidence: string;
+    UpdatedAt: string;
+    RegisteredAt: string;
+    home_address: string;
+    profile_picture: string;
+    LGA_of_Home_Address: string | null;
+    gender: string;
+    Nationality: string | null;
+    totalRevenue: string;
+    isLoggedIn: boolean;
+    isRegistered: boolean;
+    isVerified: boolean;
+    reset_link_exptime: string | null;
+    password_reset_link: string | null;
+  };
+  
+  type Item = {
+    id: number;
+    quantity: number;
+    price: string;
+  };
+  
+  export type Order = {
+    id: number;
+    orderID: string;
+    name: string | null;
+    mobile: string | null;
+    billing_address: string | null;
+    email: string | null;
+    subTotal: string;
+    discount: string | null;
+    IsCouponCodeApplied: boolean;
+    shippinFee: string;
+    total: string;
+    isPaid: boolean;
+    orderType: string | null;
+    paymentMethod: string | null;
+    createdAT: string;
+    trackingID: string;
+    status: string;
+    updatedAT: string | null;
+    dropoffpincode: string | null;
+    pickuppincode: string | null;
+    weight: string;
+    user: User;
+    items: Item[];
+  };
+  

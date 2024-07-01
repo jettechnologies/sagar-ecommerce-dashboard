@@ -9,7 +9,7 @@ import CreateAdmin from "./pages/dashboard/CreateAdmin";
 import AddProduct from "./pages/dashboard/AddProduct";
 import ViewOrders from "./pages/dashboard/ViewOrders";
 import Layout from "./pages/Layout";
-import Index from "./pages/Index";
+import Index from "./pages/Index"
 import Signup from "./pages/auth/Signup";
 import Login from "./pages/auth/Login";
 import OTP from "./pages/auth/OTP";
@@ -18,6 +18,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import ResetOtp from "./pages/auth/ResetOtp";
 import Category from "./pages/dashboard/Category";
 import Inventory from "./pages/dashboard/Inventory";
+import CustomersReview from "./pages/dashboard/CustomersReview";
 // import ProtectedRoutes from "./components/ProtectedRoutes";
 
 
@@ -54,6 +55,7 @@ function App() {
               <Route index = {true} element = {<Adminstrators />} />
               <Route path="create-admin" element = {<CreateAdmin />} />
             </Route>
+            <Route path="customers-review" element = {<CustomersReview/>} />
             <Route path="account-setting" element = {<Settings />} />
           </Route>
         {/* </Route> */}

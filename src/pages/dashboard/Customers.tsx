@@ -117,7 +117,7 @@ const Customers = () => {
 
   return (
     <div className="w-full h-full">
-        <div className="min-h-16 w-full">
+        {/* <div className="min-h-16 w-full">
             <Container >
             <div className="flex gap-x-4">
                         <div className="w-fit h-full">
@@ -158,7 +158,7 @@ const Customers = () => {
                         </div>
                     </div>
             </Container>
-        </div>
+        </div> */}
         <Container className="mt-4 min-h-screen">
             <div className="flex justify-between items-center w-full mb-4">
                 <h3 className="font-semibold text-size-500 text-text-bold">
