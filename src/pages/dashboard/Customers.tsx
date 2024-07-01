@@ -1,5 +1,4 @@
 import Container from "@/components/Container";
-import Select from "@/components/Select";
 import Image from "@/components/Image";
 import { useState, useEffect } from "react";
 import { Eye } from "lucide-react";

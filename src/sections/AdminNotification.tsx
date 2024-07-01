@@ -1,7 +1,7 @@
 import { Trash2, CircleAlert } from "lucide-react";
 import useGetRequest from "@/pages/hooks/useGetRequest";
 import { useAuth } from "@/context/authContext";
-import { Spinner } from "@radix-ui/themes";
+import Spinner from "@/components/Spinner";
 import Modal from "@/components/Modal";
 import Button from "@/components/Button";
 import { EasyHTTP } from "@/utils/httpRequest";

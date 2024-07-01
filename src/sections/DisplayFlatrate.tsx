@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import useGetRequest from "@/pages/hooks/useGetRequest";
 import { useAuth } from "@/context/authContext";
-import { Spinner } from "@radix-ui/themes";
+import Spinner from "@/components/Spinner"
 import { Edit, Trash2, CircleAlert } from "lucide-react";
 import { formatToHumanReadableDate } from "@/utils/dateFunctions";
 import Modal from "@/components/Modal";
