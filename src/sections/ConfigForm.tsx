@@ -75,7 +75,7 @@ const ConfigForm = ({
       return acc;
     }, {});
 
-    console.log(result);
+    console.log(result, setLoading);
 
     try {
       if (!validateObject(result)) return;
