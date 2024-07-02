@@ -308,6 +308,8 @@ const ViewOrders = () => {
                     </div>
                 </div>
             </Container>
+
+            {/* modal for updating the order status */}
             <Modal title="Update Order Status" isOpen={isUpdating} handleModalOpen={() => setIsUpdating((prevState) => !prevState)}>
                 <form id="update_order_status" onSubmit={updateOrderStatus} className="w-full">
                     <div className="w-full flex justify-between flex-wrap gap-6 mb-6">

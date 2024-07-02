@@ -252,7 +252,7 @@ const SideNavBar = ({ className, setCouponActions, setCurrentId, setCurrentCoupo
             </nav>
             <div className="w-full flex flex-col gap-y-4">
                 {(coupons && coupons.length > 0) && coupons.map((coupon) =>(
-                  <div className="w-full px-4 py-2 border border-green-500 flex flex-col gap-y-2 rounded-md">
+                  <div key = {coupon.id} className="w-full px-4 py-2 border border-green-500 flex flex-col gap-y-2 rounded-md" >
                     <div className="flex gap-2 justify-end">
                         <div 
                           className="p-1 text-green-500 cursor-pointer"

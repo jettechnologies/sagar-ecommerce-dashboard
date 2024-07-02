@@ -68,6 +68,7 @@ const Settings = () => {
                 setLoading(true);
                 const response = await easyHttp.post(url, headers, data);
                 console.log(response);
+                window.location.reload();
             }
             catch(err){
                 console.log((err as Error).message)

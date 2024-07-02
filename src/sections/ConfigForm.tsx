@@ -1,6 +1,9 @@
 import Modal from "@/components/Modal";
 import Select from "@/components/Select";
-import { useState, ChangeEvent, useCallback } from "react";
+import { useState, ChangeEvent, useCallback, useEffect } from "react";
+import Notification from "@/components/Notification";
+import { EasyHTTP } from "@/utils/httpRequest";
+import { useAuth } from "@/context/authContext";
 
 interface Props {
   gateway: "razorpay" | "payumoney" | "cashfree";
@@ -14,6 +17,8 @@ const gateways = [
   { key: "payumoney", value: "payumoney gateway" },
   { key: "cashfree", value: "cashfree gateway" }
 ];
+
+const easyHttp = new EasyHTTP();
 
 const validateObject = <T extends Record<string, any>>(obj: T): boolean => {
   for (const [key, value] of Object.entries(obj)) {
@@ -31,7 +36,6 @@ const ConfigForm = ({
   setGateway
 }: Props) => {
   const [formData, setFormData] = useState({
-    dto: "",
     keyId: "",
     keySecret: "",
     webhook_secret: "",
@@ -50,7 +54,14 @@ const ConfigForm = ({
     payment_url: "",
   });
 
+  const { token } = useAuth();
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [validateError, setValidateError] = useState({
+    msg: "",
+    status: false,
+  });
 
   const selectGateway = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     setGateway(e.target.value as "razorpay" | "payumoney" | "cashfree");
@@ -78,9 +89,21 @@ const ConfigForm = ({
     console.log(result, setLoading);
 
     try {
-      if (!validateObject(result)) return;
+      if (!validateObject(result)) {
+        setValidateError({
+            msg: "All fields are required",
+            status: true
+        });
+      }
 
-      let data;
+      let data, url:string;
+      const headers:HeadersInit = {
+        "Content-Type": 'application/json',
+        "Accept": "application/json",
+        Authorization: `Bearer ${token}`,
+      }
+
+      setLoading(true);
 
       if (gateway === "razorpay") {
         data = {
@@ -90,6 +113,9 @@ const ConfigForm = ({
           razorpayApiSecret: result.api_secret,
           razorpayApiKey: result.api_key,
         };
+
+        url = "payment-gateway-config/razorPay";
+
       } else if (gateway === "payumoney") {
         data = {
           payuMerchantKey: result.merchant_key,
@@ -101,6 +127,8 @@ const ConfigForm = ({
           payumoneyAuthToken: result.auth_token,
           payumoneyPaymentUrl: result.payment_url,
         };
+
+        url = "payment-gateway-config/payUmoney";
       } else if (gateway === "cashfree") {
         data = {
           cashfreeAppId: result.app_id,
@@ -111,35 +139,44 @@ const ConfigForm = ({
           cashfreeApiSecret: result.api_secret,
           cashfreePaymentUrl: result.payment_url,
         };
+
+        url = "payment-gateway-config/cashfree";        
       } else {
         throw new Error("No matching gateways present");
       }
 
       // Here you can make an API call with the `data` object
       console.log(data);
+      const response = await easyHttp.patch(url, headers, data);
+
+      console.log(response);
+      setIsOpen(false);
+      window.location.reload();
     } catch (error) {
       console.error((error as Error).message);
+      setError((error as Error).message);
     }
-  }, [formData, gateway]);
+    finally{
+        setLoading(false);
+    }
+  }, [formData, gateway, token, setIsOpen]);
+
+  console.log(error);
+
+  useEffect(() =>{
+    let errorRemoval: ReturnType<typeof setTimeout>;
+
+    if(validateError){
+       errorRemoval =  setTimeout(() =>{
+            setValidateError({status: false, msg: ""});
+        }, 2000)
+    }
+
+    return() => clearTimeout(errorRemoval)
+}, [validateError]);
 
   const razorpayForm = () => (
     <>
-        <div className="w-full">
-            <label
-                htmlFor="dto"
-                className="text-size-400 text-text-black font-medium mb-3"
-            >
-                Razorpay DTO
-            </label>
-            <input
-                type="text"
-                placeholder="Enter the DTO"
-                id="dto"
-                name="dto"
-                onChange={handleInputChange}
-                className="mt-3 border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
-            />
-        </div>
         <div className="w-full">
             <label
                 htmlFor="keyId"
@@ -508,6 +545,7 @@ const cashfreeForm = () => (
         <hr className="my-3" />
 
       <form onSubmit={configurePayment} className="space-y-6 w-full">
+        {validateError.status && <Notification message = {validateError.msg} type = "danger" className="text-white mb-4"/>}
         {gateway === "razorpay" && razorpayForm()}
         {gateway === "payumoney" && payumoneyForm()}
         {gateway === "cashfree" && cashfreeForm()}
