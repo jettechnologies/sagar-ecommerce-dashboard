@@ -1,9 +1,13 @@
 import Container from "@/components/Container";
 import Image from "@/components/Image";
 import { useState, useEffect } from "react";
-import { Eye } from "lucide-react";
+// import { Eye } from "lucide-react";
 import Modal from "@/components/Modal";
 import { useAuth } from "@/context/authContext";
+import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
+import Button from "@/components/Button";
+import Spinner from "@/components/Spinner";
+import { Link } from "react-router-dom";
 
 interface CustomerData {
         DOB: null;
@@ -177,7 +181,7 @@ const Customers = () => {
                             <th scope="col" className="px-6 py-4">Contacr</th>
                             <th scope="col" className="px-6 py-4">Date Created</th>
                             <th scope="col" className="px-6 py-4">Total Orders</th>
-                            <th scope="col" className="px-6 py-4">View Profile</th>
+                            {/* <th scope="col" className="px-6 py-4">View Profile</th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -216,11 +220,11 @@ const Customers = () => {
                                             : 
                                             String(customer.orders.length)}
                                         </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex">
+                                        {/* <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex">
                                             <div className="p-2 cursor-pointer rounded-full" onClick={() => setIsModalOpen(prevState => !prevState)}>
                                                 <Eye color = "rgb(34 197 94)"/>
                                             </div>
-                                        </td>
+                                        </td> */}
                                     </tr> 
                                 )
                             })
@@ -228,12 +232,35 @@ const Customers = () => {
                         
                     </tbody>
                 </table>
-            </div>
-            <div className="mt-6 w-full flex justify-end">
-                <div className="w-48 h-10 border-2 border-black">
+                {
+                    loading && <div className="w-full h-full">
+                        <Spinner />
+                    </div>
+                }
 
-                </div>
+                {
+                    error && <div className="w-full h-full">
+                        <p>{error}</p>
+                        <Link to = "/admin/" 
+                            className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white bg-black text-center "
+                        >
+                            Refresh page
+                        </Link>
+                    </div>
+                }
             </div>
+            <div className="mt-8 w-full flex justify-end">
+                    <div className="w-fit flex gap-x-5 h-10">
+                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
+                            <ArrowLeftIcon stroke="#fff" />
+                            Previous
+                        </Button>
+                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
+                            Next
+                            <ArrowRightIcon stroke="#fff" />
+                        </Button>
+                    </div>
+                </div>
                    {/* Editing existing product category */}
             <Modal title = "Customer details" isOpen={isModalOpen} handleModalOpen={() => setIsModalOpen(prevState => !prevState)}>
             </Modal>

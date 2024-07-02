@@ -17,7 +17,7 @@ import { formatToHumanReadableDate } from "@/utils/dateFunctions";
 type FilterType = "all_orders" | "delivered_orders" | "processed_orders" | "shipped_orders";
 
 const ViewOrders = () => {
-    const { token } = useAuth();
+    const { token, loading:authLoading } = useAuth();
     const [filter, setFilter] = useState<string>("all_orders");
     const [orders, setOrders] = useState<Order[]>([]);
     const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
@@ -28,7 +28,7 @@ const ViewOrders = () => {
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
 
     const fetchOrders = useCallback(async () => {
-        if (!token) return;
+        if (token === "" || authLoading) return;
 
         const urls: Record<FilterType, string> = {
             all_orders: "order-mgt/get-all-orders",

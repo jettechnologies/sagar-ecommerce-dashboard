@@ -132,7 +132,7 @@ const AdminLayout = () => {
     Cookies.remove("auth_token");
     setToken("");
     navigate("/login", { replace: true });
-    window.location.reload();
+    // window.location.reload();
   };
 
   // function to edit coupon

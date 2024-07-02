@@ -11,7 +11,7 @@ import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
 import { EasyHTTP } from "@/utils/httpRequest";
-import { ArrowLeftIcon } from "@/icons/svg";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/icons/svg";
 import { useAuth } from "@/context/authContext";
 import Select from "@/components/Select";
 
@@ -393,7 +393,7 @@ const Adminstrators = () => {
 
                         {
                             error ? (
-                                <div className="w-full h-full  grid place-content-center gap-4">
+                                <div className="w-full h-screen grid place-content-center gap-4">
                                     <h1>An error occurred while fetching</h1>
                                     <Link to = "/admin/" 
                                         className="mt-5 w-[20rem] py-3 cursor-pointer text-size-500 font-medium text-white bg-black text-center"
@@ -414,13 +414,18 @@ const Adminstrators = () => {
 
 
             </div>
-            <div className="mt-6 w-full flex justify-end">
-                <div className="w-48 h-10 border-2 border-black flex gap-8">
-                    <Button size = "small" className="w-[12rem] justify-center flex">
-                        <ArrowLeftIcon />
-                    </Button>
+            <div className="mt-8 w-full flex justify-end">
+                    <div className="w-fit flex gap-x-5 h-10">
+                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
+                            <ArrowLeftIcon stroke="#fff" />
+                            Previous
+                        </Button>
+                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
+                            Next
+                            <ArrowRightIcon stroke="#fff" />
+                        </Button>
+                    </div>
                 </div>
-            </div>
 
                {/* Editing existing product category */}
         

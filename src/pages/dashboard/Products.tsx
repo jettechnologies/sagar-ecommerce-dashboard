@@ -13,6 +13,7 @@ import Modal from "@/components/Modal";
 import { EasyHTTP } from "@/utils/httpRequest";
 import { useAuth } from "@/context/authContext";
 import EditProduct from "@/sections/EditProduct";
+import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
 
 const easyHttp = new EasyHTTP();
 
@@ -139,8 +140,8 @@ const Products = () => {
     <div className="w-full h-full">
         <div className="min-h-16 w-full">
             <Container >
-                <div className="flex justify-between">
-                    <div className="flex gap-x-4">
+                <div className="flex justify-end">
+                    {/* <div className="flex gap-x-4">
                         <div className="w-fit h-full">
                           <Select 
                             id="category" 
@@ -177,7 +178,7 @@ const Products = () => {
                             defaultText="date"
                             />
                         </div>
-                    </div>
+                    </div> */}
                     <Link to = "add-product" className="text-size-xs px-6 py-2 flex gap-2 bg-black rounded-md text-white items-center justify-center font-normal">
                       <CirclePlusIcon color="#fff"/>
                       Add Product
@@ -185,7 +186,7 @@ const Products = () => {
                 </div>
             </Container>
         </div>
-        <Container className="mt-4 min-h-screen border-2 ">
+        <Container className="mt-4 min-h-screen">
             <div className="flex justify-between items-center w-full mb-4">
                 <h3 className="font-semibold text-size-500 text-text-bold">
                     Products
@@ -302,11 +303,18 @@ const Products = () => {
                             ) 
                         }
             </div>
-            <div className="mt-6 w-full flex justify-end">
-                <div className="w-48 h-10 border-2 border-black">
-
+                <div className="mt-8 w-full flex justify-end">
+                    <div className="w-fit flex gap-x-5 h-10">
+                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
+                            <ArrowLeftIcon stroke="#fff" />
+                            Previous
+                        </Button>
+                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
+                            Next
+                            <ArrowRightIcon stroke="#fff" />
+                        </Button>
+                    </div>
                 </div>
-            </div>
             
              {/* editing existing product category */}
              <EditProduct 

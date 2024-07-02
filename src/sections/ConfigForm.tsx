@@ -125,7 +125,7 @@ const ConfigForm = ({
           payumoneyApiKey: result.api_key,
           payumoneyApiSecret: result.api_secret,
           payumoneyAuthToken: result.auth_token,
-          payumoneyPaymentUrl: result.payment_url,
+          payumoneyPaymentUrl: result.paymentUrl,
         };
 
         url = "payment-gateway-config/payUmoney";
@@ -137,7 +137,7 @@ const ConfigForm = ({
           cashfreeClientId: result.client_id,
           cashfreeClientSecret: result.client_secret,
           cashfreeApiSecret: result.api_secret,
-          cashfreePaymentUrl: result.payment_url,
+          cashfreePaymentUrl: result.paymentUrl,
         };
 
         url = "payment-gateway-config/cashfree";        
@@ -150,8 +150,9 @@ const ConfigForm = ({
       const response = await easyHttp.patch(url, headers, data);
 
       console.log(response);
+      
       setIsOpen(false);
-      window.location.reload();
+    //   window.location.reload(    );
     } catch (error) {
       console.error((error as Error).message);
       setError((error as Error).message);
