@@ -7,7 +7,7 @@ import Spinner from "@/components/Spinner";
 // import BarCharts from "@/components/LineCharts";
 import Select from "@/components/Select";
 import LineCharts from "@/components/LineCharts";
-import BarCharts from "@/components/Barcharts";
+import BarCharts from "@/components/BarCharts";
 
 type RevenueType = {
   date: string;

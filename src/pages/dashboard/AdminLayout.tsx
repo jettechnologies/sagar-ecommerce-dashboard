@@ -1,7 +1,7 @@
 import SideNavBar from "@/components/SideNavBar";
 import { Outlet, useNavigate } from "react-router-dom";
 import Button from "@/components/Button";
-import { CircleAlert, BadgeCheck, LogOutIcon, ImageUp, Search, BellDot } from "lucide-react";
+import { CircleAlert, BadgeCheck, LogOutIcon, ImageUp, BellDot } from "lucide-react";
 import Image from "@/components/Image";
 import { useState, useCallback } from "react";
 import { useAuth } from "@/context/authContext";
@@ -218,18 +218,6 @@ const AdminLayout = () => {
         />
         <div className="w-full pl-[17rem]">
           <header className="py-4 px-6 w-full min-h-[--header-height] bg-white flex justify-end">
-            {/* <form className="w-fit">
-              <div className="w-full flex items-center p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
-                <div className="p-2 cursor-pointer">
-                  <Search color="#c0c0c0" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search items, categories"
-                  className="w-[25em] h-10 border-none outline-none text-text-black bg-transparent pl-2"
-                />
-              </div>
-            </form> */}
             <div className="w-fit flex gap-x-8 items-center">
               <div 
                 className="w-10 h-10 flex items-center justify-center rounded-full text-blue cursor-pointer relative"
