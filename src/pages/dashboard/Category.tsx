@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import { Link } from "react-router-dom";
 import Button from "@/components/Button"
-import { CirclePlusIcon, Edit, GripHorizontal, Trash, CircleAlert } from "lucide-react";
+import { CirclePlusIcon, Edit, GripHorizontal, Trash, CircleAlert, Search } from "lucide-react";
 import Modal from "@/components/Modal";
 import { useEffect, useState } from "react";
 import { Headers, EasyHTTP } from "@/utils/httpRequest";
@@ -224,15 +224,37 @@ const Category = () => {
 
   return (
     <div className="w-full h-full">
+    <div className="min-h-16 w-full">
+        <Container >
+            <div className="flex justify-between">
+            <form className="w-fit">
+                <div className="w-full flex items-center p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
+                    <div className="p-2 cursor-pointer">
+                        <Search color="#c0c0c0" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search categories"
+                        className="w-[25em] h-10 border-none outline-none text-text-black bg-transparent pl-2"
+                    />
+                </div>
+            </form>
+            <Button handleClick={handleModalOpen} size="medium" className="text-size-xs px-4 py-2 flex gap-2 text-white items-center justify-center font-normal">
+                <CirclePlusIcon color="#fff"/>
+                Create new category
+            </Button>
+            </div>
+        </Container>
+    </div>
     <Container className="mt-4 min-h-screen relative">
             <div className="flex justify-between items-center w-full mb-4">
                 <h3 className="font-semibold text-size-500 text-text-bold">
                     Categories
                 </h3>
-                <Button handleClick={handleModalOpen} size="medium" className="text-size-xs px-4 py-2 flex gap-2 text-white items-center justify-center font-normal">
+                {/* <Button handleClick={handleModalOpen} size="medium" className="text-size-xs px-4 py-2 flex gap-2 text-white items-center justify-center font-normal">
                     <CirclePlusIcon color="#fff"/>
                     Create new category
-                </Button>
+                </Button> */}
             </div>
             <div className="h-full mt-4">
                 <table className="min-w-full text-center text-sm font-light">

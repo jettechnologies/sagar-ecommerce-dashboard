@@ -2,11 +2,11 @@
 // import Select from "@/components/Select";
 import Container from "@/components/Container";
 import { Link, useNavigate } from "react-router-dom";
-import { CirclePlusIcon, GripHorizontal, Trash, CircleAlert, Shield, User2,  } from "lucide-react";
-import { useEffect, useState } from "react";
+import { CirclePlusIcon, GripHorizontal, Trash, CircleAlert, Shield, User2, Search } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import Image from "@/components/Image";
 import Button from "@/components/Button";
-import { AdminDataType } from "@/types";
+import { AdminDataType, AdminType } from "@/types";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
@@ -14,6 +14,7 @@ import { EasyHTTP } from "@/utils/httpRequest";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons/svg";
 import { useAuth } from "@/context/authContext";
 import Select from "@/components/Select";
+import ErrorModal from "@/components/ErrorModal";
 
 
 const adminTypes:{key:string; value:string}[] = [
@@ -27,15 +28,21 @@ const adminTypes:{key:string; value:string}[] = [
     { "key": "level3", "value": "level three" }
   ]
 
+//   type SearchAdminResponse = {
+//     message: string;
+//     searchedRider: [AdminType[], number];
+//   }
+
 const easyHttp = new EasyHTTP();
 
 const Adminstrators = () => {
 
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
+    const [searchError, setSearchError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [response, setResponse] = useState<[AdminType[], number] | null>(null)
     const [admins, setAdmins] = useState<AdminDataType [] | []>([]);
-    // const [response, setResponse] = useState<string | null | []>(null)
     const [currentId, setCurrentId] = useState("");
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
     const [changeType, setChangeType] = useState(false);
@@ -44,8 +51,11 @@ const Adminstrators = () => {
         adminType: "",
         accesslevel: "",
     });
+    const [adminSearch, setAdminSearch] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
     const { token } = useAuth();
+
+    const searchRef = useRef<HTMLInputElement>(null);
 
     console.log(token, loading);
 
@@ -276,18 +286,115 @@ const Adminstrators = () => {
 
     }
 
-    console.log(admins)
+    console.log(admins);
+
+    const searchAdmin = async(e:React.FormEvent<HTMLFormElement>) =>{
+        e.preventDefault();
+
+        if(!adminSearch) return;
+
+        const url = `admins-mgt/search-other-admin?keyword=${adminSearch}`;
+        const headers = {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        try{
+            setLoading(true)
+            const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
+                method: "GET",
+                headers
+            });
+
+            const response = await res.json();
+            if(res.status === 404) throw new Error(response.message)
+
+            console.log(response);
+            setResponse(response.searchedRider)
+        }
+        catch(err){
+            console.log((err as Error).message);
+            setSearchError((err as Error).message)
+        }
+        finally{
+            setLoading(false);
+        }
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        console.log("working")
+        if ((e.key === 'Backspace' || e.key === 'Delete') && adminSearch === "") {
+          // Handle delete key and backspace
+        //   s('');
+            setAdminSearch("");
+            setResponse(null);
+            console.log("deleting")
+        }
+      };
+
+    console.log(response);
+
+    // useEffect to change the setSearchAdmin state
+    useEffect(() => {
+        const inputElement = document.getElementsByTagName('input')[0];
+    
+        const handleKeyPress = (e: KeyboardEvent) => {
+          if ((e.key === 'Backspace' || e.key === 'Delete') && adminSearch === "") {
+            // Handle delete key and backspace
+            setAdminSearch("");
+            setResponse(null);
+
+            console.log("deleting")
+          }
+          
+        };
+    
+        inputElement.addEventListener('keydown', handleKeyPress);
+    
+        return () => {
+          inputElement.removeEventListener('keydown', handleKeyPress);
+        };
+      }, [adminSearch]);
+
+      console.log(response)
     
   return (
+    <>
+        <div className="min-h-16 w-full">
+        <Container >
+            <div className="flex justify-between">
+            <form onSubmit={searchAdmin}  className="w-fit">
+                <div className="w-full flex items-center p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
+                    <input
+                        type="text"
+                        ref = {searchRef}
+                        placeholder="Search for admins"
+                        onChange={(e) => setAdminSearch(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className="w-[25em] h-10 border-none outline-none text-text-black bg-transparent pl-2"
+                    />
+                    <button type = "submit" className="p-2 cursor-pointer">
+                        <Search color="#c0c0c0" />
+                    </button>
+                </div>
+            </form>
+            <Link to = "create-admin" className="text-size-xs px-6 py-2 flex gap-2 bg-black rounded-md text-white items-center justify-center font-normal">
+                <CirclePlusIcon color="#fff"/>
+                Create Admin
+            </Link>
+            </div>
+        </Container>
+    </div>
     <Container className="mt-4 min-h-screen">
             <div className="flex justify-between items-center w-full mb-4">
                 <h3 className="font-semibold text-size-500 text-text-bold">
                     Administrators
                 </h3>
-                <Link to = "create-admin" className="text-size-xs px-6 py-2 flex gap-2 bg-black rounded-md text-white items-center justify-center font-normal">
+                {/* <Link to = "create-admin" className="text-size-xs px-6 py-2 flex gap-2 bg-black rounded-md text-white items-center justify-center font-normal">
                     <CirclePlusIcon color="#fff"/>
                     Create Admin
-                </Link>
+                </Link> */}
             </div>
             <div className="h-full w-full">
                 <table className="min-w-full text-center text-sm font-light">
@@ -303,9 +410,7 @@ const Adminstrators = () => {
                     </thead>
                     <tbody>
                         {
-                            
-
-                            admins.map((admin: AdminDataType, index) =>(
+                            !response ? admins.map((admin: AdminDataType, index) =>(
                                 <tr key = {index} className="border border-gray hover:bg-gray cursor-pointer capitalize items-center">
                                     <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex gap-4 items-center">
                                         <div className="w-[3rem] h-[3rem] rounded-full">
@@ -379,6 +484,81 @@ const Adminstrators = () => {
                                     </td>
                                 </tr>
                             ))
+                            :
+                            response[0].map((admin: AdminType) =>(
+                                <tr key = {admin.id} className="border border-gray hover:bg-gray cursor-pointer capitalize items-center">
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex gap-4 items-center">
+                                        <div className="w-[3rem] h-[3rem] rounded-full">
+                                        {admin.profile_picture ? <Image 
+                                            src = {admin.profile_picture && admin.profile_picture} 
+                                            alt="profile image"
+                                            className="w-[3rem] h-[3rem] rounded-full"  
+                                        />
+                                            :<p className="text-size-600 uppercase text-white bg-black text-center flex items-center justify-center w-full h-full rounded-full border">{admin.fullname.split(" ")[0].substring(0,1)}</p>
+                                        }
+                                        </div>
+                                        <div className="flex gap-y-2 flex-col">
+                                            <p className="text-size-500 text-text-black font-semibold">
+                                                {admin.fullname}
+                                            </p>
+                                            <p className="text-sm text-text-black font-normal">
+                                                {admin.RegisteredAt.split("T")[0]}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.email}</td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.mobile}</td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.adminaccessLevel}</td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.Nationality ? admin.Nationality : "was not set"}</td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm relative">
+                                    <Button 
+                                        size="small" 
+                                        type="white"
+                                        handleClick={() => handlePopupToggle(admin.id)}
+                                        className={`border-none z-10`}
+                                    >
+                                        <GripHorizontal />
+                                    </Button>
+                                    {activePopupId === admin.id && (
+                                                <Popup className="top-16">
+                                                    <div className="w-full border-b border-[#f0f0f0] flex">
+                                                        <Button 
+                                                            size="small" 
+                                                            type="white" 
+                                                            handleClick = {() => handleChangeType(admin.id)}
+                                                            className="capitalize border-none bg-transparent flex gap-x-5 text-sm items-center"
+                                                        >
+                                                            <User2 />
+                                                            Change Admin Type
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex w-full border-b border-[#f0f0f0]">
+                                                        <Button 
+                                                            size="small" 
+                                                            type="white" 
+                                                            className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
+                                                            handleClick = {() => handleChangeLevel(admin.id)}
+                                                        >
+                                                            <Shield />
+                                                            Change Access level
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex w-full border-b border-[#f0f0f0]">
+                                                        <Button 
+                                                            size="small" 
+                                                            type="white" 
+                                                            className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
+                                                            handleClick = {() => handleIsDeleting(admin.id)}
+                                                        >
+                                                            <Trash />
+                                                            Delete Admin
+                                                        </Button>
+                                                    </div>
+                                                </Popup>
+                                            )}
+                                    </td>
+                                </tr>
+                            ))
                         }
 
                     </tbody>
@@ -402,7 +582,7 @@ const Adminstrators = () => {
                                     </Link>
                                 </div>
                             )
-                            : (admins.length === 0) && (<div className="w-full h-full grid place-content-center gap-4">
+                            : response && (admins.length || response[0].length === 0) && (<div className="w-full h-full grid place-content-center gap-4">
                                 <h1 className="text-center">No sub admins</h1>
                                 <Link to = "/admin/" 
                                     className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white bg-black text-center "
@@ -508,8 +688,10 @@ const Adminstrators = () => {
             </div>
         </Modal>
 
+        <ErrorModal error={searchError} setError={() => setSearchError(null)} redirect="/admin/accounts"/>
 
         </Container>
+    </>
   )
 }
 

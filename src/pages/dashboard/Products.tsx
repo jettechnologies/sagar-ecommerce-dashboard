@@ -2,7 +2,7 @@ import Notification from "@/components/Notification";
 // import Select from "@/components/Select";
 import Container from "@/components/Container";
 import { Link } from "react-router-dom";
-import { CirclePlusIcon, GripHorizontal, Edit, Trash, CircleAlert } from "lucide-react";
+import { CirclePlusIcon, GripHorizontal, Edit, Trash, CircleAlert, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "@/components/Image";
 import Button from "@/components/Button";
@@ -139,46 +139,20 @@ const Products = () => {
   return (
     <div className="w-full h-full">
         <div className="min-h-16 w-full">
-            <Container >
-                <div className="flex justify-end">
-                    {/* <div className="flex gap-x-4">
-                        <div className="w-fit h-full">
-                          <Select 
-                            id="category" 
-                            name = "category" 
-                             className="border border-[#c0c0c0]" 
-                            select={[{key: "electronics", value: "electronics"}, {key: "wearables", value: "wearables"}, {key: "gamings", value: "gamings"}, {key: "cameras", value: "cameras"}]}
-                            defaultText="Categories"
-                            />
+            <Container>
+                <div className="flex justify-between">
+                <form className="w-fit">
+                    <div className="w-full flex items-center p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
+                        <div className="p-2 cursor-pointer">
+                            <Search color="#c0c0c0" />
                         </div>
-                        <div className="w-fit h-full">
-                          <Select 
-                                id = "status" 
-                                name = "status" 
-                                className="border border-[#c0c0c0]" 
-                                select={[ {key: "processing", value: "processing"}, {key: "completed", value: "completed"}, {key: "failed", value: "failed"}]}
-                                defaultText="status"
-                            />
-                        </div>
-                        <div className="w-fit h-full">
-                          <Select 
-                            id = "price" 
-                            name="price" 
-                            className="border border-[#c0c0c0]" 
-                            select={[{key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}
-                            defaultText="price"
-                            />
-                        </div>
-                        <div className="w-fit h-full">
-                          <Select 
-                            id = "date" 
-                            name = "date" 
-                            className="border border-[#c0c0c0]" 
-                            select={[{key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}
-                            defaultText="date"
-                            />
-                        </div>
-                    </div> */}
+                        <input
+                        type="text"
+                        placeholder="Search products"
+                        className="w-[25em] h-10 border-none outline-none text-text-black bg-transparent pl-2"
+                        />
+                    </div>
+                </form>
                     <Link to = "add-product" className="text-size-xs px-6 py-2 flex gap-2 bg-black rounded-md text-white items-center justify-center font-normal">
                       <CirclePlusIcon color="#fff"/>
                       Add Product

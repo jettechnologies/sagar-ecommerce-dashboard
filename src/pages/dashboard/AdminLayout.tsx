@@ -217,8 +217,8 @@ const AdminLayout = () => {
           setCurrentCoupon = {setCurrentCoupon}
         />
         <div className="w-full pl-[17rem]">
-          <header className="py-4 px-6 w-full min-h-[--header-height] bg-white flex justify-between">
-            <form className="w-fit">
+          <header className="py-4 px-6 w-full min-h-[--header-height] bg-white flex justify-end">
+            {/* <form className="w-fit">
               <div className="w-full flex items-center p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
                 <div className="p-2 cursor-pointer">
                   <Search color="#c0c0c0" />
@@ -229,7 +229,7 @@ const AdminLayout = () => {
                   className="w-[25em] h-10 border-none outline-none text-text-black bg-transparent pl-2"
                 />
               </div>
-            </form>
+            </form> */}
             <div className="w-fit flex gap-x-8 items-center">
               <div 
                 className="w-10 h-10 flex items-center justify-center rounded-full text-blue cursor-pointer relative"
