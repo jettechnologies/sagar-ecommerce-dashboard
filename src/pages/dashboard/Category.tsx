@@ -9,6 +9,7 @@ import { useCategories } from "../hooks/usCategories";
 import Notification from "@/components/Notification";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
+import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
 // import { imageValidate } from "@/utils/imageValidate";
 import Image from "@/components/Image";
 import { useAuth } from "@/context/authContext";
@@ -318,11 +319,18 @@ const Category = () => {
                     ) 
                 }
             </div>
-            <div className="mt-6 w-full flex justify-end">
-                <div className="w-48 h-10 border-2 border-black">
-
+            <div className="mt-8 w-full flex justify-end">
+                    <div className="w-fit flex gap-x-5 h-10">
+                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
+                            <ArrowLeftIcon stroke="#fff" />
+                            Previous
+                        </Button>
+                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
+                            Next
+                            <ArrowRightIcon stroke="#fff" />
+                        </Button>
+                    </div>
                 </div>
-            </div>
             {
                 resError && <Notification 
                         message={resError} 

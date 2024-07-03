@@ -51,7 +51,7 @@ const ConfigForm = ({
     secret_key: "",
     client_id: "",
     client_secret: "",
-    payment_url: "",
+    // payment_url: "",
   });
 
   const { token } = useAuth();
@@ -115,6 +115,11 @@ const ConfigForm = ({
         };
 
         url = "payment-gateway-config/razorPay";
+        // url = "payment-gateway-config/razorpay/${id}";
+        // pathroute
+        // get route
+        // url = "payment-gateway-config/get-razorpay";
+
 
       } else if (gateway === "payumoney") {
         data = {
@@ -125,10 +130,20 @@ const ConfigForm = ({
           payumoneyApiKey: result.api_key,
           payumoneyApiSecret: result.api_secret,
           payumoneyAuthToken: result.auth_token,
+          payuWebhookSecret: result.webhook_secret,
           payumoneyPaymentUrl: result.paymentUrl,
         };
 
+        console.log(data)
+
         url = "payment-gateway-config/payUmoney";
+
+        // patch route
+        // url = "payment-gateway-config/payUmoney/${pyUmoneyID}";
+        // get route
+        // url = "payment-gateway-config/get-payUmoney";
+        // url = 
+
       } else if (gateway === "cashfree") {
         data = {
           cashfreeAppId: result.app_id,
@@ -136,21 +151,30 @@ const ConfigForm = ({
           cashfreeWebhookSecret: result.webhook_secret,
           cashfreeClientId: result.client_id,
           cashfreeClientSecret: result.client_secret,
+          cashfreeApiKey: result.api_key,
           cashfreeApiSecret: result.api_secret,
           cashfreePaymentUrl: result.paymentUrl,
         };
 
-        url = "payment-gateway-config/cashfree";        
+        console.log(data);
+
+        url = "payment-gateway-config/cashfree"; 
+        // path oute      
+        // url = "payment-gateway-config/update-cashfree/${id}"; 
+        // get route
+        // url = "payment-gateway-config/get-cashfree"; 
+
+
       } else {
         throw new Error("No matching gateways present");
       }
 
       // Here you can make an API call with the `data` object
       console.log(data);
-      const response = await easyHttp.patch(url, headers, data);
+      const response = await easyHttp.post(url, headers, data);
 
       console.log(response);
-      
+
       setIsOpen(false);
     //   window.location.reload(    );
     } catch (error) {
@@ -175,6 +199,8 @@ const ConfigForm = ({
 
     return() => clearTimeout(errorRemoval)
 }, [validateError]);
+
+// console.log(formData);
 
   const razorpayForm = () => (
     <>
@@ -307,6 +333,22 @@ const payumoneyForm = () => (
                 placeholder="Enter PayUMoney Webhook Salt"
                 id="webhook_salt"
                 name="webhook_salt"
+                onChange={handleInputChange}
+                className="mt-3 border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
+            />
+        </div>
+        <div className="w-full">
+            <label
+                htmlFor="webhook_secret"
+                className="text-size-400 text-text-black font-medium mb-3"
+            >
+                Webhook Secret
+            </label>
+            <input
+                type="text"
+                placeholder="Enter PayUmoney Webhook Secret"
+                id="webhook_secret"
+                name="webhook_secret"
                 onChange={handleInputChange}
                 className="mt-3 border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
             />
@@ -487,7 +529,23 @@ const cashfreeForm = () => (
                 type="text"
                 placeholder="Enter Cashfree Payment URL"
                 id="payment_url"
-                name="payment_url"
+                name="paymentUrl"
+                onChange={handleInputChange}
+                className="mt-3 border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
+            />
+        </div>
+        <div className="w-full">
+            <label
+                htmlFor="api_key"
+                className="text-size-400 text-text-black font-medium mb-3"
+            >
+                API Key
+            </label>
+            <input
+                type="text"
+                placeholder="Enter Cashfree API Key"
+                id="api_key"
+                name="api_key"
                 onChange={handleInputChange}
                 className="mt-3 border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
             />

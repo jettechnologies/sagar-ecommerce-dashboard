@@ -394,8 +394,8 @@ const Adminstrators = () => {
                         {
                             error ? (
                                 <div className="w-full h-screen grid place-content-center gap-4">
-                                    <h1>An error occurred while fetching</h1>
-                                    <Link to = "/admin/" 
+                                    <h1>{error}</h1>
+                                    <Link to = "/admin/dashboard" 
                                         className="mt-5 w-[20rem] py-3 cursor-pointer text-size-500 font-medium text-white bg-black text-center"
                                     >
                                         Refresh page

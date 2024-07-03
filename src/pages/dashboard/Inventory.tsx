@@ -56,67 +56,6 @@ const Inventory = () => {
   // const [isDefault, setIsDefault] = useState(false);
   // const {setItem} = useLocalStorage("default_threshold");
 
-
-  // console.log(products, error, loading)
-
-  // useEffect(() =>{
-  //   if(isDefault && threshold !== ""){
-  //     setItem(threshold);
-
-  //     console.log("its working");
-  //   }
-  //   else if (hasMounted && !isDefault) {
-  //     window.localStorage.removeItem('default_threshold');
-  //   }
-  // }, [threshold, isDefault, setItem, hasMounted]);
-
-  // // initial fetching of products with a 
-
-  // useEffect(() => {
-  //   setHasMounted(true);
-  // }, []);
-
-  // useEffect(() => {
-  //   const localStorage = window.localStorage.getItem('default_threshold');
-
-  //   const fetchDefaultThreshold = async () => {
-  //     if (localStorage && authLoading && token) {
-  //       const localStorageData = JSON.parse(localStorage);
-
-  //       console.log(localStorageData);
-  //       setThreshold(localStorageData);
-  //       setIsDefault(!!localStorageData);
-
-  //       try {
-  //         setLoading(true);
-  //         const url = `inventory/get-low-stock?threshold=${localStorageData}`;
-  //         const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Accept: "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         });
-
-  //         const response = await res.json();
-  //         if (!res.ok) throw new Error(response.message || "Failed to fetch products");
-
-  //         console.log(response);
-  //         setProducts(response[0]);
-  //       } catch (err) {
-  //         console.log((err as Error).message);
-  //         setError((err as Error).message);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     }
-  //   };
-
-  //   fetchDefaultThreshold();
-  // }, [authLoading, token]);
-
-
   const fetchThresholdProducts = useCallback(async () => {
     if (threshold === "") return;
   
@@ -302,7 +241,8 @@ const updateThreshold = useCallback(
                     </tr>
                   ))}
                 </tbody>
-                {
+              </table>
+              {
                   loading && <div className="w-full h-full"><Spinner /></div>
                 }
 
@@ -312,7 +252,6 @@ const updateThreshold = useCallback(
                     <Link to = "/admin/inventory" className="w-[20rem] h-[4rem] text-center bg-black text-white">Refresh page</Link>
                   </div>
                 }
-              </table>
             </div>
           </div>
         </Container>

@@ -24,7 +24,7 @@ const Select:React.FC<Props> = ({select, className, isMultiple, id, name, defaul
       className={twMerge("py-2 px-4 rounded-md text-size-400 font-normal font-roboto text-text-black capitalize cursor-pointer", className)}
       onChange={handleInputChange}
     >
-      <option disabled selected hidden value="">
+      <option defaultValue="">
         {defaultText}
       </option>
        {
