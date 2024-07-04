@@ -1,22 +1,19 @@
-import Notification from "@/components/Notification";
-// import Select from "@/components/Select";
-import Container from "@/components/Container";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CirclePlusIcon, GripHorizontal, Edit, Trash, CircleAlert, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import Notification from "@/components/Notification";
+import Container from "@/components/Container";
 import Image from "@/components/Image";
 import Button from "@/components/Button";
-import { ProductType } from "@/types";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
-import { EasyHTTP } from "@/utils/httpRequest";
-import { useAuth } from "@/context/authContext";
+import ErrorModal from "@/components/ErrorModal";
 import EditProduct from "@/sections/EditProduct";
 import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
-import ErrorModal from "@/components/ErrorModal";
-// import useGetRequest from "../hooks/useGetRequest";
-// import { ProductType } from "@/types";
+import { EasyHTTP } from "@/utils/httpRequest";
+import { useAuth } from "@/context/authContext";
+import { ProductType } from "@/types";
 
 const easyHttp = new EasyHTTP();
 
@@ -25,205 +22,148 @@ interface ProductContentType {
     description: string;
     price: string;
     stock: string;
-    // categoryId: string;
     productimage: File | null;
 }
 
-// interface SearchTermType{
-//     data: ProductType[];
-//     total: number;
-//   }
-
 const Products = () => {
-
-    // const [token, setToken] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [searchError, setSearchError] = useState<string | null>(null);
-    const [result, setResult] = useState<ProductType[] | null>(null)
+    const [result, setResult] = useState<ProductType[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
-    const [products, setProducts] = useState<ProductType[] | []>([]);
+    const [products, setProducts] = useState<ProductType[]>([]);
     const [response, setResponse] = useState<string | null | []>(null)
     const [search, setSearch] = useState("");
     const [currentId, setCurrentId] = useState("");
-    // useState for the new product content
-
-    console.log(search);
     const [productContent, setProductContent] = useState<ProductContentType>({
         name: "",
         description: "",
         price: "",
         stock: "",
-        // categoryId: "",
         productimage: null,
     });
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
-    const [isEditing, setIsEditing] = useState(false)
+    const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const { token } = useAuth();
 
-    useEffect(() =>{
-    if (!token || search === null) return;
-
-    const getAllProducts = async (token:string) => {
-      try {
-        setLoading(true);
-        const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/product-mgt/fetch-all-products", {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          }
-        });
-        
-        const data = await res.json();
-        console.log(data[0])
-
-        if (!res.ok) {
-          console.log(res);
-          setError(data.message || 'An error occurred');
-          return;
-        }
-
-        setProducts(data[0]);
-      } catch (e) {
-        console.log((e as Error).message);
-        setError((e as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getAllProducts(token);
-    }, [token, search]);
-
-    
-    console.log(products)
-
-
-    const handlePopupToggle = (id:number) => {
-        setActivePopupId(prevId => (prevId === id ? null : id));
-    };
-
-    // handling editing of a category
-    const handleIsEditing = (id:number)  =>{
-        setIsEditing(prevState => !prevState)
-
-        setCurrentId(String(id))
-    }
-
-    // Stuff for deleting a category
-    const handleIsDeleting = (id:number) =>{
-        setIsDeleting(prevState => !prevState);
-
-        setCurrentId(String(id))
-    }
-
-    const handleDeleteProduct = async() =>{
-        console.log(token, currentId)
-        // const id = string(currentId);
-        const url = `product-mgt/take-down-product/${currentId}`;
-        const headers = {
-            'Authorization': `Bearer ${token}`,
-        }
-
-        try{
-            setDeleteLoading(true)
-            const res = await easyHttp.delete(url, headers);
-            setResponse(res)
-        }
-        catch(e){
-            console.log((e as Error).message)
-            setError((e as Error).message);
-        }
-        finally{
-            setDeleteLoading(false)
-        }
-
-        if(error !== null){
-            return;
-        }
-
-        console.log(response)
-
-        setIsDeleting(prevState => !prevState);
-
-        window.location.reload();
-    }
-
-    // form submit for searching products
-    const searchProducts = async(e:React.FormEvent<HTMLFormElement>) =>{
-        e.preventDefault();
-
-        if(!search) return;
-
-        const url = `browse/search-product?keyword=${search}`;
-        // const headers = {
-        //     'Content-type': 'application/json',
-        //     'Accept': 'application/json',
-        //     'Authorization': `Bearer ${token}`,
-        // };
-
-        try{
-            setLoading(true)
-            
-            const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`);
-              
-              const data = await res.json();
-              console.log(data[0])
-      
-              if (!data.ok) {
-                setError(data.message || 'An error occurred');
-                return;
-              }
-      
-              setResult(data.data);
-        }
-        catch(err){
-            console.log((err as Error).message);
-            setSearchError((err as Error).message)
-        }
-        finally{
-            setLoading(false);
-        }
-    }
-
-    // console.log(result, search)
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        console.log("working")
-        if ((e.key === 'Backspace' || e.key === 'Delete') && search === "") {
-          // Handle delete key and backspace
-        //   s('');
-            setSearch("");
-            setResult(null);
-            console.log("deleting")
-        }
-      };
 
     console.log(response);
 
-    // useEffect to change the setSearchAdmin state
     useEffect(() => {
-        const inputElement = document.getElementsByTagName('input')[0];
-    
-        const handleKeyPress = (e: KeyboardEvent) => {
-          if ((e.key === 'Backspace' || e.key === 'Delete') && search === "") {
-            // Handle delete key and backspace
+        if (!token || search === null) return;
+
+        const getAllProducts = async (token: string) => {
+            try {
+                setLoading(true);
+                const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/product-mgt/fetch-all-products", {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    setError(data.message || 'An error occurred');
+                    return;
+                }
+
+                setProducts(data[0]);
+            } catch (e) {
+                setError((e as Error).message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        getAllProducts(token);
+    }, [token, search]);
+
+    const handlePopupToggle = (id: number) => {
+        setActivePopupId(prevId => (prevId === id ? null : id));
+    };
+
+    const handleIsEditing = (id: number) => {
+        setIsEditing(prevState => !prevState);
+        setCurrentId(String(id));
+    };
+
+    const handleIsDeleting = (id: number) => {
+        setIsDeleting(prevState => !prevState);
+        setCurrentId(String(id));
+    };
+
+    const handleDeleteProduct = async () => {
+        const url = `product-mgt/take-down-product/${currentId}`;
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+        };
+
+        try {
+            setDeleteLoading(true);
+            const res = await easyHttp.delete(url, headers);
+            setResponse(res);
+        } catch (e) {
+            setError((e as Error).message);
+        } finally {
+            setDeleteLoading(false);
+        }
+
+        if (error === null) {
+            setIsDeleting(prevState => !prevState);
+            window.location.reload();
+        }
+    };
+
+    const searchProducts = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!search) return;
+
+        const url = `browse/search-product?keyword=${search}`;
+
+        try {
+            setLoading(true);
+            const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                // setError(data.message || 'An error occurred');
+                throw new Error(data.message || 'An error occurred')
+            }
+
+            setResult(data.data);
+        } catch (err) {
+            console.log((err as Error).message);
+            setSearchError((err as Error).message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if ((e.key === 'Backspace' || e.key === 'Delete') && search === "") {
             setSearch("");
             setResult(null);
+        }
+    };
 
-            console.log("deleting")
-          }
-          
+    useEffect(() => {
+        const inputElement = document.getElementsByTagName('input')[0];
+
+        const handleKeyPress = (e: KeyboardEvent) => {
+            if ((e.key === 'Backspace' || e.key === 'Delete') && search === "") {
+                setSearch("");
+                setResult(null);
+            }
         };
-    
+
         inputElement.addEventListener('keydown', handleKeyPress);
-    
-        return () => {
-          inputElement.removeEventListener('keydown', handleKeyPress);
-        };
-      }, [search]);
 
-      console.log(result)
+        return () => {
+            inputElement.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [search]);
 
   return (
     <div className="w-full h-full">
@@ -323,7 +263,7 @@ const Products = () => {
                                                         className="bg-transparent border-none flex gap-3 text-sm items-center"
                                                     >
                                                         <Edit />
-                                                        Edit category
+                                                        Edit product
                                                     </Button>
                                                 </div>
                                                 <div className="flex w-full justify-center">
@@ -334,7 +274,7 @@ const Products = () => {
                                                         handleClick = {() => handleIsDeleting(product.id)}
                                                     >
                                                         <Trash />
-                                                        Delete category
+                                                        Delete product
                                                     </Button>
                                                 </div>
                                             </Popup>

@@ -7,7 +7,7 @@ import Image from "@/components/Image";
 import { formatToHumanReadableDate } from "@/utils/dateFunctions";
 import Button from "@/components/Button";
 import Popup from "@/components/Popup";
-import { GripHorizontal, BadgeCheck } from "lucide-react";
+import { GripHorizontal, Layers3 } from "lucide-react";
 import Modal from "@/components/Modal";
 import Spinner from "@/components/Spinner";
 import { Link } from "react-router-dom";
@@ -53,14 +53,13 @@ const Inventory = () => {
   const [activePopupId, setActivePopupId] = useState<number | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
-  // const [isDefault, setIsDefault] = useState(false);
-  // const {setItem} = useLocalStorage("default_threshold");
 
   const fetchThresholdProducts = useCallback(async () => {
     if (threshold === "") return;
   
     try {
       setLoading(true);
+      setError("");
       const url = `inventory/get-low-stock?threshold=${threshold}`;
       const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
         method: "GET",
@@ -73,7 +72,7 @@ const Inventory = () => {
       });
   
       const response = await res.json();
-      if (!res.ok) throw new Error(response.message || "Failed to fetch products");
+      if (!res.ok) throw new Error(response.message);
   
       console.log(response);
       setProducts(response[0]);
@@ -81,10 +80,14 @@ const Inventory = () => {
     } catch (err) {
       console.log((err as Error).message);
       setError((err as Error).message);
+      setProducts([]);
     } finally {
       setLoading(false);
+      // setError("")
     }
   }, [threshold, token]);
+
+  console.log(error, threshold, products);
   
   const handlePopupToggle = (id: number) => {
     setActivePopupId((prevId) => (prevId === id ? null : id));
@@ -231,8 +234,8 @@ const updateThreshold = useCallback(
                                 className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
                                 handleClick={() => handleUpdateThreshold(product.id)}
                               >
-                                <BadgeCheck />
-                                Update order status
+                                <Layers3 />
+                                Restock product
                               </Button>
                             </div>
                           </Popup>

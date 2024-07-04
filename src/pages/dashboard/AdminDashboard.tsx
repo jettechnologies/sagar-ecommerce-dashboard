@@ -66,7 +66,7 @@ const AdminDashboard = () => {
   const { data: staffs, loading: staffsLoading } = useGetRequest<number>("admins-mgt/staff-count", { headers }, shouldFetch);
   const { data: productCount, loading: productLoading } = useGetRequest<number>("product-mgt/product-count", { headers }, shouldFetch);
   const { data: categoryCount, loading: categoryLoading } = useGetRequest<number>("product-mgt/category-count", { headers }, shouldFetch);
-  const { data: stockCount, loading: stockLoading } = useGetRequest<number>("product-mgt/category-count", { headers }, shouldFetch);
+  const { data: stockCount, loading: stockLoading } = useGetRequest<number>("product-mgt/product-stock-count", { headers }, shouldFetch);
   const { data: totalRevenue, loading: totalRevenueLoading, error: totalRevenueError } = useGetRequest<RevenueType[]>("analytics/total-revenue-overtime", { headers }, shouldFetch);
   const { data: userRetention, loading: retentionLoading, error: retentionError } = useGetRequest<RetentionType[]>("analytics/user-retention-rate", { headers }, shouldFetch);
   const { data: averageOrder, loading: averageOrderLoading, error: averageOrderError } = useGetRequest<AverageOrderType[]>("analytics/average-order-value", { headers }, shouldFetch);
