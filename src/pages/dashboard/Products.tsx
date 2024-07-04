@@ -141,9 +141,13 @@ const Products = () => {
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if ((e.key === 'Backspace' || e.key === 'Delete') && search === "") {
-            setSearch("");
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        const { key } = event;
+        const isBackspaceOrDelete = key === 'Backspace' || key === 'Delete';
+        const isEmptySearch = search === '';
+
+        if (isBackspaceOrDelete && isEmptySearch) {
+            setSearch('');
             setResult(null);
         }
     };

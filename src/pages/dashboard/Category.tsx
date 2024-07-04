@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Button from "@/components/Button"
 import { CirclePlusIcon, Edit, GripHorizontal, Trash, CircleAlert, Search } from "lucide-react";
 import Modal from "@/components/Modal";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Headers, EasyHTTP } from "@/utils/httpRequest";
 import { useCategories } from "../hooks/usCategories";
 import Notification from "@/components/Notification";
@@ -13,6 +13,8 @@ import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
 // import { imageValidate } from "@/utils/imageValidate";
 import Image from "@/components/Image";
 import { useAuth } from "@/context/authContext";
+import { CategoryType } from "@/types";
+import ErrorModal from "@/components/ErrorModal";
 // import { useFormData } from "../hooks/useFormData";
 
 
@@ -51,6 +53,68 @@ const Category = () => {
         banner: "",
     })
     const [currentId, setCurrentId] = useState(0);
+    const [searchError, setSearchError] = useState<string | null>(null);
+    const [result, setResult] = useState<CategoryType[] | null>(null);
+    const [search, setSearch] = useState("");
+
+
+    const searchCategories = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!search) return;
+
+        const url = `browse/search-category?keyword=${search}`;
+
+        try {
+            setLoading(true);
+            const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`,{
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                // setError(data.message || 'An error occurred');
+                throw new Error(data.message || 'An error occurred')
+            }
+            console.log(data);
+            setResult(data.data);
+        } catch (err) {
+            console.log((err as Error).message);
+            setSearchError((err as Error).message);
+        } finally {
+            setLoading(false);
+        }
+    }, [token, search]);
+
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if ((e.key === 'Backspace' || e.key === 'Delete') && search === "") {
+            setSearch("");
+            setResult(null);
+        }
+    };
+
+    useEffect(() => {
+        const inputElement = document.getElementsByTagName('input')[0];
+
+        const handleKeyPress = (e: KeyboardEvent) => {
+            if ((e.key === 'Backspace' || e.key === 'Delete') && search === "") {
+                setSearch("");
+                setResult(null);
+            }
+        };
+
+        inputElement.addEventListener('keydown', handleKeyPress);
+
+        return () => {
+            inputElement.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [search]);
+
 
     useEffect(() =>{
         getCategories()
@@ -129,6 +193,7 @@ const Category = () => {
             setLoading(true)
             const res = await easyHttp.delete(url, headers);
             setResponse(res)
+            window.location.reload();
         }
         catch(e){
             console.log((e as Error).message)
@@ -216,27 +281,30 @@ const Category = () => {
         return() => clearTimeout(errorRemoval)
     }, [error]);
 
-    if(loading){
-        return<div className="w-full h-full">
-            <Spinner />
-        </div>
-    }
+    // if(loading){
+    //     return<div className="w-full h-full">
+    //         <Spinner />
+    //     </div>
+    // }
 
   return (
     <div className="w-full h-full">
     <div className="min-h-16 w-full">
         <Container >
             <div className="flex justify-between">
-            <form className="w-fit">
+            <form onSubmit = {searchCategories} className="w-fit">
                 <div className="w-full flex items-center p-1 border border-black focus-within:border-blue focus-within:border-2 rounded-md">
-                    <div className="p-2 cursor-pointer">
-                        <Search color="#c0c0c0" />
-                    </div>
                     <input
                         type="text"
                         placeholder="Search categories"
+                        value={search}
+                        onKeyDown={handleKeyDown}
+                        onChange={(e) => setSearch(e.target.value)}
                         className="w-[25em] h-10 border-none outline-none text-text-black bg-transparent pl-2"
                     />
+                    <button type="submit" className="p-2 cursor-pointer">
+                        <Search color="#c0c0c0" />
+                    </button>
                 </div>
             </form>
             <Button handleClick={handleModalOpen} size="medium" className="text-size-xs px-4 py-2 flex gap-2 text-white items-center justify-center font-normal">
@@ -268,7 +336,7 @@ const Category = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {(categories && categories.length > 0) && (
+                        {!result ? (categories && categories.length > 0) && (
                             categories
                                 .sort((a, b) => a.id - b.id)
                                 .map((category, index) => (
@@ -318,28 +386,80 @@ const Category = () => {
                                         </td>
                                     </tr>
                                 ))
-                        )}
+                        ): 
+                        (result && result.length > 0) && (
+                            result
+                                .sort((a, b) => a.id - b.id)
+                                .map((category, index) => (
+                                    <tr key={category.id} className={`border border-gray hover:bg-gray cursor-pointer ${activePopupId === category.id && "relative"} z-20`}>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm capitalize">{index + 1}</td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm capitalize">
+                                            <Image src = {category?.banner} alt = "category image" className = "w-[3rem] h-[3rem] rounded-md"/>    
+                                        </td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm first-letter:uppercase">{category.name}</td>
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm first-letter:uppercase">{category.description?.slice(0,40) + "..."}</td>
+                                        <td className="z-20 whitespace-nowrap px-6 py-4 font-medium text-sm">
+                                            <Button 
+                                                size="small" 
+                                                type="white" 
+                                                handleClick={() => handlePopupToggle(category.id)}
+                                                className={`border-none z-10`}
+                                            >
+                                                <GripHorizontal />
+                                            </Button>
+                                    
+                                            {activePopupId === category.id && (
+                                                <Popup className="top-16">
+                                                    <div className="w-full border-b border-[#f0f0f0] flex justify-center">
+                                                        <Button 
+                                                            size="small" 
+                                                            type="white" 
+                                                            handleClick = {() => handleIsEditing(category.id)}
+                                                            className="bg-transparent border-none flex gap-3 text-sm items-center"
+                                                        >
+                                                            <Edit />
+                                                            Edit category
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex w-full justify-center">
+                                                        <Button 
+                                                            size="small" 
+                                                            type="white" 
+                                                            className="border-none bg-transparent flex gap-3 text-sm items-center"
+                                                            handleClick = {() => handleIsDeleting(category.id)}
+                                                        >
+                                                            <Trash />
+                                                            Delete category
+                                                        </Button>
+                                                    </div>
+                                                </Popup>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))
+                        )
+                    }
                     </tbody>
                 </table>
-                {
-                    isLoading && (
-                        <div className="w-full h-full grid place-items-center">
-                            <Spinner />
+                    {  
+                        (isLoading || loading) && (
+                            <div className="w-full h-full grid place-items-center">
+                                <Spinner />
                         </div>)
-                }
+                    }
 
-                {
-                    isError && (
-                        <div className="w-full h-full grid place-items-center">
-                            <h1>An error occurred while fetching</h1>
-                            <Link to = "/admin/category" 
-                                className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white"
-                            >
-                                Refresh page
-                            </Link>
-                        </div>
-                    ) 
-                }
+                    {
+                        isError && (
+                            <div className="w-full h-full grid place-items-center">
+                                <h1>An error occurred while fetching</h1>
+                                <Link to = "/admin/category" 
+                                    className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white"
+                                >
+                                    Refresh page
+                                </Link>
+                            </div>
+                        ) 
+                    }
             </div>
             <div className="mt-8 w-full flex justify-end">
                     <div className="w-fit flex gap-x-5 h-10">
@@ -487,13 +607,14 @@ const Category = () => {
             </div>
         </Modal>
 
+        <ErrorModal error = {searchError} setError={() => setSearchError(null)} redirect="/admin/category" />
 
-        {
+        {/* {
             response && 
             <div className="absolute w-fit z-60 top-[6rem] right-[1.5rem]">
                 <Notification className="rounded-md w-[18rem] text-sm font-medium text-white" message={response} type="success" />
             </div>
-        }
+        } */}
 
     </div>
   )

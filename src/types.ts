@@ -22,17 +22,23 @@ export interface AdminDataType {
     passwordResetLink: string | null; 
   }
 
+  interface Category{
+    id: number;
+    name: string;
+    description: string;
+    createdAT: string;
+    updatedAT: string;
+  }
+
+  export interface CategoryType extends Category{
+    banner:string;
+  }
+
   export  interface ProductType {
     availability: "in_stock" | "out_stock";
     available_colors: null | string;
     available_sizes: null | string;
-    category: {
-      id: number;
-      name: string;
-      description: string;
-      createdAT: string;
-      updatedAT: string;
-    };
+    category: Category;
     createdAT: string;
     description: string;
     favourites: any[];
