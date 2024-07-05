@@ -608,7 +608,7 @@ const Category = () => {
             </div>
         </Modal>
 
-        <ErrorModal error = {searchError} setError={() => setSearchError(null)} redirect="/admin/category" />
+        <ErrorModal title="Category not found" error = {searchError} setError={() => setSearchError(null)} redirect="/admin/category" />
 
         {/* {
             response && 

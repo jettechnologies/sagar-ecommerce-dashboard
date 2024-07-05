@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { CircleAlert } from "lucide-react";
 
 interface Props{
+    title?: string;
     error: string | null;
     setError: () => void;
     redirect: string;
 }
 
 const ErrorModal = ({
+    title,
     error, 
     setError,
     redirect,
@@ -18,12 +20,12 @@ const ErrorModal = ({
     const navigate = useNavigate();
 
   return (
-    <Modal title="Search Error" isOpen = {!!error} handleModalOpen = {setError}>
+    <Modal title={title ? title : "Search error"} isOpen = {!!error} handleModalOpen = {setError}>
         <div className="flex flex-col w-full ">
         <div className="flex items-center gap-3">
             {/* <MessageSquareWarning size = {35} color = "rgb(239 68 68)"/> */}
             <CircleAlert size = {35} color = "rgb(239 68 68)" />
-            <p className="first-letter:uppercase">
+            <p className="first-letter:uppercase text-sm">
             {error}
             </p>
         </div>

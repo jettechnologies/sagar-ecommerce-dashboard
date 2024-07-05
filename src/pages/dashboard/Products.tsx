@@ -432,7 +432,7 @@ const Products = () => {
             </div>
         </Modal>
 
-        <ErrorModal error = {searchError} setError={() => setSearchError(null)} redirect="/admin/products" />
+        <ErrorModal title = "Product not found" error = {searchError} setError={() => setSearchError(null)} redirect="/admin/products" />
 
         </Container>
     </div>

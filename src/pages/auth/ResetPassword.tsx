@@ -3,6 +3,7 @@ import FormContainer from "@/components/FormContainer";
 import { LockKeyhole, Info, CircleUserRoundIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import Notification from "@/components/Notification";
+import { EasyHTTP } from "@/utils/httpRequest";
 
 interface Reset{
     password: {
@@ -13,10 +14,12 @@ interface Reset{
       error: boolean},  
 }
 
-interface Error{
+interface ErrorType{
   status: boolean;
   msg: string;
 }
+
+const easyHttp = new EasyHTTP();
 
 const ResetPassword = () => {
 
@@ -33,10 +36,13 @@ const ResetPassword = () => {
         },
     });
 
-    const [error, setError] = useState<Error>({
+    const [error, setError] = useState<ErrorType>({
       status: false,
       msg : ""
     });
+
+    const [resError, setResError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
@@ -45,7 +51,7 @@ const ResetPassword = () => {
         setReset({ ...reset, [name]: {str: value.toLocaleLowerCase(), error: false} });
     }
 
-    const handleFormSubmit = (e:React.FormEvent<HTMLFormElement>) =>{
+    const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
 
         const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/i;
@@ -69,14 +75,37 @@ const ResetPassword = () => {
           return
       }
 
+      const localStorage = window.localStorage.getItem("user_id");
+      if(!localStorage) return;
+      const userId = JSON.parse(localStorage);
 
+      const url = "admin-auth/reset-password";
         const data = {
             password: password.str,
+            confirmPassword: confirmPassword.str,
+        }
+      
+        const headers:HeadersInit = {
+          "Content-Type": "application/json",
+          id: userId,
         }
 
-        console.log(data);
+        // console.log(data);
+        try{
+          setLoading(true);
+          const response = await easyHttp.patch(url, headers, data);
+          console.log(response);
+          navigate("/login", { replace: true });
 
-        navigate("/login", { replace: true });
+        }
+        catch(err){
+            console.log((err as Error).message);
+            setResError((err as Error).message);
+        }
+        finally{
+          setLoading(false)
+        }
+
     }
 
     useEffect(() =>{
@@ -102,6 +131,7 @@ const ResetPassword = () => {
                 <h2 className="text-gray-800 font-bold text-sm md:text-xl mb-3 uppercase">Create a new password</h2>
                 {/* <p className="text-md font-normal text-blue mb-8 text-center">Enter email u want the mail link to be sent to</p> */}
                 {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>}
+                {resError && <Notification message = {resError} type = "danger" className="text-white mb-4"/>}
                 <div>
                     <div className={`flex items-center ${reset.password.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
                         <LockKeyhole size = {20}/>
@@ -134,7 +164,7 @@ const ResetPassword = () => {
                 </div>
                 <div className="w-full">
                     <button type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white ">
-                        verify email
+                        {loading ? "Loading..." : "verify email"}
                     </button>
                 </div>
             </form>

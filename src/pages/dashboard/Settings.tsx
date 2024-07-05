@@ -8,7 +8,7 @@ import ResetPassword from "@/sections/ResetPassword";
 import Coupons from "@/sections/Coupons";
 import { EasyHTTP } from "@/utils/httpRequest";
 import DisplayFlatrate from "@/sections/DisplayFlatrate";
-
+import { RotateCcw } from "lucide-react"
 
 const currencies = [
   {key:"pound", value : "Pound"},
@@ -80,15 +80,47 @@ const Settings = () => {
          }
     }
 
+    const resetPasscode = async() =>{
+      const localStorage = window.localStorage.getItem("passcode_id");
+      if(!localStorage) return;
+
+      const passcodeId = JSON.parse(localStorage);
+      const url = `admins-mgt/update-passcode/${passcodeId}`;
+      const headers:HeadersInit = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+
+      try{
+        setLoading(true)
+        const response = await easyHttp.patch(url, headers, {});
+        console.log(response);
+      }
+      catch(err){
+        console.log((err as Error).message);
+      }
+      finally{
+        setLoading(false);
+      }
+    }
+
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full border-2 border-black">
       <div className="min-h-16 w-full mb-5">
-        <Container>
+        <Container className="flex justify-end">
           <Button 
             size="medium"
-            className="font-medium text-size-500 text-white uppercase"
+            handleClick={resetPasscode}
+            className="font-medium text-size-500 text-white uppercase items-center flex gap-2 border-2 border-gray"
           >
-            <></>
+           {
+            loading ? "Loading..." :
+              <>
+                <RotateCcw size = {20}/>
+                <p>reset passcode</p>
+              </>
+           }
           </Button>
         </Container>
       </div>

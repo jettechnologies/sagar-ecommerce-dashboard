@@ -3,13 +3,12 @@ import FormContainer from "@/components/FormContainer";
 import { Mail, LockKeyhole, Info, CircleUserRoundIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import Notification from "@/components/Notification";
-// import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
 import { EasyHTTP } from "@/utils/httpRequest";
-// import { useSessionStorage } from "@/useSessionStorage";
 import Cookies from "js-cookie";
 import { useAuth } from "@/context/authContext";
 import { AdminType } from "@/types";
+import { useLocalStorage } from "@/useLocalStorage";
 
 interface User{
     email: {
@@ -42,6 +41,7 @@ const Login = () => {
     const { setToken, token, isLogin } = useAuth();
     const [response, setResponse] = useState<Response | null>(null);
     const navigate = useNavigate();
+    const { setItem } = useLocalStorage("user_id");
 
     console.log(token);
 
@@ -121,10 +121,11 @@ const Login = () => {
             const response = await easyHttp.post(url, headers, data);
             console.log(response);
             setResponse(response)
+            setItem(response?.admin?.id);
         }
-         catch (e: any) {
-            setResError(e.message);
-            console.log(e.message)
+         catch (e) {
+            setResError((e as Error).message);
+            console.log((e as Error).message)
         } finally {
             setLoading(false);
         }

@@ -175,9 +175,9 @@ const DisplayFlatrate = () => {
 
   return (
     <>
-            <div className="w-full flex gap-x-12 shadow-md pt-6 border-t border-[#c0c0c0]">
+          <div className="w-full flex gap-x-12 shadow-md pt-6 border-t border-[#c0c0c0]">
             {
-              flatrateLoading ? <div className="w-full h-full py-6 px-4">
+              flatrateLoading ? <div className="w-full h-[15rem] py-6 px-4">
                 <Spinner />
               </div>
               :

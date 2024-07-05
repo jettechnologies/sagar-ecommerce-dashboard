@@ -11,7 +11,7 @@ import { EasyHTTP } from "@/utils/httpRequest";
 import { useAuth } from "@/context/authContext";
 import Spinner from "@/components/Spinner";
 import Modal from "@/components/Modal";
-import { MailOpen } from "lucide-react";
+import { IndianRupee } from "lucide-react";
 // import PasscodeModal from "@/sections/PasscodeModal";
 
 const easyHttp = new EasyHTTP();
@@ -29,43 +29,51 @@ const PaymentConfiguration = () => {
     const [isActive, setIsActive] = useState(false);
     const [isSelected, setIsSelected] = useState(false);
     // state values for passcode handling 
-    let currentPasscodeIndex = 0;
+    // let currentPasscodeIndex = 0;
 
     const [passcode, setPasscode] = useState(new Array(8).fill(""));
     const [activePasscodeIndex, setActivePasscodeIndex] = useState(0);  
     const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = target;
+    const newPasscode: string[] = [...passcode];
+    newPasscode[activePasscodeIndex] = value.substring(value.length - 1);
+
+    if (!value) setActivePasscodeIndex(activePasscodeIndex - 1);
+    else setActivePasscodeIndex(activePasscodeIndex + 1);
+
+    setPasscode(newPasscode);
+  };
   
-    const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = target;
-      const newPasscode: string[] = [...passcode];
-      newPasscode[currentPasscodeIndex] = value.substring(value.length - 1);
-  
-      if (!value) setActivePasscodeIndex(currentPasscodeIndex - 1);
-      else setActivePasscodeIndex(currentPasscodeIndex + 1);
-  
-      setPasscode(newPasscode);
-    };
-  
-    const handleOnKeyDown = (
-      e: React.KeyboardEvent<HTMLInputElement>,
-      index: number
-    ) => {
-        currentPasscodeIndex = index;
-      if (e.key === "Backspace") setActivePasscodeIndex(currentPasscodeIndex - 1);
-    };
+    const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        if (e.key === "Backspace" || e.key === "Delete") {
+          e.preventDefault();
+          const newPasscode: string[] = [...passcode];
+          newPasscode[index] = "";
+          setPasscode(newPasscode);
+          setActivePasscodeIndex(index > 0 ? index - 1 : 0);
+        }
+      }
   
     useEffect(() => {
       inputRef.current?.focus();
     }, [activePasscodeIndex]);
 
     // using useEffect to load and set the preferred payment gateway
-    // useEffect(() =>{
-    //     const setInitialGateway = async() =>{
+    useEffect(() =>{
+        const setInitialGateway = async() =>{
+            const localStorage = window.localStorage.getItem("payment");
+            if(!localStorage) return;
+            const getInitialInfo = JSON.parse(localStorage);
+            const selectedGateway = getInitialInfo.selectedGateway;
 
-    //     }
+            setPaymentGateway(selectedGateway);
+            setIsSelected(true);
+        }
 
-    //     setInitialGateway();
-    // }, []);
+        setInitialGateway();
+    }, []);
 
     // object for setting images
     const gatewayImages = {
@@ -211,7 +219,18 @@ const PaymentConfiguration = () => {
             }
         }
     }, [paymentGateway, passcode, isFirstClick, patchPaymentGateway, postPaymentGateway]);
+
+    useEffect(() =>{
+        let errorRemoval: ReturnType<typeof setTimeout>;
     
+        if(error){
+           errorRemoval =  setTimeout(() =>{
+                setError(null);
+            }, 2000)
+        }
+    
+        return() => clearTimeout(errorRemoval)
+    }, [error]);
 
   return (
     <div className="w-full h-full">
@@ -333,10 +352,10 @@ const PaymentConfiguration = () => {
       <form className="bg-white rounded-md shadow-2xl p-5 mt-6" onSubmit={selectPaymentGateway}>
                 <div className="flex flex-col gap-y-4 items-center justify-center mb-8">
                     <div className="w-[96px] grid place-items-center bg-[#d6d5d5] aspect-square rounded-full shadow-sm">
-                        <MailOpen size={60} strokeWidth={1}/>
+                        <IndianRupee size={60} strokeWidth={1}/>
                     </div>
                     <p className="font-semibold text-size-400 text-blue w-[80%] text-center">
-                        Please enter the 8digits passcode before signup
+                        Please enter the 8digits passcode before configuring payments
                     </p>
                     <div>
                 </div>

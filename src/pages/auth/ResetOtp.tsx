@@ -15,8 +15,6 @@ const ResetOtp = () => {
   const link = location.state?.link || "";
   const navigate = useNavigate();
 
-    let currentOTPIndex = 0;
-
     const [otp, setOtp] = useState(new Array(4).fill(""));
     const [activeOTPIndex, setActiveOTPIndex] = useState(0);
     const [error, setError] = useState(false);
@@ -33,21 +31,23 @@ const ResetOtp = () => {
   
     const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = target;
-      const newOTP: string[] = [...otp];
-      newOTP[currentOTPIndex] = value.substring(value.length - 1);
+      const newOtp: string[] = [...otp];
+      newOtp[activeOTPIndex] = value.substring(value.length - 1);
   
-      if (!value) setActiveOTPIndex(currentOTPIndex - 1);
-      else setActiveOTPIndex(currentOTPIndex + 1);
+      if (!value) setActiveOTPIndex(activeOTPIndex - 1);
+      else setActiveOTPIndex(activeOTPIndex + 1);
   
-      setOtp(newOTP);
+      setOtp(newOtp);
     };
   
-    const handleOnKeyDown = (
-      e: React.KeyboardEvent<HTMLInputElement>,
-      index: number
-    ) => {
-      currentOTPIndex = index;
-      if (e.key === "Backspace") setActiveOTPIndex(currentOTPIndex - 1);
+    const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+      if (e.key === "Backspace" || e.key === "Delete") {
+        e.preventDefault();
+        const newOtp: string[] = [...otp];
+        newOtp[index] = "";
+        setOtp(newOtp);
+        setActiveOTPIndex(index > 0 ? index - 1 : 0);
+      }
     };
   
     useEffect(() => {

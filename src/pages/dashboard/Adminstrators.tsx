@@ -1,10 +1,10 @@
 import Container from "@/components/Container";
 import { Link, useNavigate } from "react-router-dom";
 import { CirclePlusIcon, GripHorizontal, Trash, CircleAlert, Shield, User2, Search } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "@/components/Image";
 import Button from "@/components/Button";
-import { AdminDataType, AdminType } from "@/types";
+import { AdminDataType } from "@/types";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
@@ -40,7 +40,7 @@ const Adminstrators = () => {
     const [error, setError] = useState<string | null>(null);
     const [searchError, setSearchError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [response, setResponse] = useState<[AdminType[], number] | null>(null)
+    // const [response, setResponse] = useState<[AdminType[], number] | null>(null)
     const [admins, setAdmins] = useState<AdminDataType [] | []>([]);
     const [currentId, setCurrentId] = useState("");
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
@@ -58,68 +58,72 @@ const Adminstrators = () => {
 
     console.log(token, loading);
 
-    useEffect(() =>{
-        if (!token) return;
+    const mapResponseToAdminData = (response: any): AdminDataType => {
+        return {
+          id: response.id,
+          adminID: response.adminID,
+          email: response.email,
+          role: response.role,
+          adminType: response.admintype,
+          adminAccessLevel: response.adminaccessLevel,
+          password: response.password,
+          mobile: response.mobile,
+          fullname: response.fullname,
+          updatedAt: response.UpdatedAt,
+          registeredAt: response.RegisteredAt,
+          profilePicture: response.profile_picture,
+          gender: response.gender,
+          nationality: response.Nationality,
+          isLoggedIn: response.isLoggedIn,
+          isRegistered: response.isRegistered,
+          isActivated: response.isActivated,
+          isDeactivated: response.isDeactivated,
+          isVerified: response.isVerified,
+          resetLinkExpTime: response.reset_link_exptime,
+          passwordResetLink: response.password_reset_link,
+        };
+      };
 
-    const getAllAdmins = async (token:string) => {
-      try {
-        setLoading(true);
-        const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/admins-mgt/all-other-admins", {
-          headers: {
-            'Authorization': `Bearer ${token}`,
+    const mapResponsesToAdminDataArray = useCallback((responses: any[]): AdminDataType[] => {
+        return responses.map((response) => mapResponseToAdminData(response));
+      }, [])
+
+      const getAllAdmins = useCallback(async (token:string) => {
+        try {
+          setLoading(true);
+          const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/admins-mgt/all-other-admins", {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            }
+          });
+          
+          const data = await res.json();
+  
+          if (!res.ok) {
+            console.log(res);
+            setError(data.message || 'An error occurred');
+            return;
           }
-        });
-        
-        const data = await res.json();
-
-        if (!res.ok) {
-          console.log(res);
-          setError(data.message || 'An error occurred');
-          return;
+  
+            const adminData: AdminDataType[] = mapResponsesToAdminDataArray(data[0]);
+            console.log(adminData)
+            setAdmins(adminData);
+        } catch (e : any) {
+          console.log(e.message);
+          setError(e.message);
+        } finally {
+          setLoading(false);
         }
+    }, [mapResponsesToAdminDataArray]);
+  
 
-        const mapResponseToAdminData = (response: any): AdminDataType => {
-            return {
-              id: response.id,
-              adminID: response.adminID,
-              email: response.email,
-              role: response.role,
-              adminType: response.admintype,
-              adminAccessLevel: response.adminaccessLevel,
-              password: response.password,
-              mobile: response.mobile,
-              fullname: response.fullname,
-              updatedAt: response.UpdatedAt,
-              registeredAt: response.RegisteredAt,
-              profilePicture: response.profile_picture,
-              gender: response.gender,
-              nationality: response.Nationality,
-              isLoggedIn: response.isLoggedIn,
-              isRegistered: response.isRegistered,
-              isActivated: response.isActivated,
-              isDeactivated: response.isDeactivated,
-              isVerified: response.isVerified,
-              resetLinkExpTime: response.reset_link_exptime,
-              passwordResetLink: response.password_reset_link,
-            };
-          };
+useEffect(() =>{
+    if (!token) return;
 
-        const mapResponsesToAdminDataArray = (responses: any[]): AdminDataType[] => {
-            return responses.map((response) => mapResponseToAdminData(response));
-          };
-          const adminData: AdminDataType[] = mapResponsesToAdminDataArray(data[0]);
-          console.log(adminData)
-          setAdmins(adminData);
-      } catch (e : any) {
-        console.log(e.message);
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getAllAdmins(token);
-    }, [token]);
+    if(adminSearch === ""){
+        getAllAdmins(token)
+    }
+}, [token, getAllAdmins, adminSearch]);
 
 
     const handlePopupToggle = (id:number) => {
@@ -285,6 +289,18 @@ const Adminstrators = () => {
 
     }
 
+    useEffect(() =>{
+        let errorRemoval: ReturnType<typeof setTimeout>;
+    
+        if(error){
+           errorRemoval =  setTimeout(() =>{
+                setError(null);
+            }, 2000)
+        }
+    
+        return() => clearTimeout(errorRemoval)
+    }, [error]);
+
     console.log(admins);
 
     const searchAdmin = async(e:React.FormEvent<HTMLFormElement>) =>{
@@ -309,8 +325,10 @@ const Adminstrators = () => {
             const response = await res.json();
             if(res.status === 404) throw new Error(response.message)
 
-            console.log(response);
-            setResponse(response.searchedRider)
+            console.log(response.data);
+            const adminData: AdminDataType[] = mapResponsesToAdminDataArray(response.data);
+            console.log(adminData)
+            setAdmins(adminData);
         }
         catch(err){
             console.log((err as Error).message);
@@ -327,12 +345,10 @@ const Adminstrators = () => {
           // Handle delete key and backspace
         //   s('');
             setAdminSearch("");
-            setResponse(null);
             console.log("deleting")
         }
       };
 
-    console.log(response);
 
     // useEffect to change the setSearchAdmin state
     useEffect(() => {
@@ -342,8 +358,6 @@ const Adminstrators = () => {
           if ((e.key === 'Backspace' || e.key === 'Delete') && adminSearch === "") {
             // Handle delete key and backspace
             setAdminSearch("");
-            setResponse(null);
-
             console.log("deleting")
           }
           
@@ -355,8 +369,6 @@ const Adminstrators = () => {
           inputElement.removeEventListener('keydown', handleKeyPress);
         };
       }, [adminSearch]);
-
-      console.log(response)
     
   return (
     <>
@@ -409,7 +421,7 @@ const Adminstrators = () => {
                     </thead>
                     <tbody>
                         {
-                            !response ? admins.map((admin: AdminDataType, index) =>(
+                            admins.map((admin: AdminDataType, index) =>(
                                 <tr key = {index} className="border border-gray hover:bg-gray cursor-pointer capitalize items-center">
                                     <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex gap-4 items-center">
                                         <div className="w-[3rem] h-[3rem] rounded-full">
@@ -483,81 +495,6 @@ const Adminstrators = () => {
                                     </td>
                                 </tr>
                             ))
-                            :
-                            response[0].map((admin: AdminType) =>(
-                                <tr key = {admin.id} className="border border-gray hover:bg-gray cursor-pointer capitalize items-center">
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex gap-4 items-center">
-                                        <div className="w-[3rem] h-[3rem] rounded-full">
-                                        {admin.profile_picture ? <Image 
-                                            src = {admin.profile_picture && admin.profile_picture} 
-                                            alt="profile image"
-                                            className="w-[3rem] h-[3rem] rounded-full"  
-                                        />
-                                            :<p className="text-size-600 uppercase text-white bg-black text-center flex items-center justify-center w-full h-full rounded-full border">{admin.fullname.split(" ")[0].substring(0,1)}</p>
-                                        }
-                                        </div>
-                                        <div className="flex gap-y-2 flex-col">
-                                            <p className="text-size-500 text-text-black font-semibold">
-                                                {admin.fullname}
-                                            </p>
-                                            <p className="text-sm text-text-black font-normal">
-                                                {admin.RegisteredAt.split("T")[0]}
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.email}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.mobile}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.adminaccessLevel}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.Nationality ? admin.Nationality : "was not set"}</td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm relative">
-                                    <Button 
-                                        size="small" 
-                                        type="white"
-                                        handleClick={() => handlePopupToggle(admin.id)}
-                                        className={`border-none z-10`}
-                                    >
-                                        <GripHorizontal />
-                                    </Button>
-                                    {activePopupId === admin.id && (
-                                                <Popup className="top-16">
-                                                    <div className="w-full border-b border-[#f0f0f0] flex">
-                                                        <Button 
-                                                            size="small" 
-                                                            type="white" 
-                                                            handleClick = {() => handleChangeType(admin.id)}
-                                                            className="capitalize border-none bg-transparent flex gap-x-5 text-sm items-center"
-                                                        >
-                                                            <User2 />
-                                                            Change Admin Type
-                                                        </Button>
-                                                    </div>
-                                                    <div className="flex w-full border-b border-[#f0f0f0]">
-                                                        <Button 
-                                                            size="small" 
-                                                            type="white" 
-                                                            className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
-                                                            handleClick = {() => handleChangeLevel(admin.id)}
-                                                        >
-                                                            <Shield />
-                                                            Change Access level
-                                                        </Button>
-                                                    </div>
-                                                    <div className="flex w-full border-b border-[#f0f0f0]">
-                                                        <Button 
-                                                            size="small" 
-                                                            type="white" 
-                                                            className="capitalize border-none bg-transparent flex gap-5 text-sm items-center"
-                                                            handleClick = {() => handleIsDeleting(admin.id)}
-                                                        >
-                                                            <Trash />
-                                                            Delete Admin
-                                                        </Button>
-                                                    </div>
-                                                </Popup>
-                                            )}
-                                    </td>
-                                </tr>
-                            ))
                         }
 
                     </tbody>
@@ -581,7 +518,7 @@ const Adminstrators = () => {
                                     </Link>
                                 </div>
                             )
-                            : response && (admins.length === 0 || response[0].length === 0) && (<div className="w-full h-full grid place-content-center gap-4">
+                            : admins.length === 0 && (<div className="w-full h-full grid place-content-center gap-4">
                                 <h1 className="text-center">No sub admins</h1>
                                 <Link to = "/admin/" 
                                     className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white bg-black text-center "
@@ -615,13 +552,13 @@ const Adminstrators = () => {
                                 <label htmlFor="admin-type" className="text-size-500 font-medium text-text-black mb-4">
                                     Select admin type
                                 </label>
-                                <div className={`flex items-center border-2 border-gray focus-within:border-blue mb-3 py-3 px-3 rounded-md`}>
+                                <div className={`flex items-center border-2 border-gray focus-within:border-blue mb-3 py-3 px-3 rounded-md mt-3`}>
                                     <User2 size = {20}/>
                                     <Select
                                         id = "admin-type" 
                                         name="adminType" 
                                         select={adminTypes} 
-                                        className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
+                                        className="font-normal text-text-black w-full p-0 border-none outline-none" 
                                         defaultText="Select admin type"
                                         handleInputChange={handleInputChange}
                                     />
@@ -639,13 +576,13 @@ const Adminstrators = () => {
                                 <label htmlFor="admin-level" className="text-size-500 font-medium text-text-black mb-4">
                                     Select admin level
                                 </label>
-                                <div className={`flex items-center border-2 border-gray focus-within:border-blue mb-3 py-3 px-3 rounded-md`}>
+                                <div className={`flex items-center border-2 border-gray focus-within:border-blue mb-3 py-3 px-3 rounded-md mt-3`}>
                                     <User2 size = {20}/>
                                     <Select
                                         id = "admin-level" 
                                         name="accesslevel" 
                                         select={accessLevels} 
-                                        className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
+                                        className="font-normal text-text-black w-full p-0 border-none outline-none" 
                                         defaultText="Select admin level"
                                         handleInputChange={handleInputChange}
                                     />
@@ -664,7 +601,7 @@ const Adminstrators = () => {
                     {/* <MessageSquareWarning size = {35} color = "rgb(239 68 68)"/> */}
                     <CircleAlert size = {35} color = "rgb(239 68 68)" />
                     <p>
-                        Are you sure u want to delete this Account ?
+                        Are you sure you want to delete this Account ?
                     </p>
                 </div>
                 <div className="flex gap-5 mt-5 border-t border-[#f0f0f0] pt-3">
@@ -691,7 +628,7 @@ const Adminstrators = () => {
             </div>
         </Modal>
 
-        <ErrorModal error={searchError} setError={() => setSearchError(null)} redirect="/admin/accounts"/>
+        <ErrorModal title = "Administrator not found" error={searchError} setError={() => setSearchError(null)} redirect="/admin/accounts"/>
 
         </Container>
     </>

@@ -6,7 +6,7 @@ import { MailOpen } from "lucide-react";
 import { Headers } from "@/utils/httpRequest";
 import { EasyHTTP } from "@/utils/httpRequest";
 import Cookies from "js-cookie";
-import { formatDistanceStrict, addSeconds } from 'date-fns';
+import { differenceInSeconds, addSeconds } from 'date-fns';
 import { useAuth } from "@/context/authContext";
 import { AdminType } from "@/types";
 
@@ -24,8 +24,6 @@ const OTP = () => {
   const clientEmail = location.state?.email || "";
   const navigate = useNavigate();
 
-    let currentOTPIndex = 0;
-
     const [otp, setOtp] = useState(new Array(4).fill(""));
     const [activeOTPIndex, setActiveOTPIndex] = useState(0);
     const [error, setError] = useState(false);
@@ -42,21 +40,23 @@ const OTP = () => {
   
     const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = target;
-      const newOTP: string[] = [...otp];
-      newOTP[currentOTPIndex] = value.substring(value.length - 1);
+      const newOtp: string[] = [...otp];
+      newOtp[activeOTPIndex] = value.substring(value.length - 1);
   
-      if (!value) setActiveOTPIndex(currentOTPIndex - 1);
-      else setActiveOTPIndex(currentOTPIndex + 1);
+      if (!value) setActiveOTPIndex(activeOTPIndex - 1);
+      else setActiveOTPIndex(activeOTPIndex + 1);
   
-      setOtp(newOTP);
+      setOtp(newOtp);
     };
   
-    const handleOnKeyDown = (
-      e: React.KeyboardEvent<HTMLInputElement>,
-      index: number
-    ) => {
-      currentOTPIndex = index;
-      if (e.key === "Backspace") setActiveOTPIndex(currentOTPIndex - 1);
+    const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+      if (e.key === "Backspace" || e.key === "Delete") {
+        e.preventDefault();
+        const newOtp: string[] = [...otp];
+        newOtp[index] = "";
+        setOtp(newOtp);
+        setActiveOTPIndex(index > 0 ? index - 1 : 0);
+      }
     };
   
     useEffect(() => {
@@ -66,8 +66,25 @@ const OTP = () => {
     // function for updating the value of the human reabable timer
     useEffect(() => {
       const endTime = addSeconds(new Date(), countdown);
-      const formatted = formatDistanceStrict(new Date(), endTime);
-      setFormattedTime(formatted);
+  
+      const updateTimer = () => {
+        const now = new Date();
+        const secondsLeft = differenceInSeconds(endTime, now);
+  
+        if (secondsLeft >= 0) {
+          const minutes = Math.floor(secondsLeft / 60);
+          const seconds = secondsLeft % 60;
+          setFormattedTime(`${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`);
+        } else {
+          setFormattedTime("0:00");
+          clearInterval(intervalId);
+        }
+      };
+  
+      updateTimer(); // Initial call to set the time immediately
+      const intervalId = setInterval(updateTimer, 1000);
+  
+      return () => clearInterval(intervalId);
     }, [countdown]);
 
     const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
