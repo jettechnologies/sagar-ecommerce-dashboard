@@ -86,8 +86,6 @@ const ConfigForm = ({
       return acc;
     }, {});
 
-    console.log(result, setLoading);
-
     try {
       if (!validateObject(result)) {
         setValidateError({
@@ -170,7 +168,6 @@ const ConfigForm = ({
       }
 
       // Here you can make an API call with the `data` object
-      console.log(data);
       const response = await easyHttp.post(url, headers, data);
 
       console.log(response);

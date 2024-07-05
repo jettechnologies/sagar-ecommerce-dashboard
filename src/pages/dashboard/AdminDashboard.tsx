@@ -200,7 +200,7 @@ const AdminDashboard = () => {
                 name="revenue"
                 className="font-normal text-sm w-full py-3 border rounded-md"
                 select={[{ key: "month", value: "Month" }, { key: "year", value: "Year" }]}
-                defaultText="month"
+                defaultText="Revenue filter"
                 handleInputChange={handleInputChange}
               />
             </div>
@@ -235,7 +235,7 @@ const AdminDashboard = () => {
                 name="retention"
                 className="font-normal text-sm w-full py-3 border rounded-md"
                 select={[{ key: "month", value: "Month" }, { key: "year", value: "Year" }]}
-                defaultText="Select filter"
+                defaultText="Retention filter"
                 handleInputChange={handleInputChange}
               />
             </div>
@@ -267,7 +267,7 @@ const AdminDashboard = () => {
                 name="order"
                 className="font-normal text-sm w-full py-3 border rounded-md"
                 select={[{ key: "month", value: "Month" }, { key: "year", value: "Year" }]}
-                defaultText="Select order filter"
+                defaultText="Order filter"
                 handleInputChange={handleInputChange}
               />
             </div>

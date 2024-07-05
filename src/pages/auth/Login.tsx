@@ -39,7 +39,7 @@ const Login = () => {
     const easyHttp  = new EasyHTTP;
     const [loading, setLoading] = useState<boolean>(false);
     const [resError, setResError] = useState<string | null>(null);
-    const { setToken, token } = useAuth();
+    const { setToken, token, isLogin } = useAuth();
     const [response, setResponse] = useState<Response | null>(null);
     const navigate = useNavigate();
 
@@ -61,12 +61,16 @@ const Login = () => {
         status: false,
     });
 
+    console.log(token, isLogin)
+
     // useEffect for auto redirecting.
     useEffect(()=>{
-        if(token){
+        if(!!token && isLogin){
             navigate("/admin", {replace: true })
         }
-    }, [navigate, token]);
+    }, [navigate, token, isLogin]);
+
+    console.log(token, true)
 
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
@@ -116,24 +120,7 @@ const Login = () => {
             setLoading(true);
             const response = await easyHttp.post(url, headers, data);
             console.log(response);
-            setResponse(response    )
-
-            // setting the expiration day for 30 days
-            // const { admin, accesstoken } = response;
-            // const expires = new Date();
-            // expires.setDate(expires.getDate() + 30);
-            
-            
-            // Cookies.set("auth", JSON.stringify(response), {
-            //     expires: expires
-            // });
-
-            // setToken(accesstoken.token);
-            // setAdminProfile(admin);
-
-            // navigate("/admin", {replace: true });
-            // setResponse(response);
-            // setItem(response);
+            setResponse(response)
         }
          catch (e: any) {
             setResError(e.message);

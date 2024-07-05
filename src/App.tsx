@@ -20,6 +20,7 @@ import Category from "./pages/dashboard/Category";
 import Inventory from "./pages/dashboard/Inventory";
 import CustomersReview from "./pages/dashboard/CustomersReview";
 import PaymentConfiguration from "./pages/dashboard/PaymentConfiguration";
+import VerifyPasscode from "./pages/auth/VerifyPasscode";
 // import ProtectedRoutes from "./components/ProtectedRoutes";
 
 
@@ -33,6 +34,7 @@ function App() {
           <Route path="login" element = {<Login />} />
           <Route path="signup" element = {<Signup />} />
           <Route path="otp" element = {<OTP />} />
+          <Route path = "verify-passcode" element = {<VerifyPasscode />} />
           <Route path="reset-password" >
             <Route index element = {<ResetPassword />} />
             <Route path="otp" element = {<ResetOtp />} />

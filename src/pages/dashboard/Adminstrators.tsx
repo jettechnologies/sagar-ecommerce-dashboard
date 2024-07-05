@@ -12,6 +12,7 @@ import { EasyHTTP } from "@/utils/httpRequest";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons/svg";
 import { useAuth } from "@/context/authContext";
 import Select from "@/components/Select";
+import Notification from "@/components/Notification";
 import ErrorModal from "@/components/ErrorModal";
 
 
@@ -264,23 +265,23 @@ const Adminstrators = () => {
             setLoading(true)
             const res = await easyHttp.delete(url, headers);
             console.log(res);
+            setIsDeleting(prevState => !prevState);
+            window.location.reload();
+            navigate("/admin/accounts", {replace: true});
         }
-        catch(e: any){
-            console.log(e.message)
-            setError(e.message);
+        catch(e){
+            console.log((e as Error).message)
+            const error = JSON.parse((e as Error).message);
+            if(error.status === 404){
+                setError("Admin not found");
+            }
+            else{
+                setError(error.message);
+            }
         }
         finally{
             setLoading(false)
         }
-
-        if(error !== null){
-            return;
-        }
-
-        setIsDeleting(prevState => !prevState);
-
-        window.location.reload();
-        navigate("/admin/accounts", {replace: true});
 
     }
 
@@ -580,7 +581,7 @@ const Adminstrators = () => {
                                     </Link>
                                 </div>
                             )
-                            : response && (admins.length || response[0].length === 0) && (<div className="w-full h-full grid place-content-center gap-4">
+                            : response && (admins.length === 0 || response[0].length === 0) && (<div className="w-full h-full grid place-content-center gap-4">
                                 <h1 className="text-center">No sub admins</h1>
                                 <Link to = "/admin/" 
                                     className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white bg-black text-center "
@@ -609,7 +610,7 @@ const Adminstrators = () => {
         
                 <Modal title = "change admin type" isOpen={changeType} handleModalOpen={() => setChangeType(prevState => !prevState)}>
                     <form id ="edit-admin-type" onSubmit={changeAdminType} className="w-full">
-                        {/* {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>} */}
+                        {error && <Notification message = {error} type = "danger" className="text-white mb-4"/>}
                             <div className="w-full">
                                 <label htmlFor="admin-type" className="text-size-500 font-medium text-text-black mb-4">
                                     Select admin type
@@ -633,7 +634,7 @@ const Adminstrators = () => {
                 {/* for changing the admin level */}
                 <Modal title = "change admin level" isOpen={changeLevel} handleModalOpen={() => setChangeLevel(prevState => !prevState)}>
                     <form id ="edit-admin-level" onSubmit={changeAdminLevel} className="w-full">
-                        {/* {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>} */}
+                        {error && <Notification message = {error} type = "danger" className="text-white mb-4"/>}
                             <div className="w-full">
                                 <label htmlFor="admin-level" className="text-size-500 font-medium text-text-black mb-4">
                                     Select admin level
@@ -658,6 +659,7 @@ const Adminstrators = () => {
         {/* Deleting existing product category */}
         <Modal title = "Delete other admins" isOpen={isDeleting} handleModalOpen={() => setIsDeleting(prevState => !prevState)}>
             <div className="flex flex-col w-full">
+                {error && <Notification message = {error} type = "danger" className="text-white mb-4"/>}
                 <div className="flex items-center gap-3">
                     {/* <MessageSquareWarning size = {35} color = "rgb(239 68 68)"/> */}
                     <CircleAlert size = {35} color = "rgb(239 68 68)" />
@@ -670,7 +672,10 @@ const Adminstrators = () => {
                         type="white" 
                         size="medium" 
                         className="text-sm uppercase flex-1"
-                        handleClick = {() => setIsDeleting(prevState => !prevState)}
+                        handleClick = {() => {
+                            setError(null)
+                            setIsDeleting(prevState => !prevState)
+                        }}
                     >
                         no, cancel
                     </Button>

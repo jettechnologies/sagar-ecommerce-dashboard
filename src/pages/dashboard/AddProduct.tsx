@@ -93,6 +93,8 @@ const AddProduct = () => {
     getCategories();
   }, [getCategories]);
 
+  console.log(productData.productimage);
+
 
   const productCategories: { key: string; value: string }[] = categories.map(
     (category) => ({

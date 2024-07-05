@@ -181,7 +181,7 @@ const OTP = () => {
                     <p className="font-semibold text-size-400 text-blue w-[80%] text-center">
                         Please verify your account by entering the 4 digit code sent to
                         <br />
-                        <span className="text-black text-size-500 capitalize">
+                        <span className="text-black text-size-500 first-letter:uppercase">
                           {clientEmail}
                         </span>
                     </p>

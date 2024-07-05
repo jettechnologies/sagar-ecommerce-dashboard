@@ -82,6 +82,16 @@ const Settings = () => {
 
   return (
     <div className="w-full h-full">
+      <div className="min-h-16 w-full mb-5">
+        <Container>
+          <Button 
+            size="medium"
+            className="font-medium text-size-500 text-white uppercase"
+          >
+            <></>
+          </Button>
+        </Container>
+      </div>
       <Container className="pt-5">
         <div className="flex flex-col gap-y-24">
           <div className="flex w-full gap-x-5">

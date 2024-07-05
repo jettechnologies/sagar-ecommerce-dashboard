@@ -6,6 +6,9 @@ import Button from "@/components/Button";
 // import { useCategories } from "@/hooks/usCategories";
 import { imageValidate } from "@/utils/imageValidate";
 import { useAuth } from "@/context/authContext";
+import useGetRequest from "@/pages/hooks/useGetRequest";
+import { ProductType } from "@/types";
+import { isArray } from "chart.js/helpers";
 
 interface ProductContentType {
   name: string;
@@ -32,51 +35,28 @@ const EditProduct: React.FC<EditProductType> = ({
   productId,
 }) => {
   const navigate = useNavigate();
-//   const { getCategories, categories } = useCategories();
   const { token } = useAuth();
-
-//   const productCategories = categories.map((category) => ({
-//     key: category.id.toString(),
-//     value: category.name,
-//   }));
-
   const [loading, setLoading] = useState(false);
   const [resError, setResError] = useState("");
   const [response, setResponse] = useState("");
 
   console.log(resError, response)
 
-//   useEffect(() => {
-//     getCategories();
-//   }, [getCategories]);
-
-    // loading and setting the product change values
+    const { data:product, error:fetchError } = useGetRequest<ProductType>(`browse/fetch-one-product/${productId}`, {}, !!productId);
+    console.log(fetchError)
+    // loading and setting the product default values
     useEffect(() =>{
-        const fetchProductInfo = async() =>{
-            const url = `product-mgt/fetch-one-product/${productId}`;
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-    
-            try{
-                const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
-                    headers,
-                });
-    
-                if (!res.ok) {
-                    throw new Error(`Error: ${res.status} ${res.statusText}`);
-                }
-    
-                const response = await res.json();
-                console.log(response);
-            }
-            catch(err){
-                console.log((err as Error).message);
-            }
-        }
-
-        if(productId){fetchProductInfo()}
-    }, [productId, token]);
+      if(!Array.isArray(product) && product) {
+        setProductChange(prevState => ({
+          ...prevState,
+          name: product.name,
+          description: product.description,
+          price: product.price.toString(),
+          stock: product.stock.toString(),
+        }));
+        
+      }
+    }, [product, setProductChange]);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -161,6 +141,9 @@ const EditProduct: React.FC<EditProductType> = ({
         console.error("Failed to update product:", errorData.message);
         setResError("Failed to update product: " + errorData.message);
       }
+
+      navigate("/admin/products", { replace: true });
+      window.location.reload();
     } catch (error: any) {
       console.error("Error:", error.message);
       setResError("Failed to update product");
@@ -168,7 +151,6 @@ const EditProduct: React.FC<EditProductType> = ({
       setLoading(false);
     }
 
-    navigate("/admin/products", { replace: true });
   };
 
   return (
@@ -194,6 +176,7 @@ const EditProduct: React.FC<EditProductType> = ({
             placeholder="Name a product"
             id="product-name"
             name="name"
+            value = {content.name}
             onChange={handleInputChange}
             className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
           />
@@ -228,6 +211,7 @@ const EditProduct: React.FC<EditProductType> = ({
             placeholder="Enter a price"
             id="product-price"
             name="price"
+            value = {content.price}
             onChange={handleInputChange}
             className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
           />
@@ -244,6 +228,7 @@ const EditProduct: React.FC<EditProductType> = ({
             placeholder="Enter a stock amount"
             id="product-stock"
             name="stock"
+            value = {content.stock}
             onChange={handleInputChange}
             className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
           />
@@ -262,7 +247,9 @@ const EditProduct: React.FC<EditProductType> = ({
             placeholder="Write category descriptions"
             onChange={handleInputChange}
             className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
-          ></textarea>
+          >
+            {content.description}
+          </textarea>
         </div>
         <div className="w-full">
           <label

@@ -94,7 +94,12 @@ export class EasyHTTP {
     });
 
     const resData = await response.json();
-    if (!response.ok) throw new Error(resData.message);
+    if (!response.ok) {
+      if(response.status === 404){
+        throw new Error(JSON.stringify({ message: resData.message, status: response.status }));
+      }
+      throw new Error(resData.message)
+    }
     return resData;
   }
 

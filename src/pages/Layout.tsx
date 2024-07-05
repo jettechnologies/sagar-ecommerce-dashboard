@@ -16,7 +16,7 @@ const Layout = () => {
                     login
                 </Link>
                 <Link 
-                    to = "signup" 
+                    to = "verify-passcode" 
                     className="px-10 rounded-md py-3 bg-black text-white font-medium text-size-500 capitalize"
                 >
                     signup

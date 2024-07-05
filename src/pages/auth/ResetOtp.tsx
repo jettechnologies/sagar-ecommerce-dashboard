@@ -79,18 +79,13 @@ const ResetOtp = () => {
         setResponse(response)
 
         setResError(null);
+        navigate(link, {replace: true, state:{response: response}});
       } catch (e: any) {
         setResError(e.message);
       } finally {
         setLoading(false);
       }
-      if(resError !== null){
-        return;
-      }
-
-    //   would use either params or state to pass the value
-      navigate(link, {replace: true, state:{response: response}});
-      console.log(response);
+      
     }
 
     return (
@@ -104,7 +99,7 @@ const ResetOtp = () => {
                         <p className="font-semibold text-size-400 text-blue w-[80%] text-center">
                             Please verify your account by entering the 6 digit code sent to
                             <br />
-                            <span className="text-black text-size-500 capitalize">
+                            <span className="text-black text-size-500 first-letter:uppercase">
                               {clientEmail}
                             </span>
                         </p>
@@ -132,26 +127,11 @@ const ResetOtp = () => {
                         <p className="text-red-500 text-size-400 font-normal m-2 text-center">Please enter the valid OTP sent to your mail</p>
                       )}
                     </div>
-                    {/* {!isResend ? <div className="w-full">
-                        <button disabled = {loading} type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white">
-                          {loading ? "Loading..." : "Verify account"}
-                        </button>
-                      </div>
-                      : <div className="w-full">
-                        <button disabled = {loading} type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white">
-                          {loading ? "Loading..." : "Resend OTP"}
-                        </button>
-                      </div>
-                    } */}
                     <div className="w-full">
                         <button disabled = {loading} type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white">
                           {loading ? "Loading..." : "Verify account"}
                         </button>
                     </div>
-                    {/* <div>
-                      <h1>Timer Countdown</h1>
-                      <div>Countdown: {countdown}</div>
-                    </div> */}
                 </form>
             </FormContainer>
         </div>

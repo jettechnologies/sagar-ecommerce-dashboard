@@ -25,7 +25,6 @@ interface Coupon{
 }
 
 const AdminLayout = () => {
-  // const {  } = useAuth();
   const { admin: adminProfile, isLoading: dataLoading } = useAdminProfile();
   const navigate = useNavigate(); 
 
@@ -225,7 +224,6 @@ const AdminLayout = () => {
               >
                 <BellDot size={27}/>
                 {/* <span className="text-white font-normal text-sm absolute top-0 right-0 w-4 h-4 text-center rounded-full bg-blue">3</span> */}
-                {isShowing && <AdminNotification />}
               </div>
               {!dataLoading && (
                 <div className="flex w-fit h-[3rem] items-center gap-x-3">
@@ -277,6 +275,8 @@ const AdminLayout = () => {
               )}
             </div>
           </header>
+          {isShowing && <AdminNotification />}
+
           <div id="main-content" className="w-full min-h-full p-5">
             <Outlet />
           </div>

@@ -206,7 +206,7 @@ const DisplayFlatrate = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex w-full justify-between mt-2">
+                      <div className="w-full mt-2">
                         <p className="text-[#c0c0c0] text-size-500 font-normal">
                           Created at: {formatToHumanReadableDate(flatrate.createdAt.split("T")[0])}
                         </p>

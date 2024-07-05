@@ -104,16 +104,21 @@ const Products = () => {
             setDeleteLoading(true);
             const res = await easyHttp.delete(url, headers);
             setResponse(res);
+            setIsDeleting(prevState => !prevState);
+
+            setProducts((prevState) => prevState.filter(product => product.id !== parseInt(currentId)));
+            
+            
         } catch (e) {
             setError((e as Error).message);
         } finally {
             setDeleteLoading(false);
         }
 
-        if (error === null) {
-            setIsDeleting(prevState => !prevState);
-            window.location.reload();
-        }
+        // if (error === null) {
+        //     setIsDeleting(prevState => !prevState);
+        //     window.location.reload();
+        // }
     };
 
     const searchProducts = async (e: React.FormEvent<HTMLFormElement>) => {
