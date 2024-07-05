@@ -26,6 +26,8 @@ const ResetOtp = () => {
     const [response, setResponse] = useState<string | null>(null)
     // const [countdown, setCountdown] = useState(2 * 60);
     // const [isResend, setIsResend] = useState(false);
+
+    console.log(resError, response);
   
     const inputRef = useRef<HTMLInputElement>(null);
   

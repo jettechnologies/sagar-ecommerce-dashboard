@@ -8,7 +8,7 @@ import { imageValidate } from "@/utils/imageValidate";
 import { useAuth } from "@/context/authContext";
 import useGetRequest from "@/pages/hooks/useGetRequest";
 import { ProductType } from "@/types";
-import { isArray } from "chart.js/helpers";
+
 
 interface ProductContentType {
   name: string;

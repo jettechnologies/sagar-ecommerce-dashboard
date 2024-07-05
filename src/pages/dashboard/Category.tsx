@@ -57,6 +57,8 @@ const Category = () => {
     const [result, setResult] = useState<CategoryType[] | null>(null);
     const [search, setSearch] = useState("");
 
+    console.log(response)
+
     const searchCategories = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!search) return;

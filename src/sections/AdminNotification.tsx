@@ -40,6 +40,8 @@ const AdminNotification = () => {
     shouldFetch
   );
 
+  console.log(fetchError);
+
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [currentNotification, setCurrentNotification] = useState<NotificationType | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
