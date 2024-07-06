@@ -18,16 +18,22 @@ const easyHttp = new EasyHTTP();
 
 type PaymentGateway = "razorpay" | "payUmoney" | "cashfree";
 
+type GatewayResponse = {
+    id: number;
+    selectedGateway: string;
+    updatedAt: string;
+  }
+
 const PaymentConfiguration = () => {
 
     const [paymentGateway, setPaymentGateway] = useState<PaymentGateway>();
+    const [selectedGateway, setSelectedGateway] = useState<PaymentGateway>();
     const [isFirstClick, setIsFirstClick] = useState(true);
     const { setItem } = useLocalStorage("payment");
-    const { token } = useAuth();
+    const { token, loading:authLoading } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isActive, setIsActive] = useState(false);
-    const [isSelected, setIsSelected] = useState(false);
     // state values for passcode handling 
     // let currentPasscodeIndex = 0;
 
@@ -63,17 +69,35 @@ const PaymentConfiguration = () => {
     // using useEffect to load and set the preferred payment gateway
     useEffect(() =>{
         const setInitialGateway = async() =>{
-            const localStorage = window.localStorage.getItem("payment");
-            if(!localStorage) return;
-            const getInitialInfo = JSON.parse(localStorage);
-            const selectedGateway = getInitialInfo.selectedGateway;
+            const url = `${import.meta.env.VITE_PRODUCT_LIST_API}payment-gateway-config/payment-config`;
+            try{
+              const res = await fetch(url);
+            //   const response:GatewayResponse[]  = await res.json();
+      
+              if (!res.ok) {
+                const errorText = await res.json();
+                throw new Error(errorText || 'Failed to fetch payment gateway configuration');
+              }
 
-            setPaymentGateway(selectedGateway);
-            setIsSelected(true);
+              const response:GatewayResponse[]  = await res.json();
+
+              const arrangedGteways:GatewayResponse[] =  response.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+              const currentGateway = arrangedGteways[0];
+              setItem({
+                id: String(currentGateway?.id),
+                selectedGateway: currentGateway?.selectedGateway,
+              });
+              const gateway = currentGateway?.selectedGateway as PaymentGateway;
+              setSelectedGateway(gateway);
+            }
+            catch(err){
+              console.log((err as Error).message);
+            //   setSelectedGatewayError((err as Error).message);
+            }
         }
 
-        setInitialGateway();
-    }, []);
+       if(!authLoading){setInitialGateway()}        
+    }, [setItem, authLoading]);
 
     // object for setting images
     const gatewayImages = {
@@ -114,7 +138,9 @@ const PaymentConfiguration = () => {
           setItem(local);
             setPasscode(new Array(8).fill(""));
             setIsActive(false);
-            setIsSelected(true)
+            // setIsSelected(true);
+
+            setSelectedGateway(value);
 
         } catch (error) {
           console.error('Error setting payment gateway:', error);
@@ -152,9 +178,9 @@ const PaymentConfiguration = () => {
 
                 setItem(currentPaymentInfo);
                 setPasscode(new Array(8).fill(""));
-                setIsSelected(true);
-                setIsActive(false)
-                // setPaymentGateway(value)
+                // setIsSelected(true);
+                setIsActive(false);
+                setSelectedGateway(value)
             }
         } catch (error) {
           console.error('Error setting payment gateway:', error);
@@ -164,7 +190,6 @@ const PaymentConfiguration = () => {
         }
       }, [setItem, token]);
       
-
     //   function to handle selecting the desired gateway
 
     const handleSelectGateway = (e:ChangeEvent<HTMLInputElement>) =>{
@@ -261,14 +286,14 @@ const PaymentConfiguration = () => {
                         <input
                             type="radio"
                             value="razorpay"
-                            checked={paymentGateway === "razorpay"}
+                            checked={selectedGateway === "razorpay"}
                             onChange={handleSelectGateway}
                             className="hidden"
                         />
                         <span
                             className="radio-box flex items-center py-7 px-10 h-10 border-2 border-[#c0c0c0]  shadow-md gap-x-2 text-text-black rounded-md"
                         >
-                        <div className={`w-4 h-4 rounded-full ${paymentGateway === "razorpay" ? "bg-blue" : "border-2 border-[#c0c0c0]"} `} />
+                        <div className={`w-4 h-4 rounded-full ${selectedGateway === "razorpay" ? "bg-blue" : "border-2 border-[#c0c0c0]"} `} />
                         <img src={razorpay_icon} alt = "razor pay icon" className="w-[5rem] h-[5rem] object-contain"/>
                         </span>
                     </label>
@@ -276,14 +301,14 @@ const PaymentConfiguration = () => {
                         <input
                             type="radio"
                             value="payUmoney"
-                            checked={paymentGateway === "payUmoney"}
+                            checked={selectedGateway === "payUmoney"}
                             onChange={handleSelectGateway}
                             className="hidden"
                         />
                         <span
                             className="radio-box flex items-center py-7 px-10 h-10 border-2 border-[#c0c0c0] shadow-md gap-x-4 text-text-black rounded-md"
                         >
-                            <div className={`w-4 h-4 rounded-full ${paymentGateway === "payUmoney" ? "bg-blue" : "border-2 border-[#c0c0c0]"} `} />
+                            <div className={`w-4 h-4 rounded-full ${selectedGateway === "payUmoney" ? "bg-blue" : "border-2 border-[#c0c0c0]"} `} />
                             <img src={payumoney_icon} alt = "payumoney icon" className="w-[5rem] h-[5rem] object-contain"/>
                         </span>
                     </label>
@@ -291,14 +316,14 @@ const PaymentConfiguration = () => {
                         <input
                             type="radio"
                             value="cashfree"
-                            checked={paymentGateway === "cashfree"}
+                            checked={selectedGateway === "cashfree"}
                             onChange={handleSelectGateway}
                             className="hidden"
                         />
                         <span
                             className="radio-box flex items-center py-7 px-10 h-10 border-2 border-[#c0c0c0] shadow-md gap-x-2 text-text-black rounded-md"
                         >
-                        <div className={`w-4 h-4 rounded-full ${paymentGateway === "cashfree" ? "bg-blue" : "border-2 border-[#c0c0c0]"} `} />
+                        <div className={`w-4 h-4 rounded-full ${selectedGateway === "cashfree" ? "bg-blue" : "border-2 border-[#c0c0c0]"} `} />
                         <img src={cashfree_icon} alt = "cashfree icon" className="w-[5rem] h-[5rem] object-contain"/>
                         </span>
                     </label>
@@ -312,9 +337,9 @@ const PaymentConfiguration = () => {
                 <Spinner />
             </div>
                 :
-            (paymentGateway && isSelected) && <div className="w-full px-16 pt-8 mt-2">
+            (selectedGateway && gatewayImages[selectedGateway]) && <div className="w-full px-16 pt-8 mt-2">
                 <div className="w-2/3 mx-auto shadow-md bg-gray">
-                    <img src={gatewayImages[paymentGateway].src} alt = {gatewayImages[paymentGateway].alt} loading = "lazy" className="w-full h-1/2 object-contain"/>
+                    <img src={gatewayImages[selectedGateway].src} alt = {gatewayImages[selectedGateway].alt} loading = "lazy" className="w-full h-1/2 object-contain"/>
                     <div className="w-fit p-3 mx-auto">
                         <h4 className="text-green-500 font-medium text-size-600 capitalize">is active</h4>
                     </div>
@@ -345,7 +370,10 @@ const PaymentConfiguration = () => {
     <Modal
       className="max-w-lg"
       isOpen={isActive}
-      handleModalOpen={() => setIsActive(false)}
+      handleModalOpen={() => {
+        setIsActive(false)
+        // setPaymentGateway(undefined)
+    }}
       title="Configure Payment Gateway"
     >
       <div className="w-full">

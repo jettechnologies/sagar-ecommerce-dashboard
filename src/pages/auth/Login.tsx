@@ -77,7 +77,7 @@ const Login = () => {
         const { name, value } = target;
 
         if(name === "password"){
-            setUser({ ...user, [name]: {str: value, error: false} });
+            setUser({ ...user, [name]: {str: value.trim(), error: false} });
             return;
         }
 

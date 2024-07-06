@@ -442,7 +442,7 @@ useEffect(() =>{
                                             </p>
                                         </div>
                                     </td>
-                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.email}</td>
+                                    <td className="whitespace-nowrap px-6 py-4 font-medium text-sm lowercase">{admin.email}</td>
                                     <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.mobile}</td>
                                     <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.adminAccessLevel}</td>
                                     <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{admin.nationality ? admin.nationality : "was not set"}</td>

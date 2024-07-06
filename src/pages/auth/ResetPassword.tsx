@@ -48,7 +48,7 @@ const ResetPassword = () => {
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
         const { name, value } = target;
 
-        setReset({ ...reset, [name]: {str: value.toLocaleLowerCase(), error: false} });
+        setReset({ ...reset, [name]: {str: value.trim(), error: false} });
     }
 
     const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{

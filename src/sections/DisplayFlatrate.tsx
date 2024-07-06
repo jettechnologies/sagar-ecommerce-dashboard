@@ -226,7 +226,7 @@ const DisplayFlatrate = () => {
             <div className="flex flex-col w-full">
               <p className="text-text-black font-medium text-size-500">Edit flatrate</p>
               <form 
-                id = "coupon-form" 
+                id = "edit-flatrate_form" 
                 className="w-full flex flex-col gap-5 border border-gray mt-5"
                 onSubmit={editingFlatrate}
               >

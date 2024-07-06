@@ -9,6 +9,7 @@ import Coupons from "@/sections/Coupons";
 import { EasyHTTP } from "@/utils/httpRequest";
 import DisplayFlatrate from "@/sections/DisplayFlatrate";
 import { RotateCcw } from "lucide-react"
+import { useAdminProfile } from "@/context/adminProfileContext";
 
 const currencies = [
   {key:"pound", value : "Pound"},
@@ -25,7 +26,11 @@ const Settings = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  console.log(error)
+  console.log(error);
+
+  const { admin } = useAdminProfile()
+
+  console.log(admin)
 
   const [shipping, setShipping] = useState<{flatRate: string; currency: string;}>({
     flatRate: "",
@@ -99,6 +104,10 @@ const Settings = () => {
       }
       catch(err){
         console.log((err as Error).message);
+        // setError({
+        //   msg: (err as Error).message,
+        //   status: true
+        // })
       }
       finally{
         setLoading(false);
@@ -106,8 +115,8 @@ const Settings = () => {
     }
 
   return (
-    <div className="w-full h-full border-2 border-black">
-      <div className="min-h-16 w-full mb-5">
+    <div className="w-full h-full">
+      {(admin && (admin?.admintype === "SuperAdmin" || admin?.adminaccessLevel === "level3")) && <div className="min-h-16 w-full mb-5">
         <Container className="flex justify-end">
           <Button 
             size="medium"
@@ -123,7 +132,7 @@ const Settings = () => {
            }
           </Button>
         </Container>
-      </div>
+      </div>}
       <Container className="pt-5">
         <div className="flex flex-col gap-y-24">
           <div className="flex w-full gap-x-5">
@@ -138,7 +147,7 @@ const Settings = () => {
               <div className="flex-1">
                   <h4 className="text-size-500 text-text-blaxk font-medium">Shipping fees</h4>
                   <form 
-                    id = "coupon-form" 
+                    id = "flatrate_form" 
                     className="w-full flex flex-col gap-5 border border-gray p-5 mt-5 shadow-md"
                     onSubmit={setShippingFee}
                   >

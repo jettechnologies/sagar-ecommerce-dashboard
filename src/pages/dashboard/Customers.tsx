@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import Image from "@/components/Image";
 import { useState, useEffect } from "react";
-// import { Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import Modal from "@/components/Modal";
 import { useAuth } from "@/context/authContext";
 import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
@@ -176,12 +176,12 @@ const Customers = () => {
                     <thead className="font-medium border-b bg-black text-white">
                         <tr>
                             <th scope="col" className="px-6 py-4">S/N</th>
-                            <th scope="col" className="px-6 py-4">Customer Name</th>
+                            <th scope="col" className="px-6 py-4 border-2 border-white w-[3rem]">Customer Name</th>
                             <th scope="col" className="px-6 py-4">Email</th>
-                            <th scope="col" className="px-6 py-4">Contacr</th>
+                            <th scope="col" className="px-6 py-4">Contact</th>
                             <th scope="col" className="px-6 py-4">Date Created</th>
                             <th scope="col" className="px-6 py-4">Total Orders</th>
-                            {/* <th scope="col" className="px-6 py-4">View Profile</th> */}
+                            <th scope="col" className="px-6 py-4">View Profile</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -193,7 +193,7 @@ const Customers = () => {
                                 return(
                                     <tr key = {customer.id} className="border border-gray hover:bg-gray cursor-pointer">
                                         <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{customer.id}</td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex gap-4 items-center">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex gap-4 items-center border-2">
                                             <div className="w-[3rem] h-[3rem] rounded-full">
                                             {customer.profile_picture ? <Image 
                                                 src = {customer.profile_picture && customer.profile_picture} 
@@ -220,11 +220,11 @@ const Customers = () => {
                                             : 
                                             String(customer.orders.length)}
                                         </td>
-                                        {/* <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex">
+                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex">
                                             <div className="p-2 cursor-pointer rounded-full" onClick={() => setIsModalOpen(prevState => !prevState)}>
                                                 <Eye color = "rgb(34 197 94)"/>
                                             </div>
-                                        </td> */}
+                                        </td>
                                     </tr> 
                                 )
                             })
