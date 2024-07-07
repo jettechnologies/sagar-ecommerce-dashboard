@@ -75,7 +75,7 @@ const ResetPassword = () => {
           return
       }
 
-      const localStorage = window.localStorage.getItem("user_id");
+      const localStorage = window.localStorage.getItem("admin_id");
       if(!localStorage) return;
       const userId = JSON.parse(localStorage);
 

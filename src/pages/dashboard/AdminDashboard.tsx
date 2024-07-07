@@ -98,7 +98,11 @@ const AdminDashboard = () => {
         <Container className="p-4 w-[32%]">
           <div className="w-full">
             <h5 className="text-text-black text-size-500 font-normal mb-1">Total revenue</h5>
-            {revenue ? (
+            {revenueLoading ? (
+              <div className="w-full h-[4rem] flex justify-center items-center">
+                <Spinner />
+              </div>
+            ) : revenue ? (
               <div className="flex gap-x-3">
                 <IndianRupee size={20} />
                 <p className="text-text-black text-size-500 font-semibold">{revenue}</p>
@@ -109,11 +113,11 @@ const AdminDashboard = () => {
                 <p className="text-text-black text-size-500 font-semibold">0</p>
               </div>
             )}
-            {revenueLoading && (
+            {/* {revenueLoading && (
               <div className="w-full h-[4rem] flex justify-center items-center">
                 <Spinner />
               </div>
-            )}
+            )} */}
           </div>
         </Container>
 

@@ -41,7 +41,7 @@ const Login = () => {
     const { setToken, token, isLogin } = useAuth();
     const [response, setResponse] = useState<Response | null>(null);
     const navigate = useNavigate();
-    const { setItem } = useLocalStorage("user_id");
+    const { setItem } = useLocalStorage("admin_id");
 
     console.log(token);
 

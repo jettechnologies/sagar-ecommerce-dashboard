@@ -44,8 +44,6 @@ const Customers = () => {
     const [error, setError] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { token } = useAuth();
-
-      console.log(token, loading, error);
     
       const fetchAllCustomers = async(token:string) => {
         try {
@@ -102,13 +100,13 @@ const Customers = () => {
             totalRevenue: d.totalRevenue,
           }));
 
-          console.log(data[0])
-
-          console.log(profiles)
           setCustomers(profiles);
         }
         catch(e: any){
           console.log(e.message);
+        }
+        finally{
+            setLoading(false)
         }
     
       }
@@ -120,48 +118,6 @@ const Customers = () => {
 
   return (
     <div className="w-full h-full">
-        {/* <div className="min-h-16 w-full">
-            <Container >
-            <div className="flex gap-x-4">
-                        <div className="w-fit h-full">
-                          <Select 
-                            id="category" 
-                            name = "category" 
-                             className="border border-[#c0c0c0]" 
-                            select={[{key: "electronics", value: "electronics"}, {key: "wearables", value: "wearables"}, {key: "gamings", value: "gamings"}, {key: "cameras", value: "cameras"}]}
-                            defaultText="Categories"
-                            />
-                        </div>
-                        <div className="w-fit h-full">
-                          <Select 
-                                id = "status" 
-                                name = "status" 
-                                className="border border-[#c0c0c0]" 
-                                select={[ {key: "processing", value: "processing"}, {key: "completed", value: "completed"}, {key: "failed", value: "failed"}]}
-                                defaultText="status"
-                            />
-                        </div>
-                        <div className="w-fit h-full">
-                          <Select 
-                            id = "price" 
-                            name="price" 
-                            className="border border-[#c0c0c0]" 
-                            select={[{key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}
-                            defaultText="price"
-                            />
-                        </div>
-                        <div className="w-fit h-full">
-                          <Select 
-                            id = "date" 
-                            name = "date" 
-                            className="border border-[#c0c0c0]" 
-                            select={[{key: "customer review", value: "customer review"}, {key: "lowest - highest", value: "lowest - highest"}]}
-                            defaultText="date"
-                            />
-                        </div>
-                    </div>
-            </Container>
-        </div> */}
         <Container className="mt-4 min-h-screen">
             <div className="flex justify-between items-center w-full mb-4">
                 <h3 className="font-semibold text-size-500 text-text-bold">
@@ -172,66 +128,60 @@ const Customers = () => {
                 </p>
             </div>
             <div className="h-full">
-                <table className="min-w-full text-center text-sm font-light">
-                    <thead className="font-medium border-b bg-black text-white">
-                        <tr>
-                            <th scope="col" className="px-6 py-4">S/N</th>
-                            <th scope="col" className="px-6 py-4 border-2 border-white w-[3rem]">Customer Name</th>
-                            <th scope="col" className="px-6 py-4">Email</th>
-                            <th scope="col" className="px-6 py-4">Contact</th>
-                            <th scope="col" className="px-6 py-4">Date Created</th>
-                            <th scope="col" className="px-6 py-4">Total Orders</th>
-                            <th scope="col" className="px-6 py-4">View Profile</th>
-                        </tr>
+            <table className="w-full text-center text-sm font-light">
+                <thead className="font-medium border-b bg-black text-white">
+                    <tr>
+                        <th scope="col" className="px-4 py-2">S/N</th>
+                        <th scope="col" className="px-4 py-2">Customer Name</th>
+                        <th scope="col" className="px-4 py-2">Email</th>
+                        <th scope="col" className="px-4 py-2">Contact</th>
+                        <th scope="col" className="px-4 py-2">Date Created</th>
+                        <th scope="col" className="px-4 py-2">Total Orders</th>
+                        <th scope="col" className="px-4 py-2">View Profile</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {
-                            customers.length > 0 && customers
+                        {customers.length > 0 && customers
                             .sort((a, b) => a.id - b.id)
-                            .map(customer =>{
-                                
-                                return(
-                                    <tr key = {customer.id} className="border border-gray hover:bg-gray cursor-pointer">
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{customer.id}</td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex gap-4 items-center border-2">
-                                            <div className="w-[3rem] h-[3rem] rounded-full">
-                                            {customer.profile_picture ? <Image 
-                                                src = {customer.profile_picture && customer.profile_picture} 
-                                                alt="profile image"
-                                                className="w-[3rem] h-[3rem] rounded-full"  
-                                            />
-                                                :<p className="text-size-600 uppercase text-white bg-black text-center flex items-center justify-center w-full h-full rounded-full border">{customer.fullname.split(" ")[0].substring(0,1)}</p>
-                                            }
-                                            </div>
-                                            <div className="flex gap-y-2 flex-col">
-                                                <p className="text-size-500 text-text-black font-semibold">
-                                                    {customer.fullname}
-                                                </p>
-                                                {/* <p className="text-sm text-text-black font-normal">
-                                                    {admin.registeredAt.split("T")[0]}
-                                                </p> */}
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{customer.email}</td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{customer.mobile}</td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{customer.registeredAt.split("T")[0]}</td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm">{(customer.orders.length === 0 || customer.orders === null) 
-                                            ? "0" 
-                                            : 
-                                            String(customer.orders.length)}
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium text-sm flex">
-                                            <div className="p-2 cursor-pointer rounded-full" onClick={() => setIsModalOpen(prevState => !prevState)}>
-                                                <Eye color = "rgb(34 197 94)"/>
-                                            </div>
-                                        </td>
-                                    </tr> 
-                                )
-                            })
-                        }
-                        
+                            .map(customer => (
+                                <tr key={customer.id} className="border border-gray hover:bg-gray-100 cursor-pointer">
+                                    <td className="whitespace-nowrap px-4 py-2 font-medium">{customer.id}</td>
+                                    <td className="whitespace-nowrap px-4 py-2 flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full">
+                                            {customer.profile_picture ? (
+                                                <Image
+                                                    src={customer.profile_picture}
+                                                    alt="profile image"
+                                                    className="w-full h-full rounded-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex items-center justify-center w-full h-full bg-black text-white rounded-full">
+                                                    <span className="text-xl">
+                                                        {customer.fullname.split(" ")[0].substring(0, 1)}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <p className="text-black font-semibold">{customer.fullname}</p>
+                                        </div>
+                                    </td>
+                                    <td className="whitespace-nowrap px-4 py-2 font-medium">{customer.email}</td>
+                                    <td className="whitespace-nowrap px-4 py-2 font-medium">{customer.mobile}</td>
+                                    <td className="whitespace-nowrap px-4 py-2 font-medium">{customer.registeredAt.split("T")[0]}</td>
+                                    <td className="whitespace-nowrap px-4 py-2 font-medium">
+                                        {customer.orders.length > 0 ? customer.orders.length : "0"}
+                                    </td>
+                                    <td className="whitespace-nowrap px-4 py-2 flex justify-center">
+                                        <button className="p-2 rounded-full bg-green-500 hover:bg-green-700 text-white" onClick={() => setIsModalOpen(prevState => !prevState)}>
+                                            <Eye />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
+
                 {
                     loading && <div className="w-full h-full">
                         <Spinner />

@@ -301,8 +301,6 @@ useEffect(() =>{
         return() => clearTimeout(errorRemoval)
     }, [error]);
 
-    console.log(admins);
-
     const searchAdmin = async(e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
 
