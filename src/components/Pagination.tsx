@@ -1,6 +1,6 @@
 import Button from "./Button";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/icons/svg";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { EasyHTTP } from "@/utils/httpRequest";
 import { useAuth } from "@/context/authContext";
 

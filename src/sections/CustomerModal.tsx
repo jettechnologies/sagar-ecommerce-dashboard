@@ -15,7 +15,7 @@ const CustomerModal:React.FC<Props> = ({
     customer,
 }) => {
 
-    console.log(isOpen)
+    console.log(isOpen, customer)
 
   return (
     <Modal title = "Customer details" isOpen={isOpen} handleModalOpen={handleModalOpen}>
