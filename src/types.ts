@@ -9,7 +9,7 @@ export interface AdminDataType {
     mobile: string;
     fullname: string; 
     updatedAt: string | null;
-    registeredAt: string; 
+    RegisteredAt: string; 
     profilePicture: string;
     gender: string | null;
     nationality: string | null;

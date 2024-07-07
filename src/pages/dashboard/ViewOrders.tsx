@@ -1,7 +1,7 @@
 import Notification from "@/components/Notification";
 import Container from "@/components/Container";
 import Select from "@/components/Select";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { Order } from "@/types";
 import { useAuth } from "@/context/authContext";
 import Button from "@/components/Button";
@@ -9,9 +9,9 @@ import { GripHorizontal, IndianRupee, BadgeCheck } from "lucide-react";
 import Popup from "@/components/Popup";
 import Spinner from "@/components/Spinner";
 import { Link } from "react-router-dom";
-import { ArrowLeftIcon, ArrowRightIcon } from "@/icons/svg";
 import Modal from "@/components/Modal";
 import { formatToHumanReadableDate } from "@/utils/dateFunctions";
+import Pagination from "@/components/Pagination";
 // import { EasyHTTP } from "@/utils/httpRequest";
 
 type FilterType = "all_orders" | "delivered_orders" | "processed_orders" | "shipped_orders";
@@ -27,9 +27,7 @@ const ViewOrders = () => {
     const [loading, setLoading] = useState(false);
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
 
-    const fetchOrders = useCallback(async () => {
-        if (token === "" || authLoading) return;
-
+    const url = useMemo(() =>{
         const urls: Record<FilterType, string> = {
             all_orders: "order-mgt/get-all-orders",
             delivered_orders: "order-mgt/get-all-delivered-orders",
@@ -38,6 +36,15 @@ const ViewOrders = () => {
         };
 
         const url = urls[filter as FilterType];
+        return url;
+    }, [filter]);
+
+    console.log(orders);
+
+    const fetchOrders = useCallback(async () => {
+        if (token === "" || authLoading) return;
+
+        
         const headers: HeadersInit = { Authorization: `Bearer ${token}` };
 
         try {
@@ -57,7 +64,7 @@ const ViewOrders = () => {
         } finally {
             setLoading(false);
         }
-    }, [filter, token]);
+    }, [authLoading, token, url]);
 
     useEffect(() => {
         fetchOrders();
@@ -295,18 +302,8 @@ const ViewOrders = () => {
                         </div>
                     )}
                 </div>
-                <div className="mt-8 w-full flex justify-end">
-                    <div className="w-fit flex gap-x-5 h-10">
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
-                            <ArrowLeftIcon stroke="#fff" />
-                            Previous
-                        </Button>
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
-                            Next
-                            <ArrowRightIcon stroke="#fff" />
-                        </Button>
-                    </div>
-                </div>
+                <Pagination url={url} setData={setOrders} dataLength={orders.length}/>
+                
             </Container>
 
             {/* modal for updating the order status */}

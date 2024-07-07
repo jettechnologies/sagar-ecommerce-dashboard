@@ -10,10 +10,10 @@ import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
 import ErrorModal from "@/components/ErrorModal";
 import EditProduct from "@/sections/EditProduct";
-import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
 import { EasyHTTP } from "@/utils/httpRequest";
 import { useAuth } from "@/context/authContext";
 import { ProductType } from "@/types";
+import Pagination from "@/components/Pagination";
 
 const easyHttp = new EasyHTTP();
 
@@ -56,7 +56,9 @@ const Products = () => {
         const getAllProducts = async (token: string) => {
             try {
                 setLoading(true);
-                const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/product-mgt/fetch-all-products", {
+                const url = "product-mgt/fetch-all-products";
+
+                const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     }
@@ -379,18 +381,7 @@ const Products = () => {
                             ) 
                         }
             </div>
-                <div className="mt-8 w-full flex justify-end">
-                    <div className="w-fit flex gap-x-5 h-10">
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
-                            <ArrowLeftIcon stroke="#fff" />
-                            Previous
-                        </Button>
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
-                            Next
-                            <ArrowRightIcon stroke="#fff" />
-                        </Button>
-                    </div>
-                </div>
+            <Pagination url = "product-mgt/fetch-all-products" setData={setProducts} dataLength={products.length}/>
             
              {/* editing existing product category */}
              <EditProduct 

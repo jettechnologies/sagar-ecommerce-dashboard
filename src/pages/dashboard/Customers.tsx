@@ -1,19 +1,21 @@
 import Container from "@/components/Container";
 import Image from "@/components/Image";
 import { useState, useEffect } from "react";
-import { Eye } from "lucide-react";
-import Modal from "@/components/Modal";
+import { IndianRupee } from "lucide-react";
 import { useAuth } from "@/context/authContext";
-import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
-import Button from "@/components/Button";
 import Spinner from "@/components/Spinner";
 import { Link } from "react-router-dom";
+// import CustomerModal from "@/sections/CustomerModal";
+import ErrorModal from "@/components/ErrorModal";
+import Pagination from "@/components/Pagination";
 
-interface CustomerData {
+// const easyHttp = new EasyHTTP();
+
+export interface CustomerData {
         DOB: null;
         LGA_of_Home_Address: null;
         Nationality: null;
-        registeredAt: string;
+        RegisteredAt: string;
         UpdatedAt: null;
         age: null;
         cityOfResidence: null;
@@ -34,26 +36,65 @@ interface CustomerData {
         reset_link_exptime: null;
         role: string;
         totalRevenue: string;
-        userId: string;
+        userID: string;
       }
 
 const Customers = () => {
-
+    
     const [customers, setCustomers] = useState<CustomerData[] | []>([]);
+    // const [customer, setCustomer] = useState<CustomerData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    // const [isModalOpen, setIsModalOpen] = useState(false);
     const { token } = useAuth();
+
+    // useEffect(() => {
+    //     if (!customers || customers.length === 0) return;
+
+    //     console.log(customers)
     
-      const fetchAllCustomers = async(token:string) => {
+    //     const profiles: CustomerData[] = customers.map((d: any) => ({
+    //       userId: d.userID,
+    //       fullname: d.fullname,
+    //       email: d.email,
+    //       orders: d.orders,
+    //       registeredAt: d.RegisteredAt,
+    //       mobile: d.mobile,
+    //       isLoggedIn: d.isLoggedIn,
+    //       DOB: d.DOB,
+    //       LGA_of_Home_Address: d.LGA_of_Home_Address,
+    //       Nationality: d.Nationality,
+    //       UpdatedAt: d.UpdatedAt,
+    //       age: d.age,
+    //       cityOfResidence: d.cityOfResidence,
+    //       favourites: d.favourites,
+    //       gender: d.gender,
+    //       home_address: d.home_address,
+    //       id: d.id,
+    //       isRegistered: d.isRegistered,
+    //       isVerified: d.isVerified,
+    //       password: d.password,
+    //       password_reset_link: d.password_reset_link,
+    //       profile_picture: d.profile_picture,
+    //       reset_link_exptime: d.reset_link_exptime,
+    //       role: d.role,
+    //       totalRevenue: d.totalRevenue,
+    //     }));
+    
+    //     setCustomers(profiles);
+    //   }, [customers]);
+    
+      const fetchAllCustomers = async (token: string) => {
+        const url = "customer-mgt/all-users";
+    
         try {
           setLoading(true);
-          const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/customer-mgt/all-users", {
+          const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
             }
           });
-          
+    
           const data = await res.json();
     
           if (!res.ok) {
@@ -61,59 +102,51 @@ const Customers = () => {
             setError(data.message || 'An error occurred');
             return;
           }
-
-        //   const profiles: CustomerData[] = data.map( d =>{
-        //         userId: d.userId,
-        //         fullname: d.fullName,
-        //         email: d.email,
-        //         orders: d.orders,
-        //         registeredAT: d.RegisteredAt,
-        //         mobile: d.mobile,
-        //         isLoggedIn: d,.isLoggedIn,
-        //   });
-
-        const profiles: CustomerData[] = data[0].map((d: any) => ({
-            userId: d.userID,
-            fullname: d.fullname,
-            email: d.email,
-            orders: d.orders,
-            registeredAt: d.RegisteredAt,
-            mobile: d.mobile,
-            isLoggedIn: d.isLoggedIn,
-            DOB: d.DOB,
-            LGA_of_Home_Address: d.LGA_of_Home_Address,
-            Nationality: d.Nationality,
-            UpdatedAt: d.UpdatedAt,
-            age: d.age,
-            cityOfResidence: d.cityOfResidence,
-            favourites: d.favourites,
-            gender: d.gender,
-            home_address: d.home_address,
-            id: d.id,
-            isRegistered: d.isRegistered,
-            isVerified: d.isVerified,
-            password: d.password,
-            password_reset_link: d.password_reset_link,
-            profile_picture: d.profile_picture,
-            reset_link_exptime: d.reset_link_exptime,
-            role: d.role,
-            totalRevenue: d.totalRevenue,
-          }));
-
-          setCustomers(profiles);
+          console.log(data[0]);
+          setCustomers(data[0]);
         }
-        catch(e: any){
-          console.log(e.message);
+        catch (e) {
+          console.log((e as Error).message);
         }
-        finally{
-            setLoading(false)
+        finally {
+          setLoading(false);
         }
-    
-      }
+      };
+
+      console.log(customers)
     
       useEffect(() => {
-        if(token !== ""){fetchAllCustomers(token);}
+        if (token !== "") {
+          fetchAllCustomers(token);
+        }
       }, [token]);
+    
+
+    if(error){
+        return <div className="w-full h-full">
+            <p></p>
+        </div>
+    }
+    // function to handle api call for displaying a single customers detail
+    // const displaySingleCustomer = async(id:number) =>{
+    //     const url = `customer-mgt/one-user/${id}`;
+    //     const headers:HeadersInit = {
+    //         'Content-type': 'application/json',
+    //         "Accept": "application/json",
+    //         'Authorization': `Bearer ${token}`,
+    //     };
+
+    //     try{
+    //         const response = await easyHttp.get(url, headers);
+    //         console.log(response);
+    //         setCustomer(response)
+    //         setIsModalOpen(true);
+    //     }
+    //     catch(err){
+    //         console.log((err as Error).message);
+    //         setError((err as Error).message)
+    //     }
+    // }
     
 
   return (
@@ -137,7 +170,7 @@ const Customers = () => {
                         <th scope="col" className="px-4 py-2">Contact</th>
                         <th scope="col" className="px-4 py-2">Date Created</th>
                         <th scope="col" className="px-4 py-2">Total Orders</th>
-                        <th scope="col" className="px-4 py-2">View Profile</th>
+                        <th scope="col" className="px-4 py-2">Revenue generated</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -168,15 +201,16 @@ const Customers = () => {
                                     </td>
                                     <td className="whitespace-nowrap px-4 py-2 font-medium">{customer.email}</td>
                                     <td className="whitespace-nowrap px-4 py-2 font-medium">{customer.mobile}</td>
-                                    <td className="whitespace-nowrap px-4 py-2 font-medium">{customer.registeredAt.split("T")[0]}</td>
+                                    <td className="whitespace-nowrap px-4 py-2 font-medium">{customer.RegisteredAt.split("T")[0]}</td>
                                     <td className="whitespace-nowrap px-4 py-2 font-medium">
                                         {customer.orders.length > 0 ? customer.orders.length : "0"}
                                     </td>
-                                    <td className="whitespace-nowrap px-4 py-2 flex justify-center">
-                                        <button className="p-2 rounded-full bg-green-500 hover:bg-green-700 text-white" onClick={() => setIsModalOpen(prevState => !prevState)}>
+                                    {/* <td className="whitespace-nowrap px-4 py-2 flex justify-center">
+                                        <button className="p-2 rounded-full bg-green-500 hover:bg-green-700 text-white" onClick={() => displaySingleCustomer(customer.id)}>
                                             <Eye />
                                         </button>
-                                    </td>
+                                    </td> */}
+                                    <td className="whitespace-nowrap px-4 py-2 font-medium flex gap-2"><IndianRupee size = {20}/>{customer.totalRevenue}</td>
                                 </tr>
                             ))}
                     </tbody>
@@ -199,21 +233,13 @@ const Customers = () => {
                     </div>
                 }
             </div>
-            <div className="mt-8 w-full flex justify-end">
-                    <div className="w-fit flex gap-x-5 h-10">
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
-                            <ArrowLeftIcon stroke="#fff" />
-                            Previous
-                        </Button>
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
-                            Next
-                            <ArrowRightIcon stroke="#fff" />
-                        </Button>
-                    </div>
-                </div>
-                   {/* Editing existing product category */}
-            <Modal title = "Customer details" isOpen={isModalOpen} handleModalOpen={() => setIsModalOpen(prevState => !prevState)}>
-            </Modal>
+            <Pagination url="customer-mgt/all-users" setData={setCustomers} dataLength = {customers.length}/>
+
+                {/* component to show single user */}
+                {/* <CustomerModal isOpen = {isModalOpen} handleModalOpen={() =>setIsModalOpen(prevState => !prevState)} customer = {customer}/> */}
+
+                {/* error modal */}
+                <ErrorModal error={error} setError={() => setError("")} redirect="/admin/view-customers" />
         </Container>
     </div>
   )

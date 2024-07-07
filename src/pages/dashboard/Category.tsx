@@ -9,12 +9,12 @@ import { useCategories } from "../hooks/usCategories";
 import Notification from "@/components/Notification";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
-import { ArrowRightIcon, ArrowLeftIcon } from "@/icons/svg";
 // import { imageValidate } from "@/utils/imageValidate";
 import Image from "@/components/Image";
 import { useAuth } from "@/context/authContext";
 import { CategoryType } from "@/types";
 import ErrorModal from "@/components/ErrorModal";
+import Pagination from "@/components/Pagination";
 // import { useFormData } from "../hooks/useFormData";
 
 
@@ -46,7 +46,8 @@ const Category = () => {
         setActivePopupId(prevId => (prevId === id ? null : id));
     };
     
-    const { isLoading, isError, getCategories, categories } = useCategories();
+    const { isLoading, isError, getCategories, categories:categoryArray } = useCategories();
+    const [categories, setCategories] = useState<CategoryType[] | []>([]);
     const [category, setCategory] = useState<Category>({
         name: "",
         description: "",
@@ -58,6 +59,16 @@ const Category = () => {
     const [search, setSearch] = useState("");
 
     console.log(response)
+
+    useEffect(() =>{
+        getCategories()
+    }, [getCategories]);
+
+    useEffect(() =>{
+        if(!categoryArray) return;
+
+        setCategories(categoryArray);
+    });
 
     const searchCategories = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -117,9 +128,7 @@ const Category = () => {
     }, [search]);
 
 
-    useEffect(() =>{
-        getCategories()
-    }, [getCategories]);
+    // console.log(categories)
 
     useEffect(() =>{
         let errorTimer: NodeJS.Timeout;
@@ -213,8 +222,6 @@ const Category = () => {
         // window.location.reload();
 
     }
-
-    
 
     // handle form submit
     const handleFormSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
@@ -462,18 +469,7 @@ const Category = () => {
                         ) 
                     }
             </div>
-            <div className="mt-8 w-full flex justify-end">
-                    <div className="w-fit flex gap-x-5 h-10">
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
-                            <ArrowLeftIcon stroke="#fff" />
-                            Previous
-                        </Button>
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
-                            Next
-                            <ArrowRightIcon stroke="#fff" />
-                        </Button>
-                    </div>
-                </div>
+            <Pagination url = "browse/fetch-all-product-categories" setData={setCategories} dataLength={categories.length}/>
             {
                 resError && <Notification 
                         message={resError} 

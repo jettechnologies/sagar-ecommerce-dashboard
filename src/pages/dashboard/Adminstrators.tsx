@@ -9,11 +9,11 @@ import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
 import Modal from "@/components/Modal";
 import { EasyHTTP } from "@/utils/httpRequest";
-import { ArrowLeftIcon, ArrowRightIcon } from "@/icons/svg";
 import { useAuth } from "@/context/authContext";
 import Select from "@/components/Select";
 import Notification from "@/components/Notification";
 import ErrorModal from "@/components/ErrorModal";
+import Pagination from "@/components/Pagination";
 
 
 const adminTypes:{key:string; value:string}[] = [
@@ -58,40 +58,42 @@ const Adminstrators = () => {
 
     console.log(token, loading);
 
-    const mapResponseToAdminData = (response: any): AdminDataType => {
-        return {
-          id: response.id,
-          adminID: response.adminID,
-          email: response.email,
-          role: response.role,
-          adminType: response.admintype,
-          adminAccessLevel: response.adminaccessLevel,
-          password: response.password,
-          mobile: response.mobile,
-          fullname: response.fullname,
-          updatedAt: response.UpdatedAt,
-          registeredAt: response.RegisteredAt,
-          profilePicture: response.profile_picture,
-          gender: response.gender,
-          nationality: response.Nationality,
-          isLoggedIn: response.isLoggedIn,
-          isRegistered: response.isRegistered,
-          isActivated: response.isActivated,
-          isDeactivated: response.isDeactivated,
-          isVerified: response.isVerified,
-          resetLinkExpTime: response.reset_link_exptime,
-          passwordResetLink: response.password_reset_link,
-        };
-      };
+    // const mapResponseToAdminData = (response: any): AdminDataType => {
+    //     return {
+    //       id: response.id,
+    //       adminID: response.adminID,
+    //       email: response.email,
+    //       role: response.role,
+    //       adminType: response.admintype,
+    //       adminAccessLevel: response.adminaccessLevel,
+    //       password: response.password,
+    //       mobile: response.mobile,
+    //       fullname: response.fullname,
+    //       updatedAt: response.UpdatedAt,
+    //       registeredAt: response.RegisteredAt,
+    //       profilePicture: response.profile_picture,
+    //       gender: response.gender,
+    //       nationality: response.Nationality,
+    //       isLoggedIn: response.isLoggedIn,
+    //       isRegistered: response.isRegistered,
+    //       isActivated: response.isActivated,
+    //       isDeactivated: response.isDeactivated,
+    //       isVerified: response.isVerified,
+    //       resetLinkExpTime: response.reset_link_exptime,
+    //       passwordResetLink: response.password_reset_link,
+    //     };
+    //   };
 
-    const mapResponsesToAdminDataArray = useCallback((responses: any[]): AdminDataType[] => {
-        return responses.map((response) => mapResponseToAdminData(response));
-      }, [])
+    // const mapResponsesToAdminDataArray = useCallback((responses: any[]): AdminDataType[] => {
+    //     return responses.map((response) => mapResponseToAdminData(response));
+    //   }, [])
 
       const getAllAdmins = useCallback(async (token:string) => {
         try {
+          const url = "admins-mgt/all-other-admins";
+
           setLoading(true);
-          const res = await fetch("https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/admins-mgt/all-other-admins", {
+          const res = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
             }
@@ -105,16 +107,16 @@ const Adminstrators = () => {
             return;
           }
   
-            const adminData: AdminDataType[] = mapResponsesToAdminDataArray(data[0]);
-            console.log(adminData)
-            setAdmins(adminData);
+            // const adminData: AdminDataType[] = mapResponsesToAdminDataArray(data[0]);
+            console.log(data[0])
+            setAdmins(data[0]);
         } catch (e : any) {
           console.log(e.message);
           setError(e.message);
         } finally {
           setLoading(false);
         }
-    }, [mapResponsesToAdminDataArray]);
+    }, []);
   
 
 useEffect(() =>{
@@ -324,9 +326,9 @@ useEffect(() =>{
             if(res.status === 404) throw new Error(response.message)
 
             console.log(response.data);
-            const adminData: AdminDataType[] = mapResponsesToAdminDataArray(response.data);
-            console.log(adminData)
-            setAdmins(adminData);
+            // const adminData: AdminDataType[] = mapResponsesToAdminDataArray(response.data);
+            // console.log(adminData)
+            setAdmins(response.data);
         }
         catch(err){
             console.log((err as Error).message);
@@ -436,7 +438,7 @@ useEffect(() =>{
                                                 {admin.fullname}
                                             </p>
                                             <p className="text-sm text-text-black font-normal">
-                                                {admin.registeredAt.split("T")[0]}
+                                                {admin.RegisteredAt.split("T")[0]}
                                             </p>
                                         </div>
                                     </td>
@@ -528,18 +530,7 @@ useEffect(() =>{
 
 
             </div>
-            <div className="mt-8 w-full flex justify-end">
-                    <div className="w-fit flex gap-x-5 h-10">
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2">
-                            <ArrowLeftIcon stroke="#fff" />
-                            Previous
-                        </Button>
-                        <Button size="small" className="text-white text-sm lg:text-base font-medium flex justify-center gap-2 px-6">
-                            Next
-                            <ArrowRightIcon stroke="#fff" />
-                        </Button>
-                    </div>
-                </div>
+            <Pagination url = "admins-mgt/all-other-admins" setData={setAdmins} dataLength={admins.length}/>
 
                {/* Editing existing product category */}
         

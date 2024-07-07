@@ -231,8 +231,10 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     // Send the request
     try {
         setLoading(true);
+        const url = "product-mgt/new-product";
+
         const res = await fetch(
-            "https://sagar-e-commerce-backend.onrender.com/api/v1/sagar_stores_api/product-mgt/new-product",
+            `${import.meta.env.VITE_PRODUCT_LIST_API}${url}`,
             {
                 method: "POST",
                 headers: {

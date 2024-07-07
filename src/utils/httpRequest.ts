@@ -13,11 +13,14 @@ interface ImageUploadData {
 
 export class EasyHTTP {
   // Make an HTTP GET Request 
-  async get(url: string): Promise<any> {
+  async get(url: string, headers?: HeadersInit): Promise<any> {
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`);
+      const response = await fetch(`${import.meta.env.VITE_PRODUCT_LIST_API}${url}`, {
+        headers:headers || {},
+      });
       const resData = await response.json();
+      if(resData.ok) throw new Error(resData.message)
       return resData;
     } catch (error) {
       console.log(error);
