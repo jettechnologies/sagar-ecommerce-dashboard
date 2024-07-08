@@ -1,14 +1,34 @@
-import { Outlet, Navigate } from "react-router-dom"
-import { useAuth } from "@/context/authContext"
+import { useEffect } from 'react';
+import { Outlet, Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/authContext';
 
 const ProtectedRoutes = () => {
+  const { token, isLogin, loading } = useAuth();
+  const navigate = useNavigate(); // Get the navigate function from react-router-dom
 
-    const { token, isLogin } = useAuth();
-    console.log(token, isLogin);
+  useEffect(() => {
+    const handleViewportCheck = () => {
+      if (window.innerWidth < 1024) {
+        // Redirect internally using Navigate component
+        navigate('/viewport-warning', { replace: true });
+      }
+    };
 
-  return (
-    (token && isLogin) ? <Outlet/> : <Navigate to = "/login"/>
-  )
-}
+    handleViewportCheck();
 
-export default ProtectedRoutes
+    // Clean-up if necessary
+    return () => {
+      // Cleanup logic if needed
+    };
+  }, [navigate]); // Include navigate in the dependency array to prevent stale closures
+
+  if (token && isLogin && !loading) {
+    return <Outlet />;
+  } else if (!loading && !(token && isLogin)) {
+    return <Navigate to="/login" replace />;
+  } else {
+    return null; // or loading indicator or any default content
+  }
+};
+
+export default ProtectedRoutes;

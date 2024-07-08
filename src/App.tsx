@@ -21,7 +21,9 @@ import Inventory from "./pages/dashboard/Inventory";
 import CustomersReview from "./pages/dashboard/CustomersReview";
 import PaymentConfiguration from "./pages/dashboard/PaymentConfiguration";
 import VerifyPasscode from "./pages/auth/VerifyPasscode";
-// import ProtectedRoutes from "./components/ProtectedRoutes";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+import ViewPortWarning from "./pages/ViewPortWarning";
+import NotFound from "./pages/NotFound";
 
 
 function App() {
@@ -42,7 +44,7 @@ function App() {
           </Route>
 
         </Route>
-        {/* <Route element = {<ProtectedRoutes />}> */}
+        <Route element = {<ProtectedRoutes />}>
           <Route path="/admin" element = {<AdminLayout />}>
             <Route index element={<Navigate to="dashboard" />} />
             <Route path="dashboard" element = {<AdminDashboard />} />
@@ -62,7 +64,9 @@ function App() {
             <Route path="account-setting" element = {<Settings />} />
             <Route path="payment-configuration" element = {<PaymentConfiguration />} />
           </Route>
-        {/* </Route> */}
+        </Route>
+        <Route path="/viewport-warning" element = {<ViewPortWarning />} />
+        <Route path="*" element = {<NotFound />} />
       </Routes>
     </>
   )

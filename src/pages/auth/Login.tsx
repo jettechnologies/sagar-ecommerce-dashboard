@@ -70,8 +70,6 @@ const Login = () => {
         }
     }, [navigate, token, isLogin]);
 
-    console.log(token, true)
-
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const target = e.target as HTMLInputElement | HTMLTextAreaElement;
         const { name, value } = target;
