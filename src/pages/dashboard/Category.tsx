@@ -68,7 +68,7 @@ const Category = () => {
         if(!categoryArray) return;
 
         setCategories(categoryArray);
-    });
+    }, [setCategories, categoryArray]);
 
     const searchCategories = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

@@ -1,23 +1,23 @@
 import Container from "@/components/Container"
 import { useState } from "react";
-import Select from "@/components/Select";
+// import Select from "@/components/Select";
 import Button from "@/components/Button";
 import { useAuth } from "@/context/authContext";
 import EditProfile from "@/sections/EditProfile";
 import ResetPassword from "@/sections/ResetPassword";
 import Coupons from "@/sections/Coupons";
 import { EasyHTTP } from "@/utils/httpRequest";
-import DisplayFlatrate from "@/sections/DisplayFlatrate";
+// import DisplayFlatrate from "@/sections/DisplayFlatrate";
 import { RotateCcw } from "lucide-react"
 import { useAdminProfile } from "@/context/adminProfileContext";
 
-const currencies = [
-  {key:"pound", value : "Pound"},
-  {key: "dollar", value:"Dollar"},
-  {key: "euro", value :"Euro"},
-  {key: "rupee", value : "Rupee"},
-  {key: "yuan", value :"Chinese yuan " }
-]
+// const currencies = [
+//   {key:"pound", value : "Pound"},
+//   {key: "dollar", value:"Dollar"},
+//   {key: "euro", value :"Euro"},
+//   {key: "rupee", value : "Rupee"},
+//   {key: "yuan", value :"Chinese yuan " }
+// ]
 
 const Settings = () => {
 
@@ -32,58 +32,58 @@ const Settings = () => {
 
   console.log(admin)
 
-  const [shipping, setShipping] = useState<{flatRate: string; currency: string;}>({
-    flatRate: "",
-    currency: "",
-  })
+  // const [shipping, setShipping] = useState<{flatRate: string; currency: string;}>({
+  //   flatRate: "",
+  //   currency: "",
+  // })
 
   const { token } = useAuth();
 
-  const handleShippingInput =  (
-    e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) =>{
-    const target = e.target as HTMLInputElement | HTMLSelectElement;
-    const { name, value } = target;
+  // const handleShippingInput =  (
+  //   e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  // ) =>{
+  //   const target = e.target as HTMLInputElement | HTMLSelectElement;
+  //   const { name, value } = target;
 
-    setShipping({ ...shipping, [name]: value.toLocaleLowerCase().trim()});
-  }
+  //   setShipping({ ...shipping, [name]: value.toLocaleLowerCase().trim()});
+  // }
 
-  const setShippingFee =  async(e:React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const setShippingFee =  async(e:React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
 
-    const { flatRate, currency } = shipping;
+  //   const { flatRate, currency } = shipping;
     
-        if(flatRate !== "" && currency !== ""){
+  //       if(flatRate !== "" && currency !== ""){
             
-          const url = "order-mgt/set-flatrate";
-          const headers:HeadersInit = {
-            "Content-Type": 'application/json',
-            "Accept": "application/json",
-            Authorization: `Bearer ${token}`,
-        }
+  //         const url = "order-mgt/set-flatrate";
+  //         const headers:HeadersInit = {
+  //           "Content-Type": 'application/json',
+  //           "Accept": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //       }
     
-            const data = {
-              flatRate: parseFloat(shipping.flatRate),
-              currency: shipping.currency,
-            }
+  //           const data = {
+  //             flatRate: parseFloat(shipping.flatRate),
+  //             currency: shipping.currency,
+  //           }
     
-            console.log(data)
+  //           console.log(data)
             
-            try{
-                setLoading(true);
-                const response = await easyHttp.post(url, headers, data);
-                console.log(response);
-                window.location.reload();
-            }
-            catch(err){
-                console.log((err as Error).message)
-                setError((err as Error).message)
-            }
-            finally{
-                setLoading(false)
-            }
-         }
-    }
+  //           try{
+  //               setLoading(true);
+  //               const response = await easyHttp.post(url, headers, data);
+  //               console.log(response);
+  //               window.location.reload();
+  //           }
+  //           catch(err){
+  //               console.log((err as Error).message)
+  //               setError((err as Error).message)
+  //           }
+  //           finally{
+  //               setLoading(false)
+  //           }
+  //        }
+  //   }
 
     const resetPasscode = async() =>{
       const localStorage = window.localStorage.getItem("passcode_id");
@@ -104,10 +104,7 @@ const Settings = () => {
       }
       catch(err){
         console.log((err as Error).message);
-        // setError({
-        //   msg: (err as Error).message,
-        //   status: true
-        // })
+        setError((err as Error).message);
       }
       finally{
         setLoading(false);
@@ -144,7 +141,7 @@ const Settings = () => {
               {/* Coupon section */}
               <Coupons token={token} />
               {/* Flat rate section */}
-              <div className="flex-1">
+              {/* <div className="flex-1">
                   <h4 className="text-size-500 text-text-blaxk font-medium">Shipping fees</h4>
                   <form 
                     id = "flatrate_form" 
@@ -183,13 +180,13 @@ const Settings = () => {
                   {loading ? "Loading..." : "Save shipping rate"}
                 </Button>
               </form>
-              </div>
+              </div> */}
             </div>
           </div>
             <EditProfile token={token} />
           </div>
           {/* the end of the second section of the editprofile */}
-          <DisplayFlatrate />
+          {/* <DisplayFlatrate /> */}
         </div>
       </Container>
     </div>

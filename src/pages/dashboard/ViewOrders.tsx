@@ -247,7 +247,7 @@ const ViewOrders = () => {
                                         <td className="whitespace-nowrap px-2 py-2 sm:px-4 sm:py-4 font-medium text-sm">{order?.user.email}</td>
                                         <td className="whitespace-nowrap px-2 py-2 sm:px-4 sm:py-4 font-medium text-sm flex gap-2">
                                             <IndianRupee size={20} />
-                                            {order?.items.reduce((total, item) => total + parseFloat(item.price) * item.quantity, 0)}
+                                            {order?.total}
                                         </td>
                                         <td className="whitespace-nowrap px-2 py-2 sm:px-4 sm:py-4 font-medium text-sm">
                                             <Notification
