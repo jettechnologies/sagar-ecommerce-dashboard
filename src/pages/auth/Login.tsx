@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import FormContainer from "@/components/FormContainer";
-import { Mail, LockKeyhole, Info, CircleUserRoundIcon } from "lucide-react";
+import { Mail, LockKeyhole, Info, CircleUserRoundIcon, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import Notification from "@/components/Notification";
 import { Headers } from "@/utils/httpRequest";
@@ -36,10 +36,11 @@ interface Response {
 const Login = () => {
 
     const easyHttp  = new EasyHTTP;
+    const { setToken, token, isLogin } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
     const [resError, setResError] = useState<string | null>(null);
-    const { setToken, token, isLogin } = useAuth();
     const [response, setResponse] = useState<Response | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const { setItem } = useLocalStorage("admin_id");
 
@@ -195,12 +196,16 @@ const Login = () => {
                         <LockKeyhole size = {20}/>
                         <input 
                             className="pl-2 w-full outline-none border-none" 
-                            type="password" 
+                            type={showPassword ? "text" : "password"}  
                             name="password" 
                             id="password" 
+                            value = {user.password.str}
                             placeholder="Password" 
                             onChange={handleInputChange}
                         />
+                        <button type = "button" onClick={() => setShowPassword(!showPassword)} className="w-4 h-4 rounded-full flex justify-center items-center">
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
                         {user.password.error && <Info size={20} color=" rgb(239 68 68)" />}
                     </div>
                     {user.password.error && <p className="text-red-500 text-size-400 font-normal m-2">Password contain aphlabets, digits and special characters and be within 8 to 15 characters</p>}

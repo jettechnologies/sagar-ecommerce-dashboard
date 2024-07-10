@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import Button from "@/components/Button";
 import Notification from "@/components/Notification";
 import { EasyHTTP } from "@/utils/httpRequest";
+import PasswordInput from "@/components/Password";
 
 const easyHttp = new EasyHTTP();
 
@@ -9,33 +10,57 @@ type ResetPasswordProps = {
     token:string;
 }
 
+interface PasswordChange {
+    oldPassword: {
+        str: string;
+        error: boolean;
+    };
+    newPassword:{
+        str: string;
+        error: boolean;
+    };
+    confirmPassword: {
+        str: string;
+        error: boolean;
+    };
+}
+
 const ResetPassword = ({token}: ResetPasswordProps) => {
     
-    const [passwordChange, setPasswordChange] = useState<{oldPassword: string; newPassword:string; confirmPassword: string}>({
-        oldPassword: "",
-        newPassword:"",
-        confirmPassword: "",
+    const [passwordChange, setPasswordChange] = useState<PasswordChange>({
+        oldPassword: {
+            str: "",
+            error: false,
+        },
+        newPassword:{
+            str: "",
+            error: false,
+        },
+        confirmPassword: {
+            str: "",
+            error: false,
+        },
     });
     const [validateError, setValidateError] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
 
-    const handlePasswordChange = (
-        e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-      ) =>{
-        const target = e.target as HTMLInputElement | HTMLSelectElement;
-        const { name, value } = target;
+    // const handlePasswordChange = (
+    //     e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    //   ) =>{
+    //     const target = e.target as HTMLInputElement | HTMLSelectElement;
+    //     const { name, value } = target;
     
-        setPasswordChange({ ...passwordChange, [name]: value.trim()});
-    }
+    //     setPasswordChange({ ...passwordChange, [name]: value.trim()});
+    // }
 
     const handlePasswordReset = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         
         const { oldPassword, newPassword, confirmPassword } = passwordChange;
 
-        if(oldPassword === "" || newPassword === "" || confirmPassword === ""){
+        if(oldPassword.str === "" || newPassword.str === "" || confirmPassword.str === ""){
             setValidateError(true);
             return
         }
@@ -89,7 +114,7 @@ const ResetPassword = ({token}: ResetPasswordProps) => {
             className="w-full flex flex-col gap-5 border border-gray p-5 mt-5 shadow-md"
         >   
             {validateError && <Notification message = "All fields are required" type = "danger" className="text-white mb-4"/>}
-            <div className="w-full">
+            {/* <div className="w-full">
             <label htmlFor="old-password" className="text-size-400 text-text-black font-medium mb-3">
                 Old Password
             </label>
@@ -127,7 +152,10 @@ const ResetPassword = ({token}: ResetPasswordProps) => {
                 placeholder="Confrim New Password" 
                 onChange={handlePasswordChange}
                 />
-            </div>
+            </div> */}
+            <PasswordInput name = "oldPassword" placeholder = "Old Password" password = {passwordChange.oldPassword} setPassword={(newValue) => setPasswordChange({...passwordChange, oldPassword: newValue})}/>
+            <PasswordInput name = "newPassword" placeholder = "New Password" password = {passwordChange.newPassword} setPassword={(newValue) => setPasswordChange({...passwordChange, newPassword: newValue})}/>
+            <PasswordInput name = "confirmPassword" placeholder = "Confirm Password" password={passwordChange.confirmPassword} setPassword={(newValue) => setPasswordChange({...passwordChange, confirmPassword: newValue})}/>
             <Button size = "small" className = "">
                 {loading ? "loading...": "Reset Password"}
             </Button>

@@ -1,6 +1,6 @@
 import FormContainer from "@/components/FormContainer";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Info, LockKeyhole, Phone } from "lucide-react";
+import { User, Mail, Info, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import Notification from "@/components/Notification";
 // import Button from "../../components/Button";
@@ -9,6 +9,7 @@ import { ArrowLeftIcon, CircleUserRoundIcon } from "lucide-react";
 // import Select from "@/components/Select";
 import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
+import PasswordInput from "@/components/Password"
 
 interface StateObj{
  str: string;
@@ -196,7 +197,7 @@ useEffect(() =>{
                     </div>
                     {user.contact.error && <p className="text-red-500 text-size-400 font-normal m-2">Enter a correct email format</p>}
                 </div>
-                <div>
+                {/* <div>
                     <div className={`flex items-center ${user.password.error ? "border-2 border-red-500": "border-2 border-gray focus-within:border-blue"} mb-3 py-3 px-3 rounded-md`}>
                         <LockKeyhole size = {20}/>
                         <input 
@@ -225,7 +226,10 @@ useEffect(() =>{
                         {user.confirmPassword.error && <Info size={20} color=" rgb(239 68 68)" />}
                     </div>
                     {user.confirmPassword.error && <p className="text-red-500 text-size-400 font-normal m-2">Password contain aphlabets, digits and special characters and be within 8 to 15 characters</p>}
-                </div>
+                </div> */}
+                <PasswordInput name = "password" placeholder = "Password" password = {user.password} setPassword={(newValue) => setUser({...user, password: newValue})}/>
+                <PasswordInput name = "confirmPassword" placeholder = "Confirm Password" password={user.confirmPassword} setPassword={(newValue) => setUser({...user, confirmPassword: newValue})}/>
+                <div className="w-full h-fit flex flex-col gap-y-3"></div>
                 <div className="w-full h-fit flex flex-col gap-y-3">
                     <button type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white">
                         {loading ? "Loading..." : "Create account"}

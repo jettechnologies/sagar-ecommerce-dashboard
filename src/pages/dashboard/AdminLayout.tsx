@@ -225,7 +225,7 @@ const AdminLayout = () => {
                 <BellDot size={27}/>
                 {/* <span className="text-white font-normal text-sm absolute top-0 right-0 w-4 h-4 text-center rounded-full bg-blue">3</span> */}
               </div>
-              {!dataLoading && (
+              {dataLoading ?<div className = "border-2 w-full h-[3rem]"><Spinner/></div> :(
                 <div className="flex w-fit h-[3rem] items-center gap-x-3">
                   {/* <img src={userData.profilePic} alt="admin image" className="w-10 h-10 object-container"/> */}
                   <>
