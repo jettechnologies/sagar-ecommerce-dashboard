@@ -37,6 +37,7 @@ const easyHttp = new EasyHTTP();
 const Adminstrators = () => {
 
     const navigate = useNavigate();
+    const [fetchError, setFetchError] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [searchError, setSearchError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -103,7 +104,7 @@ const Adminstrators = () => {
   
           if (!res.ok) {
             console.log(res);
-            setError(data.message || 'An error occurred');
+            setFetchError(data.message || 'An error occurred');
             return;
           }
   
@@ -112,7 +113,7 @@ const Adminstrators = () => {
             setAdmins(data[0]);
         } catch (e : any) {
           console.log(e.message);
-          setError(e.message);
+          setFetchError(e.message);
         } finally {
           setLoading(false);
         }
@@ -508,9 +509,9 @@ useEffect(() =>{
                         }
 
                         {
-                            error ? (
+                            fetchError ? (
                                 <div className="w-full h-screen grid place-content-center gap-4">
-                                    <h1>{error}</h1>
+                                    <h1>{fetchError}</h1>
                                     <Link to = "/admin/dashboard" 
                                         className="mt-5 w-[20rem] py-3 cursor-pointer text-size-500 font-medium text-white bg-black text-center"
                                     >
@@ -519,8 +520,8 @@ useEffect(() =>{
                                 </div>
                             )
                             : admins.length === 0 && (<div className="w-full h-full grid place-content-center gap-4">
-                                <h1 className="text-center">No sub admins</h1>
-                                <Link to = "/admin/" 
+                                <h1 className="text-center first-letter:uppercase">No sub admins</h1>
+                                <Link to = "/admin/accounts" 
                                     className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white bg-black text-center "
                                 >
                                     Refresh page

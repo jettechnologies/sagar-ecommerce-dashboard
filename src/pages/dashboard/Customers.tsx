@@ -48,6 +48,8 @@ const Customers = () => {
     // const [isModalOpen, setIsModalOpen] = useState(false);
     const { token } = useAuth();
 
+    console.log(error);
+
     // useEffect(() => {
     //     if (!customers || customers.length === 0) return;
 
@@ -122,11 +124,11 @@ const Customers = () => {
       }, [token]);
     
 
-    if(error){
-        return <div className="w-full h-full">
-            <p></p>
-        </div>
-    }
+    // if(error){
+    //     return <div className="w-full h-full">
+    //         <p></p>
+    //     </div>
+    // }
     // function to handle api call for displaying a single customers detail
     // const displaySingleCustomer = async(id:number) =>{
     //     const url = `customer-mgt/one-user/${id}`;
@@ -223,9 +225,9 @@ const Customers = () => {
                 }
 
                 {
-                    error && <div className="w-full h-full">
-                        <p>{error}</p>
-                        <Link to = "/admin/" 
+                    error !== "" && <div className="w-full min-h-screen flex flex-col gap-y-6 justify-center items-center">
+                        <p className="text-text-black text-lg first-letter:uppercase">{error}</p>
+                        <Link to = "/admin/view-customers" 
                             className="w-[20rem] py-4 cursor-pointer text-sm font-medium text-white bg-black text-center "
                         >
                             Refresh page
@@ -239,7 +241,7 @@ const Customers = () => {
                 {/* <CustomerModal isOpen = {isModalOpen} handleModalOpen={() =>setIsModalOpen(prevState => !prevState)} customer = {customer}/> */}
 
                 {/* error modal */}
-                <ErrorModal error={error} setError={() => setError("")} redirect="/admin/view-customers" />
+                {/* <ErrorModal error={error} setError={() => setError("")} redirect="/admin/view-customers" /> */}
         </Container>
     </div>
   )

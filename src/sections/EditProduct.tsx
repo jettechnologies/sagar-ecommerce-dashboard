@@ -8,6 +8,7 @@ import { imageValidate } from "@/utils/imageValidate";
 import { useAuth } from "@/context/authContext";
 import useGetRequest from "@/pages/hooks/useGetRequest";
 import { ProductType } from "@/types";
+import Notification from "@/components/Notification";
 
 
 interface ProductContentType {
@@ -43,7 +44,7 @@ const EditProduct: React.FC<EditProductType> = ({
   console.log(resError, response)
 
     const { data:product, error:fetchError } = useGetRequest<ProductType>(`browse/fetch-one-product/${productId}`, {}, !!productId);
-    console.log(fetchError)
+    console.log(product, fetchError)
     // loading and setting the product default values
     useEffect(() =>{
       if(!Array.isArray(product) && product) {
@@ -110,6 +111,7 @@ const EditProduct: React.FC<EditProductType> = ({
       validateObject(content);
     } catch (error) {
       console.log("All fields need to be filled");
+      setResError("All fields need to be filled");
       return;
     }
 
@@ -153,6 +155,18 @@ const EditProduct: React.FC<EditProductType> = ({
 
   };
 
+  useEffect(() =>{
+    let errorRemoval: ReturnType<typeof setTimeout>;
+
+    if(resError){
+       errorRemoval =  setTimeout(() =>{
+            setResError("");
+        }, 2000)
+    }
+
+    return() => clearTimeout(errorRemoval)
+}, [resError]);
+
   return (
     <Modal
       title="Edit existing product"
@@ -164,6 +178,7 @@ const EditProduct: React.FC<EditProductType> = ({
         className="w-full flex flex-col gap-y-2"
         onSubmit={handleFormSubmit}
       >
+        {resError && resError !== "" && <Notification message = {resError} type = "danger" className="text-white mb-4"/>}
         <div className="w-full">
           <label
             htmlFor="product-name"

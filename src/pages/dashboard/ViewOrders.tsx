@@ -291,7 +291,7 @@ const ViewOrders = () => {
                         </div>
                     )}
                     {error && (
-                        <div className="mx-auto w-full h-screen grid place-content-center gap-4 border-2">
+                        <div className="mx-auto w-full h-screen grid place-content-center gap-4">
                             <h1 className="text-text-black font-medium text-xl first-letter:uppercase">{error}</h1>
                             <Link
                                 to="/admin/"

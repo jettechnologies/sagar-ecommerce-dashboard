@@ -9,7 +9,7 @@ import { useCategories } from "../hooks/usCategories";
 import Notification from "@/components/Notification";
 import Spinner from "@/components/Spinner";
 import Popup from "@/components/Popup";
-// import { imageValidate } from "@/utils/imageValidate";
+import { imageValidate } from "@/utils/imageValidate";
 import Image from "@/components/Image";
 import { useAuth } from "@/context/authContext";
 import { CategoryType } from "@/types";
@@ -55,6 +55,7 @@ const Category = () => {
     })
     const [currentId, setCurrentId] = useState(0);
     const [searchError, setSearchError] = useState<string | null>(null);
+    // for searching categories
     const [result, setResult] = useState<CategoryType[] | null>(null);
     const [search, setSearch] = useState("");
 
@@ -165,15 +166,11 @@ const Category = () => {
         }
 
         const imgArr = Array.from(files);
-        // const validate = imageValidate(imgArr);
+        const validate = imageValidate(imgArr);
 
-        // if(!validate){
-        //     console.log("the validation failed");
-
-        //     return;
-        // }
-
-        setCategory({...category, [name]: imgArr[0]});
+        if(validate){
+            setCategory({...category, [name]: imgArr[0]});
+        }
 
     }
 
@@ -203,7 +200,10 @@ const Category = () => {
             setLoading(true)
             const res = await easyHttp.delete(url, headers);
             setResponse(res)
-            window.location.reload();
+            setCategories((prevState) => prevState.filter(category => category.id !== currentId));
+            setIsDeleting(prevState => !prevState)
+
+            // window.location.reload();
         }
         catch(e){
             console.log((e as Error).message)
@@ -257,7 +257,9 @@ const Category = () => {
         try{
             setLoading(true)
             const res = await easyHttp.formData(url, headers, formData);
-            setResponse(res)
+            setResponse(res);
+            setCategories(prevCategories => [...prevCategories, res]);
+            setIsOpen(prevIsOpen => !prevIsOpen);
         }
         catch(e){
             console.log((e as Error).message)
@@ -267,13 +269,7 @@ const Category = () => {
             setLoading(false)
         }
 
-        if(resError !== null){
-            return;
-        }
-
-        setIsOpen(prevIsOpen => !prevIsOpen);
-
-        window.location.reload();
+        // window.location.reload();
         
     }
 
