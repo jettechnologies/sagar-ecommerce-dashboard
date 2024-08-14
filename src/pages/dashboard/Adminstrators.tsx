@@ -27,11 +27,6 @@ const adminTypes:{key:string; value:string}[] = [
     { "key": "level3", "value": "level three" }
   ]
 
-//   type SearchAdminResponse = {
-//     message: string;
-//     searchedRider: [AdminType[], number];
-//   }
-
 const easyHttp = new EasyHTTP();
 
 const Adminstrators = () => {
@@ -56,38 +51,6 @@ const Adminstrators = () => {
     const { token } = useAuth();
 
     const searchRef = useRef<HTMLInputElement>(null);
-
-    console.log(token, loading);
-
-    // const mapResponseToAdminData = (response: any): AdminDataType => {
-    //     return {
-    //       id: response.id,
-    //       adminID: response.adminID,
-    //       email: response.email,
-    //       role: response.role,
-    //       adminType: response.admintype,
-    //       adminAccessLevel: response.adminaccessLevel,
-    //       password: response.password,
-    //       mobile: response.mobile,
-    //       fullname: response.fullname,
-    //       updatedAt: response.UpdatedAt,
-    //       registeredAt: response.RegisteredAt,
-    //       profilePicture: response.profile_picture,
-    //       gender: response.gender,
-    //       nationality: response.Nationality,
-    //       isLoggedIn: response.isLoggedIn,
-    //       isRegistered: response.isRegistered,
-    //       isActivated: response.isActivated,
-    //       isDeactivated: response.isDeactivated,
-    //       isVerified: response.isVerified,
-    //       resetLinkExpTime: response.reset_link_exptime,
-    //       passwordResetLink: response.password_reset_link,
-    //     };
-    //   };
-
-    // const mapResponsesToAdminDataArray = useCallback((responses: any[]): AdminDataType[] => {
-    //     return responses.map((response) => mapResponseToAdminData(response));
-    //   }, [])
 
       const getAllAdmins = useCallback(async (token:string) => {
         try {
@@ -164,8 +127,6 @@ useEffect(() =>{
 
         setAdminChange({ ...adminChange, [name]: value.trim() });          
     }
-
-    console.log(adminChange);
 
     const changeAdminType = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -326,10 +287,7 @@ useEffect(() =>{
             const response = await res.json();
             if(res.status === 404) throw new Error(response.message)
 
-            console.log(response.data);
-            // const adminData: AdminDataType[] = mapResponsesToAdminDataArray(response.data);
-            // console.log(adminData)
-            setAdmins(response.data);
+                setAdmins(response.data);
         }
         catch(err){
             console.log((err as Error).message);

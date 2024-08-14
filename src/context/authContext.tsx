@@ -25,9 +25,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const auth_token = Cookies.get("admin_auth_token");
-    console.log(auth_token)
     const t = auth_token || "";
-    console.log(t)
     if (t !== "") {
       setToken(t);
     }
