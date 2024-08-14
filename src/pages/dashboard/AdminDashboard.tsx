@@ -57,8 +57,6 @@ const AdminDashboard = () => {
   }
 };
 
-  
-  
 
   // Multiple API calls for the counts
   const { data: revenue, loading: revenueLoading } = useGetRequest<number>("order-mgt/revenue", { headers }, shouldFetch);

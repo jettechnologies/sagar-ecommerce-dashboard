@@ -36,7 +36,6 @@ const Adminstrators = () => {
     const [error, setError] = useState<string | null>(null);
     const [searchError, setSearchError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    // const [response, setResponse] = useState<[AdminType[], number] | null>(null)
     const [admins, setAdmins] = useState<AdminDataType [] | []>([]);
     const [currentId, setCurrentId] = useState("");
     const [activePopupId, setActivePopupId] = useState<number | null>(null);

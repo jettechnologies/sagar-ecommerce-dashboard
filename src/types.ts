@@ -173,3 +173,17 @@ export interface AdminDataType {
     items: Item[];
   };
   
+  export interface Subscription {
+    SubscribedAt: string;
+    email: string;
+    id: number;
+  }
+
+  export interface FeedbackResponse {
+    id: number;
+    email: string;
+    shoppingExperience: string;
+    additionalFeedback: string | null;
+    feedbackGivenAT: string; // ISO 8601 date string
+  }
+  
