@@ -239,6 +239,8 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
             </div>
 
             {response !== "" && <Toast message={response} type="success"/>}
+            {error !== "" && <Toast message={error} type="error"/>}
+
           </div>
   )
 }

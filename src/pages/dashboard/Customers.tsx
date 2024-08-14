@@ -6,8 +6,8 @@ import { useAuth } from "@/context/authContext";
 import Spinner from "@/components/Spinner";
 import { Link } from "react-router-dom";
 // import CustomerModal from "@/sections/CustomerModal";
-import ErrorModal from "@/components/ErrorModal";
 import Pagination from "@/components/Pagination";
+import Toast from "@/components/Toast";
 
 // const easyHttp = new EasyHTTP();
 
@@ -42,50 +42,10 @@ export interface CustomerData {
 const Customers = () => {
     
     const [customers, setCustomers] = useState<CustomerData[] | []>([]);
-    // const [customer, setCustomer] = useState<CustomerData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>("");
-    // const [isModalOpen, setIsModalOpen] = useState(false);
     const { token } = useAuth();
 
-    console.log(error);
-
-    // useEffect(() => {
-    //     if (!customers || customers.length === 0) return;
-
-    //     console.log(customers)
-    
-    //     const profiles: CustomerData[] = customers.map((d: any) => ({
-    //       userId: d.userID,
-    //       fullname: d.fullname,
-    //       email: d.email,
-    //       orders: d.orders,
-    //       registeredAt: d.RegisteredAt,
-    //       mobile: d.mobile,
-    //       isLoggedIn: d.isLoggedIn,
-    //       DOB: d.DOB,
-    //       LGA_of_Home_Address: d.LGA_of_Home_Address,
-    //       Nationality: d.Nationality,
-    //       UpdatedAt: d.UpdatedAt,
-    //       age: d.age,
-    //       cityOfResidence: d.cityOfResidence,
-    //       favourites: d.favourites,
-    //       gender: d.gender,
-    //       home_address: d.home_address,
-    //       id: d.id,
-    //       isRegistered: d.isRegistered,
-    //       isVerified: d.isVerified,
-    //       password: d.password,
-    //       password_reset_link: d.password_reset_link,
-    //       profile_picture: d.profile_picture,
-    //       reset_link_exptime: d.reset_link_exptime,
-    //       role: d.role,
-    //       totalRevenue: d.totalRevenue,
-    //     }));
-    
-    //     setCustomers(profiles);
-    //   }, [customers]);
-    
       const fetchAllCustomers = async (token: string) => {
         const url = "customer-mgt/all-users";
     
@@ -242,6 +202,7 @@ const Customers = () => {
 
                 {/* error modal */}
                 {/* <ErrorModal error={error} setError={() => setError("")} redirect="/admin/view-customers" /> */}
+                {error && <Toast message={error} type="error"/>}
         </Container>
     </div>
   )

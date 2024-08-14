@@ -42,17 +42,6 @@ const PaymentConfiguration = () => {
     const [activePasscodeIndex, setActivePasscodeIndex] = useState(0);  
     const inputRef = useRef<HTMLInputElement>(null);
 
-  // const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { value } = target;
-  //   const newPasscode: string[] = [...passcode];
-  //   newPasscode[activePasscodeIndex] = value.substring(value.length - 1);
-
-  //   if (!value) setActivePasscodeIndex(activePasscodeIndex - 1);
-  //   else setActivePasscodeIndex(activePasscodeIndex + 1);
-
-  //   setPasscode(newPasscode);
-  // };
-
   const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = target;
     const newPasscode = [...passcode];
