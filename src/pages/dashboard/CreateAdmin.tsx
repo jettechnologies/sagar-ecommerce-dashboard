@@ -5,13 +5,14 @@ import Button from "@/components/Button";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { User, Info, Mail, Shield, LockKeyhole, Earth } from "lucide-react";
-import Notification from "@/components/Notification";
+// import Notification from "@/components/Notification";
 import { Headers } from "@/utils/httpRequest";
 import { AdminRegistrationResponse } from "@/types";
 import Modal from "@/components/Modal";
 import CopyToClipboard from "@/components/CopyToClipBoard";
 import { Nationalities } from "@/data";
 import { useAuth } from "@/context/authContext";
+import Toast from "@/components/Toast";
 
 interface StateObj{
     str: string;
@@ -146,9 +147,7 @@ const CreateAdmin = () => {
             setAdminData({ ...adminData, email: { ...email, error: true } });
             return;
         }
-    
-      console.log(resError);
-    
+        
         const data:Data = {
             email:email.str,
             fullname: fullname.str,
@@ -201,18 +200,17 @@ const CreateAdmin = () => {
             } else {
                 const errorData = await res.json();
                 console.error('Failed to create product:', errorData.message);
-                setResError('Failed to create product: ' + errorData.message);
+                // setResError('Failed to create product: ' + errorData.message);
             }
         } catch (error: any) {
             console.error('Error:', error.message);
-            setResError('Failed to create product');
+            // setResError('Failed to create product');
+            setResError(error.message)
         } finally {
             setLoading(false);
         }
-        // navigate( );
     }
 
-    // console.log(resError)
 
     useEffect(() =>{
         if(response !== null){
@@ -242,7 +240,7 @@ const copyResponse = useCallback(() => {
     <Container className ="mt-4 min-h-screen grid place-items-center relative">
         <div className="min-h-1/2 w-fit border border-[#c0c0c0] rounded-md py-2 flex flex-col gap-y-6 items-center">
             <CircleUserRound size = {80} strokeWidth={1} color="#121212"/>
-            {validateError.status && <Notification message = {validateError.msg} type = "danger" className="text-white mb-4"/>}
+            {/* {validateError.status && <Notification message = {validateError.msg} type = "danger" className="text-white mb-4"/>} */}
             <form onSubmit={handleFormSubmit} className="w-[30rem] p-4">
                 <div id = "create-admin-form"  className="w-full h-fit flex flex-col ">
                 <div>
@@ -299,6 +297,7 @@ const copyResponse = useCallback(() => {
                                 name="nationality"
                                 className="font-normal text-sm w-full py-3"
                                 select={Nationalities}
+                                value={adminData?.nationality?.str}
                                 defaultText="Select your nationality"
                                 handleInputChange={handleInputChange}
                             />
@@ -347,6 +346,7 @@ const copyResponse = useCallback(() => {
                                     select={adminTypes} 
                                     className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
                                     defaultText="Select admin type"
+                                    value={adminData?.adminType.str}
                                     handleInputChange={handleInputChange}
                                 />
                                 {adminData.adminType.error && <Info size={20} color=" rgb(239 68 68)" />}
@@ -362,6 +362,7 @@ const copyResponse = useCallback(() => {
                                 select={accessLevels} 
                                 className="font-normal text-[#c0c0c0] w-full p-0 border-none outline-none" 
                                 defaultText="Select access level"
+                                value={adminData?.accesslevel?.str}
                                 handleInputChange={handleInputChange}
                                 />
                                 {adminData.accesslevel.error && <Info size={20} color=" rgb(239 68 68)" />}
@@ -373,9 +374,12 @@ const copyResponse = useCallback(() => {
                 <Button size = "large" className="w-full mt-4">{loading ? "Loading" : "Create Admin"}</Button>
             </form>
         </div>
-        {resError && <div className="absoulte w-[30rem] top-0 right-0">
-            <Notification type = "danger" message = {resError} className = "text-white first-letter:uppercase"  />
-        </div>}
+        {resError && 
+        // <div className="absoulte w-[30rem] top-0 right-0">
+        //     <Notification type = "danger" message = {resError} className = "text-white first-letter:uppercase"  />
+        // </div>
+            <Toast type = "error" message = {resError}  /> 
+        }
 
         {/* modal for copying the response */}
         <Modal title = "New user Created" isOpen={isModalOpen} handleModalOpen={() => setIsModalOpen(prevState => !prevState)}>
@@ -387,14 +391,6 @@ const copyResponse = useCallback(() => {
                 </div>
                 <CopyToClipboard text={copyResponse()}>
                     <div className="flex gap-5 mt-5 border-t border-[#f0f0f0] pt-3">
-                        {/* <Button 
-                            type="white" 
-                            size="small" 
-                            className="text-sm uppercase flex-1"
-                            handleClick = {() => setIsModalOpen(prevState => !prevState)}
-                        >
-                            no, cancel
-                        </Button> */}
                         <Button  
                             size="small"
                             handleClick={() => {
@@ -409,6 +405,8 @@ const copyResponse = useCallback(() => {
                 </CopyToClipboard>
             </div>
         </Modal>
+
+        {(validateError.status && validateError?.msg !== "") && <Toast message = {validateError.msg} type = "error" />}
     </Container>
   )
 }

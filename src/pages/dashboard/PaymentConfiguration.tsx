@@ -38,19 +38,52 @@ const PaymentConfiguration = () => {
     // let currentPasscodeIndex = 0;
 
     const [passcode, setPasscode] = useState(new Array(8).fill(""));
+    console.log(passcode)
     const [activePasscodeIndex, setActivePasscodeIndex] = useState(0);  
     const inputRef = useRef<HTMLInputElement>(null);
 
+  // const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { value } = target;
+  //   const newPasscode: string[] = [...passcode];
+  //   newPasscode[activePasscodeIndex] = value.substring(value.length - 1);
+
+  //   if (!value) setActivePasscodeIndex(activePasscodeIndex - 1);
+  //   else setActivePasscodeIndex(activePasscodeIndex + 1);
+
+  //   setPasscode(newPasscode);
+  // };
+
   const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = target;
-    const newPasscode: string[] = [...passcode];
-    newPasscode[activePasscodeIndex] = value.substring(value.length - 1);
+    const newPasscode = [...passcode];
 
-    if (!value) setActivePasscodeIndex(activePasscodeIndex - 1);
-    else setActivePasscodeIndex(activePasscodeIndex + 1);
+    // If input is cleared or backspace is pressed
+    if (!value) {
+      newPasscode[activePasscodeIndex] = "";
+      setPasscode(newPasscode);
 
-    setPasscode(newPasscode);
+      // Move to the previous index if within bounds
+      if (activePasscodeIndex > 0) {
+        setActivePasscodeIndex(activePasscodeIndex - 1);
+      }
+    } else {
+      // Handle input and overwrite the current value
+      newPasscode[activePasscodeIndex] = value.slice(-1);
+      setPasscode(newPasscode);
+
+      // Move to the next index if within bounds
+      if (activePasscodeIndex < passcode.length - 1) {
+        setActivePasscodeIndex(activePasscodeIndex + 1);
+      } else {
+        // Reset the index to 0 if the entire passcode has been filled
+        setActivePasscodeIndex(0);
+      }
+    }
   };
+
+
+
+  console.log(passcode);
   
     const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === "Backspace" || e.key === "Delete") {
@@ -83,12 +116,14 @@ const PaymentConfiguration = () => {
 
               const arrangedGteways:GatewayResponse[] =  response.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
               const currentGateway = arrangedGteways[0];
-              setItem({
-                id: String(currentGateway?.id),
-                selectedGateway: currentGateway?.selectedGateway,
-              });
-              const gateway = currentGateway?.selectedGateway as PaymentGateway;
-              setSelectedGateway(gateway);
+              if(currentGateway){
+                setItem({
+                  id: String(currentGateway?.id),
+                  selectedGateway: currentGateway?.selectedGateway,
+                });
+                const gateway = currentGateway?.selectedGateway as PaymentGateway;
+                setSelectedGateway(gateway);
+              }
             }
             catch(err){
               console.log((err as Error).message);
@@ -122,11 +157,15 @@ const PaymentConfiguration = () => {
           "Accept": "application/json",
           Authorization: `Bearer ${token}`,
         };
+        console.log(passcode);
         const data = {
           passcode,
           selectedGateway: value,
         };
-      
+
+        console.log(passcode, data);
+
+
         try {
           setLoading(true);
           const response = await easyHttp.post(url, headers, data);
@@ -213,6 +252,8 @@ const PaymentConfiguration = () => {
             return;
         }
     
+        console.log(passcodeString);
+
         const localStorage = window.localStorage.getItem("payment");
         if (!localStorage) {
             if(isFirstClick){

@@ -15,6 +15,7 @@ import { useAuth } from "@/context/authContext";
 import { CategoryType } from "@/types";
 import ErrorModal from "@/components/ErrorModal";
 import Pagination from "@/components/Pagination";
+import Toast from "@/components/Toast";
 // import { useFormData } from "../hooks/useFormData";
 
 
@@ -268,8 +269,6 @@ const Category = () => {
         finally{
             setLoading(false)
         }
-
-        // window.location.reload();
         
     }
 
@@ -285,11 +284,6 @@ const Category = () => {
         return() => clearTimeout(errorRemoval)
     }, [error]);
 
-    // if(loading){
-    //     return<div className="w-full h-full">
-    //         <Spinner />
-    //     </div>
-    // }
 
   return (
     <div className="w-full h-full">
@@ -478,7 +472,7 @@ const Category = () => {
         {/* Creating new product category */}
         <Modal title = "create new category" isOpen={isOpen} handleModalOpen={handleModalOpen}>
             <form id ="product-form" className="w-full" onSubmit={handleFormSubmit}>
-            {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>}
+            {error.status && <Toast message = {error.msg} type = "error" />}
                 <div className="w-full">
                     <label htmlFor="category-name" className="text-size-400 text-text-black font-medium mb-3">
                         Category Name
@@ -525,7 +519,7 @@ const Category = () => {
         {/* Editing existing product category */}
         <Modal title = "Edit existing category" isOpen={isEditing} handleModalOpen={() => setIsEditing(prevState => !prevState)}>
             <form id ="edit-category-form" className="w-full" onSubmit={handleFormSubmit}>
-                {error.status && <Notification message = {error.msg} type = "danger" className="text-white mb-4"/>}
+                {error.status && <Toast message = {error.msg} type = "error" />}
                     <div className="w-full">
                         <label htmlFor="category-name" className="text-size-400 text-text-black font-medium mb-3">
                             Category Name

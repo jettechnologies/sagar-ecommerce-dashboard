@@ -31,13 +31,30 @@ const ResetOtp = () => {
   
     const handleOnChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = target;
-      const newOtp: string[] = [...otp];
-      newOtp[activeOTPIndex] = value.substring(value.length - 1);
+      const newOtp = [...otp];
   
-      if (!value) setActiveOTPIndex(activeOTPIndex - 1);
-      else setActiveOTPIndex(activeOTPIndex + 1);
+      // If input is cleared or backspace is pressed
+      if (!value) {
+        newOtp[activeOTPIndex] = "";
+        setOtp(newOtp);
   
-      setOtp(newOtp);
+        // Move to the previous index if within bounds
+        if (activeOTPIndex > 0) {
+          setActiveOTPIndex(activeOTPIndex - 1);
+        }
+      } else {
+        // Handle input and overwrite the current value
+        newOtp[activeOTPIndex] = value.slice(-1);
+        setOtp(newOtp);
+  
+        // Move to the next index if within bounds
+        if (activeOTPIndex < otp.length - 1) {
+          setActiveOTPIndex(activeOTPIndex + 1);
+        } else {
+          // Reset the index to 0 if the entire Otp has been filled
+          setActiveOTPIndex(0);
+        }
+      }
     };
   
     const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {

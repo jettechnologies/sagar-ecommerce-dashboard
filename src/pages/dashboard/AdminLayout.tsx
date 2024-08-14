@@ -242,7 +242,7 @@ const AdminLayout = () => {
                         />
                       ) : (
                         <p className="text-size-600 uppercase text-white bg-black text-center flex items-center justify-center w-full h-full rounded-full border">
-                          {adminProfile?.fullname.split(" ")[0].substring(0, 1)}
+                          {adminProfile?.fullname?.split(" ")[0].substring(0, 1)}
                         </p>
                       )}
                       <label

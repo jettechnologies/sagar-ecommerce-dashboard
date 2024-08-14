@@ -31,7 +31,6 @@ export const AdminProvider:React.FC<{children: React.ReactNode}> = ({ children }
 
         const adminData:AdminType = await response.json();
         setAdmin(adminData);
-        console.log("adin data is loaded");
         
       } catch (err) {
         setError((err as Error).message);

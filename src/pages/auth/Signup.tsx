@@ -1,28 +1,31 @@
 import FormContainer from "@/components/FormContainer";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Info, Phone } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Notification from "@/components/Notification";
-// import Button from "../../components/Button";
+import Button from "@/components/Button";
 import { Link } from "react-router-dom";
 import { ArrowLeftIcon, CircleUserRoundIcon } from "lucide-react";
 // import Select from "@/components/Select";
 import { useUserForm } from "../hooks/useUserForm";
 import { Headers } from "@/utils/httpRequest";
 import PasswordInput from "@/components/Password"
+import Toast from "@/components/Toast";
+import { validateObjectWithStr } from "@/utils/inputValidation";
 
-interface StateObj{
- str: string;
- error: boolean;
-}
+
+// interface StateObj{
+//  str: string;
+//  error: boolean;
+// }
   
-interface User{
- name:StateObj;
- email: StateObj;
- password: StateObj;
- contact: StateObj;
- confirmPassword: {str:string, error: boolean};
-}
+// interface User{
+//  name:StateObj;
+//  email: StateObj;
+//  password: StateObj;
+//  contact: StateObj;
+//  confirmPassword: {str:string, error: boolean};
+// }
 
 interface Error{
     status: boolean;
@@ -42,7 +45,7 @@ const Signup = () => {
     const navigate = useNavigate();
     const { response, getUserFormData, resError, loading } = useUserForm();
 
-    const [user, setUser] = useState<User>({
+    const [user, setUser] = useState({
         name: {str: "", error: false},
         email: {str: "", error: false},
         contact: {str: "", error: false},
@@ -67,12 +70,20 @@ const Signup = () => {
     setUser({ ...user, [name]: {str: value.toLocaleLowerCase(), error: false} });
 }
 
+// function to check if all the fields are been filled
+const isFilled = useMemo(() => {
+    try {
+      return validateObjectWithStr(user);
+    } catch (err) {
+      return false;
+    }
+  }, [user]);
 
 const formSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const nameRegex = /^[a-zA-Z\s]*$/;
     // const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i;
-    const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/i;
+    const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const {name, password, confirmPassword, email, contact} = user;
@@ -231,23 +242,33 @@ useEffect(() =>{
                 <PasswordInput name = "confirmPassword" placeholder = "Confirm Password" password={user.confirmPassword} setPassword={(newValue) => setUser({...user, confirmPassword: newValue})}/>
                 <div className="w-full h-fit flex flex-col gap-y-3"></div>
                 <div className="w-full h-fit flex flex-col gap-y-3">
-                    <button type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white">
+                    <Button 
+                        btnType = "submit" 
+                        className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white"
+                        disabled = {loading || !isFilled}
+                    >
                         {loading ? "Loading..." : "Create account"}
-                    </button>
+                    </Button>
                     <Link to = "/" className="p-3 w-full hover:-translate-y-1 duration-500 transition-all text-blue text-size-500 font-medium capitalize flex gap-3 justify-center items-center">
                         <ArrowLeftIcon className="w-5 h-5 text-blue" />
                         back home
                     </Link>
                 </div>
-            </form>
+            </form> 
         </FormContainer>
 
-       {response && <div className="absolute w-fit z-60 top-[6rem] right-[1.5rem]">
-            <Notification className="rounded-md w-[15rem] text-sm font-medium text-white" message={response} isCloseIcon = {true} type="success" />
-        </div>}
-        {resError && <div className="absolute w-fit z-60 top-[6rem] right-[1.5rem]">
-            <Notification className="rounded-md w-[15rem] text-sm font-medium text-white" message={resError} isCloseIcon = {true} type="danger" />
-        </div>}
+       {response && 
+            // <div className="absolute w-fit z-60 top-[6rem] right-[1.5rem]">
+            //         <Notification className="rounded-md w-[15rem] text-sm font-medium text-white" message={response} isCloseIcon = {true} type="success" />
+            //     </div>
+            <Toast message={response} type="success" />
+        }
+        {resError && 
+            // <div className="absolute w-fit z-60 top-[6rem] right-[1.5rem]">
+            //     <Notification className="rounded-md w-[15rem] text-sm font-medium text-white" message={resError} isCloseIcon = {true} type="danger" />
+            // </div>
+            <Toast message={resError} type="error"/>
+        }
     </>
   )
 }

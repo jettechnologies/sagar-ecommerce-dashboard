@@ -6,8 +6,6 @@ const ProtectedRoutes = () => {
   const { token, isLogin, loading } = useAuth();
   const navigate = useNavigate();
 
-  console.log(loading, token)
-
   useEffect(() => {
     const handleViewportCheck = () => {
       if (window.innerWidth < 1024) {
@@ -17,10 +15,7 @@ const ProtectedRoutes = () => {
 
     handleViewportCheck();
 
-    // return () => {
-    //   // Cleanup logic if needed
-    // };
-  }, [navigate]); // Include navigate in the dependency array to prevent stale closures
+  }, [navigate]); 
 
   if (token && isLogin && !loading) {
     return <Outlet />;
@@ -28,11 +23,8 @@ const ProtectedRoutes = () => {
   else if (!loading && token === "" && isLogin) {
     return <Navigate to="/login" replace />;
   }
-  // else if (loading === false && token === "" && isLogin === false) {
-  //   return <Navigate to="/login" replace />;
-  // }
    else {
-    return null; // or loading indicator or any default content
+    return null;
   }
 };
 

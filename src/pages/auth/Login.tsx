@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import FormContainer from "@/components/FormContainer";
 import { Mail, LockKeyhole, Info, CircleUserRoundIcon, Eye, EyeOff } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Notification from "@/components/Notification";
 import { Headers } from "@/utils/httpRequest";
 import { EasyHTTP } from "@/utils/httpRequest";
@@ -9,17 +9,19 @@ import Cookies from "js-cookie";
 import { useAuth } from "@/context/authContext";
 import { AdminType } from "@/types";
 import { useLocalStorage } from "@/useLocalStorage";
+import Button from "@/components/Button";
+import { validateObjectWithStr } from "@/utils/inputValidation";
 
-interface User{
-    email: {
-        str: string,
-        error: boolean
-    },
-    password: {
-        str: string,
-        error: boolean  
-    }
-}
+// interface User{
+//     email: {
+//         str: string,
+//         error: boolean
+//     },
+//     password: {
+//         str: string,
+//         error: boolean  
+//     }
+// }
 
 interface Data{
     email: string;
@@ -46,7 +48,7 @@ const Login = () => {
 
     console.log(token);
 
-    const [user, setUser] = useState<User>({
+    const [user, setUser] = useState({
         email: {
             str: "",
             error: false,
@@ -143,7 +145,7 @@ const Login = () => {
             expires.setDate(expires.getDate() + 30);
             
             
-            Cookies.set("auth_token", accesstoken?.token, {
+            Cookies.set("admin_auth_token", accesstoken?.token, {
                 expires: expires
             });
 
@@ -164,6 +166,15 @@ const Login = () => {
     
         return() => clearTimeout(errorRemoval)
     }, [error]);
+
+    // function to check if all the fields are been filled
+    const isFilled = useMemo(() => {
+        try {
+        return validateObjectWithStr(user);
+        } catch (err) {
+        return false;
+        }
+    }, [user]);
 
   return (
     <>
@@ -218,9 +229,16 @@ const Login = () => {
                     <Link to = "/reset-password/verfiy-email" className="w-fit text-sm text-blue cursor-pointer hover:-translate-y-1 duration-500 transition-all">Forgot Password ?</Link>
                 </div>
                 <div className="w-full">
-                    <button type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white ">
+                    {/* <button type = "submit" className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white ">
                     {loading ? "Loading..." : "login"}
-                    </button>
+                    </button> */}
+                    <Button 
+                        btnType = "submit" 
+                        className="px-10 py-4 w-full rounded-md font-roboto text-size-500 uppercase font-semibold bg-black text-white"
+                        disabled = {loading || !isFilled}
+                    >
+                        {loading ? "Loading..." : "Create account"}
+                    </Button>
                 </div>
                 <div className="flex w-full justify-center gap-3 accent-blue mt-4">
                     <Link to = "/signup" className="text-sm ml-2 text-blue cursor-pointer hover:-translate-y-1 duration-500 transition-all">Don't have an account yet? Signup</Link>

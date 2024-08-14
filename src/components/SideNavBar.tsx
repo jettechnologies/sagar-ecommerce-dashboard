@@ -60,7 +60,6 @@ const SideNavBar = ({ className, setCouponActions, setCurrentId, setCurrentCoupo
   // useEffect for calling the coupons created by the admin
   useEffect(() =>{
     const fetchCoupons = async() =>{
-      console.log(token)
       const url = "order-mgt/get-coupons";
 
     try{
@@ -75,10 +74,8 @@ const SideNavBar = ({ className, setCouponActions, setCurrentId, setCurrentCoupo
         const errorResponse = await res.json();
         throw new Error(errorResponse?.message || "Resource not found");
       }
-      console.log('coupon created successfully');
-      console.log(res)
+      
       const response:CouponType[]  = await res.json();
-      console.log(response);
       setCoupons(response);
     }
     catch(err){

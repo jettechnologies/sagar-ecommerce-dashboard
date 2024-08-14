@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Nationalities } from "@/data";
 import Select from "@/components/Select";
 import Button from "@/components/Button";
+import Toast from "@/components/Toast";
 
 interface EditUser{
     fullname: string;
@@ -21,6 +22,7 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
     const [currentEmail,setCurrentEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [response, setResponse] = useState("");
     const [editUser, setEditUser] = useState<EditUser>({
         fullname: "",
         email: "",
@@ -30,8 +32,7 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
         gender: "",
       });
 
-    console.log(error);
-
+    console.log(editUser)
     // fetching the profile info
   const getAdminInfo = async(token:string) =>{
     try {
@@ -59,14 +60,11 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
       }
       setCurrentEmail(data.email)
       setEditUser(user)
-      console.log(user)
     }
     catch (e : any) {
       console.log(e.message);
       setError(e.message);
-    } finally {
-      console.log("fetch finally")
-    }
+    } 
   }
 
     useEffect(() =>{
@@ -113,8 +111,6 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
       }
     }
 
-    console.log(data)
-
     const headers = {
       'Content-type': 'application/json',
       "Accept": "application/json",
@@ -133,15 +129,12 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
       )
 
       if (res.ok) {
-          console.log('Product created successfully');
-          console.log(res)
-          const data = await res.json();
-        console.log(data);
+          // const data = await res.json();
+          // console.log(data);
 
-          // setResponse('Product created successfully');
+          setResponse("User's profile updated successfully");
       } else {
           const errorData = await res.json();
-          console.error('Failed to create product:', errorData.message);
           setError('Failed to edit profile: ' + errorData.message);
         }
     } catch (error: any) {
@@ -169,7 +162,7 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
                       type="text" 
                       name="fullname" 
                       id="fullname" 
-                      value = {editUser.fullname} 
+                      value = {editUser?.fullname} 
                       onChange={handleUserEdit}
                     />
                   </div>
@@ -182,7 +175,7 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
                       type="text" 
                       name="email" 
                       id="email" 
-                      value = {editUser.email} 
+                      value = {editUser?.email} 
                       onChange={handleUserEdit}
                     />
                   </div>
@@ -195,6 +188,7 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
                     name="nationality"
                     className="font-normal text-sm w-full py-3 border border-[#c0c0c0] mt-3"
                     select={Nationalities}
+                    value={editUser?.nationality}
                     defaultText="Select your nationality"
                     handleInputChange={handleUserEdit}
                     />
@@ -208,7 +202,7 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
                       type="text" 
                       name="address" 
                       id="address" 
-                      value = {editUser.address} 
+                      value = {editUser?.address} 
                       onChange={handleUserEdit}
                     />
                   </div>
@@ -221,7 +215,7 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
                       type="text" 
                       name="mobile" 
                       id="mobile" 
-                      value={editUser.mobile}
+                      value={editUser?.mobile}
                       onChange={handleUserEdit}
                     />
                   </div>
@@ -234,15 +228,17 @@ const EditProfile:React.FC<EditProfileProps> = ({token}) => {
                       type="text" 
                       name="gender" 
                       id="gender" 
-                      value = {editUser.gender}
+                      value = {editUser?.gender}
                       onChange={handleUserEdit}
                     />
                   </div>
-                  <Button size = "small" className = "">
+                  <Button btnType="submit" size = "small">
                     {loading ? "Loading..." :"Update profile"}
                   </Button>
               </form>
             </div>
+
+            {response !== "" && <Toast message={response} type="success"/>}
           </div>
   )
 }

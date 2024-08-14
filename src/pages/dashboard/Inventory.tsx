@@ -250,9 +250,9 @@ const updateThreshold = useCallback(
                 }
 
                 {
-                  error && <div className="w-fulll h-full grid place-items-center">
-                    <p>{error}</p>
-                    <Link to = "/admin/inventory" className="w-[20rem] h-[4rem] text-center bg-black text-white">Refresh page</Link>
+                  error && <div className="w-full min-h-screen grid place-content-center gap-6">
+                    <p className="first-letter:uppercase">{error}</p>
+                    <Link to = "/admin/inventory" className="w-[20rem] h-[3rem] text-center bg-black text-white justify-self-center flex items-center justify-center">Refresh page</Link>
                   </div>
                 }
             </div>

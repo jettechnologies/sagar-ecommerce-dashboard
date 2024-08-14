@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LockKeyhole, Info, Eye, AlertTriangle, AlertCircle, Shield, CheckCircle, EyeOff } from "lucide-react";
 import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core';
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
@@ -30,6 +30,19 @@ const PasswordInput = <T extends PasswordType>({ password, setPassword, name, pl
 
     const [showPassword, setShowPassword] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState<"weak" | "fair" | "good" | "strong" | "">("");
+
+    // to remove the the passwordStrenght description
+    useEffect(() =>{
+        let passwordStrengthRemoval: ReturnType<typeof setTimeout>;
+    
+        if(passwordStrength){
+            passwordStrengthRemoval =  setTimeout(() =>{
+                setPasswordStrength("");
+            }, 3000)
+        }
+    
+        return() => clearTimeout(passwordStrengthRemoval)
+    }, [passwordStrength]);
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
