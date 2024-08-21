@@ -37,6 +37,8 @@ const Category = () => {
         msg: "",
         status: false,
     });
+
+    console.log(response);
     // const [token, setToken] = useState<string>("");
     const [activePopupId, setActivePopupId] = useState<number | null>(null);
     const [isEditing, setIsEditing] = useState(false)
