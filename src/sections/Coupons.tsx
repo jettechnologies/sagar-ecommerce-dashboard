@@ -1,7 +1,7 @@
 import { useState } from "react"
 import Button from "@/components/Button";
 import { EasyHTTP } from "@/utils/httpRequest";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 interface Coupon{
     code: string;
@@ -27,7 +27,6 @@ const Coupons = ({token}: CouponProps) => {
 
   // console.log(token);
 
-    const navigate = useNavigate();
     const [coupon, setCoupon] = useState<Coupon>({
         code : "",
         durationInDays: 0,
@@ -40,6 +39,8 @@ const Coupons = ({token}: CouponProps) => {
       });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    console.log(error);
     
     const handleCouponInput =  (
         e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
