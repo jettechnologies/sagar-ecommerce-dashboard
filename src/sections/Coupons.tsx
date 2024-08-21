@@ -25,6 +25,7 @@ const easyHttp = new EasyHTTP();
 
 const Coupons = ({token}: CouponProps) => {
 
+  // console.log(token);
 
     const navigate = useNavigate();
     const [coupon, setCoupon] = useState<Coupon>({
@@ -39,8 +40,6 @@ const Coupons = ({token}: CouponProps) => {
       });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
-    console.log(error);
     
     const handleCouponInput =  (
         e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -65,20 +64,22 @@ const Coupons = ({token}: CouponProps) => {
         }));
     
       }
+
+      console.log(coupon);
     
       const handleCreateCoupon = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
     
         const { code, percentOff, durationInDays, durationInWeeks } = coupon;
+
     
         if(percentOff > 0 && (durationInDays > 0 || durationInWeeks > 0) && code !== ""){
-            
-          const url = "order-mgt/set-discount-Coupon";
-          const headers:HeadersInit = {
-            "Content-Type": 'application/json',
-            "Accept": "application/json",
-            Authorization: `Bearer ${token}`,
-        }
+            const url = "order-mgt/set-discount-Coupon";
+            const headers:HeadersInit = {
+              "Content-Type": 'application/json',
+              "Accept": "application/json",
+              Authorization: `Bearer ${token}`,
+            }
     
             const data = {
               discountCode: code,
@@ -93,7 +94,8 @@ const Coupons = ({token}: CouponProps) => {
                 setLoading(true);
                 const response = await easyHttp.post(url, headers, data);
                 console.log(response);
-                navigate("/admin", {replace: true})
+                window.location.reload();
+                // navigate("/", {replace: true})
               }
             catch(err){
                 console.log((err as Error).message)
@@ -219,7 +221,7 @@ const Coupons = ({token}: CouponProps) => {
                     className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
                   />
                 </div>
-                <Button size = "small" className = "">
+                <Button size = "small" btnType="submit">
                   {loading ? "Loading ...": "Create coupon"}
                 </Button>
               </form>

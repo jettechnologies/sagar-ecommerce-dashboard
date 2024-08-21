@@ -280,7 +280,7 @@ const EditProduct: React.FC<EditProductType> = ({
             className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
           />
         </div>
-        <Button size="large" className="w-full mt-4 uppercase">
+        <Button btnType = "submit" size="large" className="w-full mt-4 uppercase">
           {loading ? "Loading..." : "Update product"}
         </Button>
       </form>

@@ -371,7 +371,7 @@ const copyResponse = useCallback(() => {
                         </div>
                     </div>
                 </div>
-                <Button size = "large" className="w-full mt-4">{loading ? "Loading" : "Create Admin"}</Button>
+                <Button btnType = "submit" size = "large" className="w-full mt-4">{loading ? "Loading" : "Create Admin"}</Button>
             </form>
         </div>
         {resError && 

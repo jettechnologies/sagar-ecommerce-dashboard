@@ -247,6 +247,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         if (res.ok) {
             console.log('Product created successfully');
             setResponse('Product created successfully');
+            navigate("/admin/products", {replace: true});
         } else {
             const errorData = await res.json();
             console.error('Failed to create product:', errorData.message);
@@ -258,8 +259,6 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     } finally {
         setLoading(false);
     }
-
-    navigate("/admin/products", {replace: true});
 
   console.log(resError, response)
 };
@@ -547,6 +546,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             </div>
             <Button
               size="medium"
+              btnType = "submit"
               className="text-white font-normal text-md capitalize"
             >
               {loading ? "Loading" : "upload product"}

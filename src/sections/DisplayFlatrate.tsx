@@ -259,7 +259,7 @@ const DisplayFlatrate = () => {
                     />
                   </div>
                   </div>
-                  <Button size = "medium" className = "">
+                  <Button btnType = "submit" size = "medium" className = "">
                     {loading ? "Loading..." : "Edit flatrate"}
                   </Button>
                 </form>

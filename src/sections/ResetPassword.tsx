@@ -156,7 +156,7 @@ const ResetPassword = ({token}: ResetPasswordProps) => {
             <PasswordInput name = "oldPassword" placeholder = "Old Password" password = {passwordChange.oldPassword} setPassword={(newValue) => setPasswordChange({...passwordChange, oldPassword: newValue})}/>
             <PasswordInput name = "newPassword" placeholder = "New Password" password = {passwordChange.newPassword} setPassword={(newValue) => setPasswordChange({...passwordChange, newPassword: newValue})}/>
             <PasswordInput name = "confirmPassword" placeholder = "Confirm Password" password={passwordChange.confirmPassword} setPassword={(newValue) => setPasswordChange({...passwordChange, confirmPassword: newValue})}/>
-            <Button size = "small" className = "">
+            <Button btnType = "submit" size = "small" className = "">
                 {loading ? "loading...": "Reset Password"}
             </Button>
         </form>

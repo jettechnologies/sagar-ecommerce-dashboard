@@ -60,7 +60,6 @@ const Category = () => {
     const [result, setResult] = useState<CategoryType[] | null>(null);
     const [search, setSearch] = useState("");
 
-    console.log(response)
 
     useEffect(() =>{
         getCategories()
@@ -512,7 +511,7 @@ const Category = () => {
                         className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
                     />
                 </div>
-                <Button size = "large" className="w-full mt-4 uppercase">{loading ? "Loading..." : "Create catergory"}</Button>
+                <Button btnType = "submit" size = "large" className="w-full mt-4 uppercase">{loading ? "Loading..." : "Create catergory"}</Button>
             </form>
         </Modal>
 
@@ -559,7 +558,7 @@ const Category = () => {
                             className="mt-3 rounded-md border border-[#c0c0c0] w-full p-3 font-roboto text-size-400 font-normal first-letter:uppercase"
                         />
                     </div>
-                    <Button size = "large" className="w-full mt-4 uppercase">{loading ? "Loading..." : "Create catergory"}</Button>
+                    <Button btnType="submit" size = "large" className="w-full mt-4 uppercase">{loading ? "Loading..." : "Create catergory"}</Button>
                 </form>
         </Modal>
 
