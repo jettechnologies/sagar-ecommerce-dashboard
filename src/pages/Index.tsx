@@ -31,7 +31,7 @@ const Index = () => {
           <h2 className="text-size-700 text-white font-bold text-center">
             Welcome to 
             <br/>
-              <span className = "text-blue uppercase text-size-[2.75rem]">sagar ecommerce</span>
+              <span className = "text-blue uppercase text-size-[2.75rem]">thegearmates</span>
             <br/>
             Admin panel
           </h2>
